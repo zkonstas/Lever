@@ -5,11 +5,18 @@ import org.antlr.v4.runtime.tree.*;
 public class Leverc {
 	public static void main(String[] args) throws Exception {
 
+		if (args.length == 0) {
+			System.out.println("usage: Leverc <filename.lever>");
+			return;
+		}
+		String fileName = args[0];
+		
+
 		//CharStream that reads from standard input
-		ANTLRInputStream input = new ANTLRInputStream(System.in);
+		//ANTLRInputStream input = new ANTLRInputStream(System.in);
 
 		//create lexer that feeds off of input CharStream
-		LeverGrammarLexer lexer = new LeverGrammarLexer(input);
+		Lexer lexer = new LeverGrammarLexer(new ANTLRFileStream(fileName));
 
 		//buffer of tokens pulled from lexer
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

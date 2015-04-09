@@ -1,0 +1,3 @@
+program {
+	output "hello world!\n";
+}
