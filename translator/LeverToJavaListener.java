@@ -1,5 +1,10 @@
 //don't need to override every enter/exit method
-public class LeverToJava extends LeverGrammarBaseListener {
+public class LeverToJavaListener extends LeverGrammarBaseListener {
+	LeverGrammarParser parser;
+	public LeverToJavaListner(LeverGrammarParser parser) {
+		this.parser = parser;
+	}
+	
 	/** Translate { to " */
 	@Override
 	public void enterLever(LeverGrammarParser.LeverContext ctx) {
