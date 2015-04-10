@@ -10,7 +10,7 @@ public class Leverc {
 			return;
 		}
 		String fileName = args[0];
-		
+		String filePre = fileName.split(".")[0];		
 
 		//CharStream that reads from standard input
 		//ANTLRInputStream input = new ANTLRInputStream(System.in);
@@ -20,6 +20,7 @@ public class Leverc {
 
 		//buffer of tokens pulled from lexer
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		//TokenRewriteStream tokens = new TokenRewriteStream(lexer);
 
 		//parser that feeds off tokens buffer
 		LeverGrammarParser parser = new LeverGrammarParser(tokens);
@@ -30,7 +31,8 @@ public class Leverc {
 		//generic parse tree walker that triggers callbacks
 		ParseTreeWalker walker = new ParseTreeWalker();
 		//walk tree, trigger callbacks
-		walker.walk(new LeverToJava(), tree);
-		System.out.println();
+		walker.walk(new LeverToJavaListener(filePre), tree);
+
+
 	}
 }
