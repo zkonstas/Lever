@@ -67,7 +67,11 @@ statementExpression
 /** dot notation? | expression '.' Identifier */
 expression
 	: primary
-	| primary expression (',' expression)*
+	| primary functionParams
+	;
+
+functionParams
+	: expression (',' expression)*
 	;
 
 primaryList

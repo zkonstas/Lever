@@ -1,4 +1,4 @@
-// Generated from LeverGrammar.g4 by ANTLR 4.5
+// Generated from translator/LeverGrammar.g4 by ANTLR 4.5
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -179,6 +179,18 @@ public class LeverGrammarBaseListener implements LeverGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpression(LeverGrammarParser.ExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionParams(LeverGrammarParser.FunctionParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionParams(LeverGrammarParser.FunctionParamsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

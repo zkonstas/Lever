@@ -10,7 +10,6 @@ public class Leverc {
 			return;
 		}
 		String fileName = args[0];
-		String filePre = fileName.split(".")[0];		
 
 		//CharStream that reads from standard input
 		//ANTLRInputStream input = new ANTLRInputStream(System.in);
@@ -31,7 +30,7 @@ public class Leverc {
 		//generic parse tree walker that triggers callbacks
 		ParseTreeWalker walker = new ParseTreeWalker();
 		//walk tree, trigger callbacks
-		walker.walk(new LeverToJavaListener(filePre), tree);
+		walker.walk(new LeverToJavaListener(fileName), tree);
 
 
 	}

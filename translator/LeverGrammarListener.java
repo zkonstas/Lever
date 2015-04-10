@@ -1,4 +1,4 @@
-// Generated from LeverGrammar.g4 by ANTLR 4.5
+// Generated from translator/LeverGrammar.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -147,6 +147,16 @@ public interface LeverGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(LeverGrammarParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LeverGrammarParser#functionParams}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionParams(LeverGrammarParser.FunctionParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LeverGrammarParser#functionParams}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionParams(LeverGrammarParser.FunctionParamsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LeverGrammarParser#primaryList}.
 	 * @param ctx the parse tree
