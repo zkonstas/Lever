@@ -1,5 +1,6 @@
 JCC = javac
-JFLAGS = -g -d classes
+JFLAGS = -g -d $(CLASSDIR)
+CLASSDIR = classes
 
 SOURCEFILES = \
 	LeverGrammarLexer.java \
@@ -16,16 +17,15 @@ classes: $(CLASSFILES)
 %.class: %.java
 	$(JCC) $(JFLAGS) $<
 
+all: antlr classes
+
 .PHONY: antlr
 antlr:
 	java -Xmx500M org.antlr.v4.Tool LeverGrammar.g4
 
-.PHONY: all 
-all: antlr $(CLASSFILES)
-	
 .PHONY: clean
 clean:
-	rm classes/*.class
+	rm $(CLASSDIR)/*.class
 
 .PHONY: cleanall
 cleanall: clean
