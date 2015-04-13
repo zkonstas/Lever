@@ -1,25 +1,28 @@
+JCC = javac
 JFLAGS = -g -d classes
-JC = javac
-.SUFFIXES: .java .class
-.java.class:
-	$(JC) $(JFLAGS) $*.java
 
-CLASSES = \
+SOURCEFILES = \
 	LeverGrammarLexer.java \
 	LeverGrammarParser.java \
 	LeverGrammarListener.java \
 	LeverGrammarBaseListener.java \
 	LeverToJavaListener.java \
 	Leverc.java \
-	LeverAPI.java \
+	LeverAPI.java
 
-default: classes
+CLASSFILES = $(SOURCEFILES:.java=.class)
 
+classes: $(CLASSFILES)
+%.class: %.java
+	$(JCC) $(JFLAGS) $<
+
+.PHONY: antlr
 antlr:
 	java -Xmx500M org.antlr.v4.Tool LeverGrammar.g4
-	
-classes: $(CLASSES:.java=.class)
 
+.PHONY: all 
+all: antlr $(CLASSFILES)
+	
 .PHONY: clean
 clean:
 	rm classes/*.class
