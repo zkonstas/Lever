@@ -11,6 +11,7 @@ CLASSES = \
 	LeverGrammarBaseListener.java \
 	LeverToJavaListener.java \
 	Leverc.java \
+	LeverAPI.java \
 
 default: classes
 
@@ -21,10 +22,14 @@ classes: $(CLASSES:.java=.class)
 
 .PHONY: clean
 clean:
-	rm *.class
+	rm classes/*.class
 
 .PHONY: cleanall
 cleanall: clean
-	rm LeverLexer.java LeverParser.java LeverListener.java LeverBaseListener.java
-	rm Lever.tokens LeverLexer.tokens
+	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
+	rm LeverGrammar.tokens LeverGrammarLexer.tokens
 
+.PHONY: cleanant
+cleanant:
+	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
+	rm LeverGrammar.tokens LeverGrammarLexer.tokens
