@@ -1,0 +1,37 @@
+/*
+	Test for:
+	IF - ELSE - ELSE IF - BOOLEAN LITERALS
+	Expected output: "YES1\nYES2\nYES3\n"
+*/
+
+program {
+	if(true) {
+		/* if works */
+		output "YES1\n"; 
+	}
+	else {
+		/* else that shouldn't fire */	
+		output "NO: else fires even though preceding if's condition is 'true'\n";
+	}
+
+	if(false) {
+		/* if that shouldn't fire */
+		output "NO: if fires even though condition is 'false'\n";
+	}
+	else {
+		/* else works */
+		output "YES2\n";
+	}
+
+	if(no) {
+		/* if that shouldn't fire */
+		output "NO: if fires even though condition is 'no'\n";
+	}
+	else if(yes) {
+		/* else if works */	
+		output "YES3\n";
+	}
+	else {
+		output "NO: else fires even though it's after elseif with condition 'yes'\n";
+	}
+}

@@ -1,0 +1,35 @@
+/*
+	Test for:
+	BOOLEAN OR OPERATOR
+	Expected output: "YES1\nYES2\nYES3\nYES4\n"
+*/
+
+program {
+	if(true OR true) {
+		output "YES1\n";
+	}
+	else {
+		output "NO: true OR true goes to else\n";
+	}
+
+	if(true OR false) {
+		output "YES2\n";
+	}
+	else {
+		output "NO: true OR false goes to else\n";
+	}
+
+	if(false OR true) {
+		output "YES3\n";
+	}
+	else {
+		output "NO: false OR true goes to else\n";
+	}
+
+	if(false OR false) {
+		output "NO: if fires on false OR false\n";
+	}
+	else {
+		output "YES4\n";
+	}
+}
