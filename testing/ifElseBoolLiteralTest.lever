@@ -1,7 +1,7 @@
 /*
 	Test for:
 	IF - ELSE - ELSE IF - BOOLEAN LITERALS
-	Expected output: "YES1\nYES2\nYES3\n"
+	Expected output: "YES1\nYES2\nYES3\nYES4\nYES5\nYES6\n"
 */
 
 program {
@@ -34,4 +34,22 @@ program {
 	else {
 		output "NO: else fires even though it's after elseif with condition 'yes'\n";
 	}
+
+	if(true)
+		output "YES4\n";
+	else
+		output "NO: braceless if with true condition goes to else\n";
+
+	if(false)
+		output "NO: braceless if with false condition fires\n";	
+	else
+		output "YES5\n";
+
+	if(false)
+		output "NO: braceless if with false condition fires";
+	else if(true)
+		output "YES6\n";
+	else
+		output "NO: braceless else if with true condition still goes to else\n";			
+
 }
