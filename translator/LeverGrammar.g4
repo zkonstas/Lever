@@ -170,11 +170,11 @@ primary
 
 BREAK         : 'break';
 CONTINUE      : 'continue';
-EACH		  : 'each'
+EACH		  : 'each';
 ELSE          : 'else';
 FOR           : 'for';
 IF            : 'if';
-IN			  : 'in'
+IN			  : 'in';
 RETURN        : 'return';
 THIS          : 'this';
 VOID          : 'void';
@@ -263,7 +263,7 @@ ADD             : '+';
 SUB             : '-';
 MUL             : '*';
 DIV             : '/';
-MOD             : 
+MOD             : '%';
 ADD_ASSIGN      : '+=';
 SUB_ASSIGN      : '-=';
 MUL_ASSIGN      : '*=';
