@@ -9,7 +9,7 @@ grammar LeverGrammar;
 //////////////////
 
 lever
-	: functionDefinition+
+	: methodDefinition* PROGRAM block methodDefinition*
 	;
     
 
@@ -17,7 +17,7 @@ memberDeclaration
     :   fieldDeclaration
     ;
 
-methodDeclaration
+methodDefinition
 	: Identifier formalParameters methodBody
     ;
     
@@ -25,8 +25,8 @@ fieldDeclaration
     :   type declarationList ';'
     ;
 
-variableDeclarators
-	: declaration (',' declaration)*
+declarationList
+	: variableDeclarator (',' variableDeclarator)*
 	;
 
 variableDeclarator
@@ -98,13 +98,13 @@ localVariableDeclarationStatement
     ;
 
 localVariableDeclaration
-    :   type variableDeclarators
+    :   type declarationList
     ;
 
 statement
     :   block
     |   'if' parExpression statement ('else' statement)?
-    |	'for' Identifier 'in' '(' Constant ',' Constant ')' statement
+    |	'for' Identifier 'in' '(' NumberLiteral ',' NumberLiteral ')' statement
     |	'for' 'each' '(' TypeSymbol 'in' Identifier ')' statement
     |   'while' parExpression statement
     |   'return' expression? ';'
@@ -164,24 +164,33 @@ primary
     |   Identifier
     ;
 
-// LEXER
+/////////////////
+/* LEXER RULES */
+/////////////////
 
-// §3.9 Keywords
+// KEYWORDS
 
-BREAK         : 'break';
-CONTINUE      : 'continue';
-EACH		  : 'each';
-ELSE          : 'else';
-FOR           : 'for';
-IF            : 'if';
-IN			  : 'in';
-RETURN        : 'return';
-THIS          : 'this';
-VOID          : 'void';
-WHILE         : 'while';
+PROGRAM		: 'program';
+VAR			: 'var';
+BREAK       : 'break';
+CONTINUE	: 'continue';
+EACH		: 'each';
+ELSE		: 'else';
+FOR			: 'for';
+IF			: 'if';
+IN			: 'in';
+RETURN		: 'return';
+THIS		: 'this';
+VOID		: 'void';
+WHILE		: 'while';
 
-// §3.10.1 Integer Literals
-fragment
+// LEVER SYMBOLS
+
+AT			: '@';
+HASHTAG		: '#';
+
+// LITERALS
+
 TypeSymbol
 	: '@'
     | '#'
@@ -289,7 +298,7 @@ JavaLetter
 
 fragment
 JavaLetterOrDigit
-    :   [a-zA-Z0-9$_] // these are the "java letters or digits" below 0xFF
+    :   [a-zA-Z0-9$_] // "java letters or digits" below 0xFF
     |   // covers all characters above 0xFF which are not a surrogate
         ~[\u0000-\u00FF\uD800-\uDBFF]
         {Character.isJavaIdentifierPart(_input.LA(-1))}?
@@ -297,13 +306,6 @@ JavaLetterOrDigit
         [\uD800-\uDBFF] [\uDC00-\uDFFF]
         {Character.isJavaIdentifierPart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
     ;
-
-//
-// Additional symbols not defined in the lexical specification
-//
-
-AT : '@';
-HASHTAG : '#';
 
 //
 // Whitespace and comments
