@@ -2,10 +2,10 @@ JCC = javac
 JFLAGS = -g
 
 SOURCEFILES = \
-	LeverGrammarLexer.java \
-	LeverGrammarParser.java \
-	LeverGrammarListener.java \
-	LeverGrammarBaseListener.java \
+	LeverLexer.java \
+	LeverParser.java \
+	LeverListener.java \
+	LeverBaseListener.java \
 	LeverToJavaListener.java \
 	Leverc.java \
 	LeverAPI.java
@@ -18,7 +18,7 @@ classes: $(CLASSFILES)
 
 .PHONY: antlr all test
 antlr:
-	java -Xmx500M org.antlr.v4.Tool LeverGrammar.g4
+	java -Xmx500M org.antlr.v4.Tool Lever.g4
 
 all: antlr $(CLASSFILES)
 
@@ -30,9 +30,9 @@ clean:
 	rm *.class
 
 cleanall: clean
-	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
-	rm LeverGrammar.tokens LeverGrammarLexer.tokens
+	rm LeverLexer.java LeverParser.java LeverListener.java LeverBaseListener.java
+	rm Lever.tokens LeverLexer.tokens
 
 cleanant:
-	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
-	rm LeverGrammar.tokens LeverGrammarLexer.tokens
+	rm LeverLexer.java LeverParser.java LeverListener.java LeverBaseListener.java
+	rm Lever.tokens LeverLexer.tokens
