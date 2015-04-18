@@ -2,14 +2,18 @@
 /* LEVER */
 ///////////
 
-grammar LeverGrammar;
+grammar Lever;
 
 //////////////////
 /* PARSER RULES */
 //////////////////
 
 lever
-	: methodDefinition* PROGRAM block methodDefinition*
+	: methodDefinition* mainProgram methodDefinition*
+	;
+
+mainProgram
+	: PROGRAM block
 	;
     
 

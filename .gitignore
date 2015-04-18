@@ -1,11 +1,12 @@
 *.class
 *.tokens
+*.swp
 
 # antlr generated files
-translator/LeverGrammarBaseListener.java
-translator/LeverGrammarLexer.java
-translator/LeverGrammarListener.java
-translator/LeverGrammarParser.java
+translator/LeverBaseListener.java
+translator/LeverLexer.java
+translator/LeverListener.java
+translator/LeverParser.java
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

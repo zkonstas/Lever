@@ -10,10 +10,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.Token;
 
 //don't need to override every enter/exit method
-public class LeverToJavaListener extends LeverGrammarBaseListener {
-	LeverGrammarParser parser;
+public class LeverToJavaListener extends LeverBaseListener {
+	LeverParser parser;
 	
 	private String fileName;
 	private File targetFile;
@@ -56,13 +57,13 @@ public class LeverToJavaListener extends LeverGrammarBaseListener {
 	}
 
 	@Override
-	public void enterLever(LeverGrammarParser.LeverContext ctx) {
+	public void enterMainProgram(LeverParser.MainProgramContext ctx) {
 		printTarget("public class " + fileName + " {\n");
 		printTarget("\tpublic static void main(String[] args) {\n");
 	}
 
 	@Override
-	public void exitLever(LeverGrammarParser.LeverContext ctx) {
+	public void exitMainProgram(LeverParser.MainProgramContext ctx) {
 		printTarget("\t}\n}");
 		try {
 			bw.close();
@@ -73,51 +74,60 @@ public class LeverToJavaListener extends LeverGrammarBaseListener {
 	}
 
 	@Override
-	public void enterCompoundStatement(LeverGrammarParser.CompoundStatementContext ctx) {
-		//TODO keep track of tabs
-		//printTarget("{\n");
-	}
-	@Override
-	public void exitCompoundStatement(LeverGrammarParser.CompoundStatementContext ctx) {
-		//printTarget("}");
-	}
-	@Override
-	public void enterStatementExpression(LeverGrammarParser.StatementExpressionContext ctx) {
-		
-	}
-	@Override
-	public void exitStatementExpression(LeverGrammarParser.StatementExpressionContext ctx) {
-		printTarget(";\n");
-	}
-	@Override
-	public void enterFunctionParams(LeverGrammarParser.FunctionParamsContext ctx) {
+	public void enterExpressionList(LeverParser.ExpressionListContext ctx) {
 		printTarget("(");
+
 	}
 	@Override
-	public void exitFunctionParams(LeverGrammarParser.FunctionParamsContext ctx) {
+	public void exitExpressionList(LeverParser.ExpressionListContext ctx) {
 		printTarget(")");
+
 	}
 
 	@Override
-	public void enterLiteral(LeverGrammarParser.LiteralContext ctx) {
+	public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
+		
+	}
+	@Override
+	public void exitStatementExpression(LeverParser.StatementExpressionContext ctx) {
+		printTarget(";\n");
+	}
+	
+	@Override
+	public void enterLiteral(LeverParser.LiteralContext ctx) {
 		//printTarget(ctx.StringLiteral().getText());
 	}
 	@Override
-	public void enterPrimary(LeverGrammarParser.PrimaryContext ctx) {
-		String id = ctx.getText();
-		if (id.equals("output")) {
-			printTarget("LeverClasses.output");
-		} else {
-			printTarget(ctx.getText());
-		}
+	public void enterPrimary(LeverParser.PrimaryContext ctx) {
+	
 	}
 	@Override
 	public void visitTerminal(TerminalNode node) {
-		String id = node.getSymbol().getText();
-		if (id.equals("output")) {
-			//printTarget("LeverClasses.output");
-		} else {
-			//printTarget(id);
+
+		Token token = node.getSymbol();
+		int type = token.getType();
+		String id = token.getText();
+
+		switch(type) {
+			case LeverLexer.Identifier:
+				if (id.equals("output")) {
+					printTarget("LeverClasses.output");
+				} else {
+					printTarget(id);
+				}
+				
+				break;
+
+
+
+			case LeverLexer.NumberLiteral:
+			case LeverLexer.StringLiteral:
+				printTarget(id);
+
+				break;
+
+
+
 		}
 	}
 }

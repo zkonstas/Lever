@@ -3,10 +3,10 @@ JFLAGS = -g -d $(CLASSDIR)
 CLASSDIR = classes
 
 SOURCEFILES = \
-	LeverGrammarLexer.java \
-	LeverGrammarParser.java \
-	LeverGrammarListener.java \
-	LeverGrammarBaseListener.java \
+	LeverLexer.java \
+	LeverParser.java \
+	LeverListener.java \
+	LeverBaseListener.java \
 	LeverToJavaListener.java \
 	Leverc.java \
 	LeverAPI.java
@@ -21,7 +21,7 @@ all: antlr classes
 
 .PHONY: antlr
 antlr:
-	java -Xmx500M org.antlr.v4.Tool LeverGrammar.g4
+	java -Xmx500M org.antlr.v4.Tool Lever.g4
 
 .PHONY: clean
 clean:
@@ -29,10 +29,10 @@ clean:
 
 .PHONY: cleanall
 cleanall: clean
-	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
-	rm LeverGrammar.tokens LeverGrammarLexer.tokens
+	rm LeverLexer.java LeverParser.java LeverListener.java LeverBaseListener.java
+	rm Lever.tokens LeverLexer.tokens
 
 .PHONY: cleanant
 cleanant:
-	rm LeverGrammarLexer.java LeverGrammarParser.java LeverGrammarListener.java LeverGrammarBaseListener.java
-	rm LeverGrammar.tokens LeverGrammarLexer.tokens
+	rm LeverLexer.java LeverParser.java LeverListener.java LeverBaseListener.java
+	rm Lever.tokens LeverLexer.tokens

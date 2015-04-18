@@ -15,14 +15,14 @@ public class Leverc {
 		//ANTLRInputStream input = new ANTLRInputStream(System.in);
 
 		//create lexer that feeds off of input CharStream
-		Lexer lexer = new LeverGrammarLexer(new ANTLRFileStream(fileName));
+		Lexer lexer = new LeverLexer(new ANTLRFileStream(fileName));
 
 		//buffer of tokens pulled from lexer
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		//TokenRewriteStream tokens = new TokenRewriteStream(lexer);
 
 		//parser that feeds off tokens buffer
-		LeverGrammarParser parser = new LeverGrammarParser(tokens);
+		LeverParser parser = new LeverParser(tokens);
 
 		ParseTree tree = parser.lever(); //begin parsing at prog rule
 		//System.out.println(tree.toStringTree(parser)); //print LISP-style tree
