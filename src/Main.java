@@ -8,46 +8,59 @@ import twitter4j.User;
 import java.util.List;
 import java.util.Scanner;
 
+
+
 public class Main {
 
     public static void main(String[] args) {
-        // The factory instance is re-useable and thread safe.
-
-
-        //Sample Twitter Code
-        Twitter twitter = TwitterFactory.getSingleton();
-        //1. Hashtags and strings seem to work fine
-        Query queryA = new Query("#superclassico");
-        //2. For user searchig, add from:<username>
-        Query queryB = new Query("from:realmadrid");
-        //3. For multiple user, seperate by " OR "
-        Query queryC = new Query("from:realmadrid OR from:barcelonafc");
-
-        QueryResult resultA = null;
+        //Test query manager
+        QueryManager qm = new QueryManager();
         try {
-            resultA = twitter.search(queryB);
-            List<Status> tweets = resultA.getTweets();
-            final int LIMIT = 10; //set limit to 10
-            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
-                Status status = tweets.get(i);
-                output(status);
-            }
-        } catch (TwitterException e) {
+            qm.sendGetForLocation("new york");
+        } catch (Exception e) {
             e.printStackTrace();
         }
+//        qm.addFromUser("realmadrid");
+//        qm.addFromUser("fcbarcelona");
+//        qm.get();
 
-        QueryResult resultB = null;
-        try {
-            resultB = twitter.search(queryA);
-            List<Status> tweets = resultB.getTweets();
-            final int LIMIT = 10; //set limit to 10
-            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
-                User user = tweets.get(i).getUser();
-                output(user);
-            }
-        } catch (TwitterException e) {
-            e.printStackTrace();
-        }
+
+
+//        //Sample Twitter Code
+//        Twitter twitter = TwitterFactory.getSingleton();
+
+//        //1. Hashtags and strings seem to work fine
+//        Query queryA = new Query("#superclassico");
+//        //2. For user searchig, add from:<username>
+//        Query queryB = new Query("from:realmadrid");
+//        //3. For multiple user, seperate by " OR "
+//        Query queryC = new Query("from:realmadrid OR from:barcelonafc");
+//
+//        QueryResult resultA = null;
+//        try {
+//            resultA = twitter.search(queryB);
+//            List<Status> tweets = resultA.getTweets();
+//            final int LIMIT = 10; //set limit to 10
+//            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
+//                Status status = tweets.get(i);
+//                output(status);
+//            }
+//        } catch (TwitterException e) {
+//            e.printStackTrace();
+//        }
+//
+//        QueryResult resultB = null;
+//        try {
+//            resultB = twitter.search(queryA);
+//            List<Status> tweets = resultB.getTweets();
+//            final int LIMIT = 10; //set limit to 10
+//            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
+//                User user = tweets.get(i).getUser();
+//                output(user);
+//            }
+//        } catch (TwitterException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -73,15 +86,15 @@ public class Main {
 
     public static void output(Object obj) {
         //Fix this eventually
-//        if(obj.getClass() == Status.class){
-//            //Object is a status
-//            Status tweet = (Status)obj;
-//            System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-//        }
-//        else if(obj.getClass() == User.class){
-//            User user = (User)obj;
-//            System.out.println("@"+user.getScreenName());
-//        }
+        if(obj instanceof Status){
+            //Object is a status
+            Status tweet = (Status)obj;
+            System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
+        }
+        else if(obj instanceof User){
+            User user = (User)obj;
+            System.out.println("@"+user.getScreenName());
+        }
 
     }
 
