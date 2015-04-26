@@ -22,7 +22,7 @@ memberDeclaration
     ;
 
 methodDefinition
-	: Identifier formalParameters methodBody
+	: Identifier formalParameters? methodBody
     ;
     
 fieldDeclaration
@@ -107,16 +107,20 @@ localVariableDeclaration
 
 statement
     :   block
-    |   'if' parExpression statement ('else' statement)?
-    |	'for' Identifier 'in' '(' NumberLiteral ',' NumberLiteral ')' statement
-    |	'for' 'each' '(' TypeSymbol 'in' Identifier ')' statement
-    |   'while' parExpression statement
-    |   'return' expression? ';'
-    |   'break' Identifier? ';'
-    |   'continue' Identifier? ';'
+    |   IF parExpression statement (ELSE statement)?
+    |	forStatement
+    |   WHILE parExpression statement										
+    |   RETURN expression? ';'
+    |   BREAK Identifier? ';'
+    |   CONTINUE Identifier? ';'
     |   ';'
     |   statementExpression ';'
     ;
+
+forStatement
+	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')' statement	# forIn
+	|	FOR EACH '(' TypeSymbol 'in' Identifier ')' statement				# forEach
+	;
 
 // EXPRESSIONS
 
@@ -138,7 +142,6 @@ expression
     |   expression '.' 'this'
     |	Identifier expressionList?
     |   expression '[' expression ']'
-    |   expression '(' expressionList? ')'
     |   '(' type ')' expression
     |   expression ('++' | '--')
     |   ('+'|'-'|'++'|'--') expression
@@ -147,8 +150,8 @@ expression
     |   expression ('+'|'-') expression
     |   expression ('<=' | '>=' | '>' | '<') expression
     |   expression ('==' | '!=') expression
-    |   expression 'AND' expression
-    |   expression 'OR' expression
+    |   expression AND expression
+    |   expression OR expression
     |   expression '?' expression ':' expression
     |   <assoc=right> expression
         (   '='
