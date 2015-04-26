@@ -22,7 +22,7 @@ memberDeclaration
     ;
 
 methodDefinition
-	: Identifier formalParameters methodBody
+	: Identifier formalParameters? methodBody
     ;
     
 fieldDeclaration
@@ -142,7 +142,6 @@ expression
     |   expression '.' 'this'
     |	Identifier expressionList?
     |   expression '[' expression ']'
-    |   expression '(' expressionList? ')'
     |   '(' type ')' expression
     |   expression ('++' | '--')
     |   ('+'|'-'|'++'|'--') expression
