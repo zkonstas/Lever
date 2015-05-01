@@ -2,8 +2,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,6 +10,8 @@ import java.io.IOException;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+
+import java.util.*;
 
 //don't need to override every enter/exit method
 public class LeverToJavaListener extends LeverBaseListener {
@@ -23,8 +23,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	private int indents;
 
+	private HashSet<String> leverConstructs = new HashSet<String>();
+	private HashSet<String> leverTerminals = new HashSet<String>();
+
 	public LeverToJavaListener(LeverParser parser, String _fileName) {
 		this.parser = parser;
+
+		initConstructs();
+		
 		//String fileName = _fileName.split(".")[0];
 		Path p = Paths.get(_fileName);
 		fileName = p.getFileName().toString();
@@ -51,6 +57,23 @@ public class LeverToJavaListener extends LeverBaseListener {
 		}
 
 		indents = 0;
+	}
+	private void initConstructs() {
+		leverConstructs.add("for");
+		leverConstructs.add("output");
+
+
+		leverTerminals.add(";");
+		leverTerminals.add("true");
+		leverTerminals.add("false");
+		leverTerminals.add("for");
+		leverTerminals.add("in");
+		leverTerminals.add("(");
+		leverTerminals.add(")");
+		leverTerminals.add(",");
+		leverTerminals.add("yes");
+		leverTerminals.add("no");
+		
 	}
 	private void openBraces() {
 		indents++;
@@ -100,16 +123,15 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterBlock(LeverParser.BlockContext ctx) {
-		openBraces();
+		//openBraces();
 	}
 	@Override
 	public void exitBlock(LeverParser.BlockContext ctx) {
-		closeBraces();
+		//closeBraces();
 	}
 
 	@Override
 	public void enterStatement(LeverParser.StatementContext ctx) {
-		printTarget("\n");
 		printTabs();
 		
 		//TokenStream tokens = parser.getTokenStream();
@@ -125,10 +147,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 		
 	}
 
-//	@Override public void exitStatement(LeverParser.StatementContext ctx) { }
+	@Override public void exitStatement(LeverParser.StatementContext ctx) {
+		printTarget("\n");	
+	}
 	
 	@Override
 	public void enterForIn(LeverParser.ForInContext ctx) {
+
+
 		//TokenStream tokens = parser.getTokenStream();
 
 		TerminalNode begin = ctx.getToken(LeverLexer.NumberLiteral, 0);
@@ -136,6 +162,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		printTarget("for (int " + ctx.Identifier() + " = " + begin + "; ");
 		printTarget(ctx.Identifier() + " < " + end + "; " + ctx.Identifier() + "++) ");
+
+
 		
 	}
 	@Override
@@ -208,7 +236,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 				} else {
 
 					String tmp = node.getParent().getChild(0).toString();
-					if (tmp.equals("for")) {
+					if (leverConstructs.contains(tmp)) {
 
 					} else {
 						printTarget(id);
@@ -222,6 +250,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 
 			case LeverLexer.NumberLiteral:
+				String tmp = node.getParent().getChild(0).toString();
+				if (leverConstructs.contains(tmp)) {
+					break;
+				}
 			case LeverLexer.StringLiteral:
 				printTarget(id);
 
@@ -247,6 +279,19 @@ public class LeverToJavaListener extends LeverBaseListener {
 				printTarget(" + ");
 				break;
 
+			case LeverLexer.LBRACE:
+				openBraces();
+				break;
+
+			case LeverLexer.RBRACE:
+				closeBraces();
+				break;
+			default:
+				if (!leverTerminals.contains(id)) {
+					printTarget(id);
+
+				}
+			
 
 
 		}

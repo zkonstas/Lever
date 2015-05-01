@@ -22,6 +22,8 @@ program {
 
 	for index in (0,5) {
 		output index;
-		output 1 + 2;
+		if (index > 2 ) {
+			output 1 + 2;
+		}
 	}
 }
