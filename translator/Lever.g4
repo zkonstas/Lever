@@ -18,13 +18,6 @@ mainProgram
     
 methodDefinition
 	: Identifier formalParameters? methodBody
-<<<<<<< HEAD
-    ;
-    
-fieldDeclaration
-    :   type declarationList ';'
-=======
->>>>>>> chaiwen
     ;
 
 declarationList
