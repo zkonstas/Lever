@@ -1,6 +1,7 @@
 public class HelloWorld {
 	public static void main(String[] args) program{
-		LeverAPI.output("hello world!\n");
+		LeverVar j = new LeverVar();
+		j.val =0;
 
 	}
 

@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.*;
 
@@ -73,6 +74,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
+		leverTerminals.add("var");
 		
 	}
 	private void openBraces() {
@@ -222,6 +224,41 @@ public class LeverToJavaListener extends LeverBaseListener {
 	public void enterPrimary(LeverParser.PrimaryContext ctx) {
 	
 	}
+
+
+	@Override public void enterVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
+
+		
+
+	}
+
+	@Override public void exitVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
+		
+	}
+
+	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
+		printTabs();
+		printTarget("LeverVar ");	
+	}
+
+	@Override public void exitIdentifierVar(LeverParser.IdentifierVarContext ctx) {
+
+		printTarget(" = new LeverVar();\n");	
+	}
+
+	@Override public void enterInitialization(LeverParser.InitializationContext ctx) {
+
+		LeverParser.VariableDeclaratorContext parent = (LeverParser.VariableDeclaratorContext)ctx.getParent();
+		TerminalNode id = parent.identifierVar().Identifier();
+
+		printTabs();
+		printTarget(id.getText() + ".val ");
+	}
+
+	@Override public void exitInitialization(LeverParser.InitializationContext ctx) {
+		printTarget(";\n");
+	}
+
 	@Override
 	public void visitTerminal(TerminalNode node) {
 

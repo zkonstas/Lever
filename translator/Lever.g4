@@ -16,17 +16,8 @@ mainProgram
 	: PROGRAM block
 	;
     
-
-memberDeclaration
-    :   fieldDeclaration
-    ;
-
 methodDefinition
 	: Identifier formalParameters? methodBody
-    ;
-    
-fieldDeclaration
-    :   type declarationList ';'
     ;
 
 declarationList
@@ -34,15 +25,20 @@ declarationList
 	;
 
 variableDeclarator
-	: variableId ('=' variableInit)?
+	: identifierVar initialization?
 	;
 
-variableId
-    :   Identifier
+identifierVar
+    : Identifier
+    ;
+
+initialization
+    : '=' expression
+    | '=' arrayInit
     ;
 
 variableInit
-    :   arrayInit
+    :   arrayInit 
     |   expression
     ;
 
@@ -51,10 +47,6 @@ arrayInit
     ;
 
 type
-    :   primitiveType
-    ;
-
-primitiveType
     :   'var'
     ;
 
@@ -68,11 +60,11 @@ formalParameterList
     ;
 
 formalParameter
-    :   type variableId
+    :   type Identifier
     ;
 
 lastFormalParameter
-    :   type '...' variableId
+    :   type '...' Identifier
     ;
 
 methodBody
@@ -93,15 +85,15 @@ block
     ;
 
 blockStatement
-    :   localVariableDeclarationStatement
+    :   variableDeclarationStatement
     |   statement
     ;
 
-localVariableDeclarationStatement
-    :    localVariableDeclaration ';'
+variableDeclarationStatement
+    :    variableDeclaration ';'
     ;
 
-localVariableDeclaration
+variableDeclaration
     :   type declarationList
     ;
 
