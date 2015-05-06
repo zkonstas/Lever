@@ -1,3 +1,9 @@
 program {
-	output "hello world!\n";
+	
+	var j = 0;
+
+	
+	
+
+	
 }

@@ -30,7 +30,7 @@ public class Leverc {
 		//generic parse tree walker that triggers callbacks
 		ParseTreeWalker walker = new ParseTreeWalker();
 		//walk tree, trigger callbacks
-		walker.walk(new LeverToJavaListener(fileName), tree);
+		walker.walk(new LeverToJavaListener(parser, fileName), tree);
 
 
 	}
