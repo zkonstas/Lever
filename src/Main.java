@@ -13,17 +13,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        //Test query manager
-        QueryManager qm = new QueryManager();
-        try {
-            qm.sendGetForLocation("new york");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        qm.addFromUser("realmadrid");
-//        qm.addFromUser("fcbarcelona");
-//        qm.get();
-
 
 
 //        //Sample Twitter Code
@@ -62,8 +51,21 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
+        queryUsingOurQueryManager();
+//        createSampleGraph();
+
     }
 
+    public static void queryUsingOurQueryManager(){
+        QueryManager qm = new QueryManager();
+        qm.addFromUser("realmadrid");
+        qm.addFromUser("fcbarcelona");
+        qm.get();
+    }
+
+    public static void createSampleGraph(){
+        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new String[]{"howdy"},new String[]{"howdy"},new double[]{50.0,2.0,12.0});
+    }
     public static void queryForSomething(String something) {
         Twitter twitter = new TwitterFactory().getInstance();
         try {
@@ -83,6 +85,7 @@ public class Main {
             System.exit(-1);
         }
     }
+
 
     public static void output(Object obj) {
         //Fix this eventually
