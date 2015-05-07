@@ -51,16 +51,19 @@ type
     ;
 
 formalParameters
-    :   '(' formalParameterList? ')'
+    :   '(' formalParameterList ')'
     ;
 
 formalParameterList
-    :   formalParameter (',' formalParameter)* (',' lastFormalParameter)?
-    |   lastFormalParameter
+    :   formalParameterA (formalParameterB)*
     ;
 
-formalParameter
+formalParameterA
     :   type Identifier
+    ;
+
+formalParameterB
+    :   ',' type Identifier
     ;
 
 lastFormalParameter
@@ -121,11 +124,15 @@ parExpression
     ;
 
 expressionList
-    :   expression (',' expression)*
+    :   expression (expressionB)*
     ;
 
 statementExpression
     :   expression
+    ;
+
+expressionB
+    :   ',' expression   
     ;
 
 expression

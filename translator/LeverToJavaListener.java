@@ -225,15 +225,44 @@ public class LeverToJavaListener extends LeverBaseListener {
 	
 	}
 
+	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
+		printTarget(", ");
+	}
 
 	@Override public void enterVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
-
-		
-
 	}
 
 	@Override public void exitVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
 		
+	}
+	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
+		if (ctx.getText().contains("return")) {
+			if (ctx.getText().length() - ctx.getText().lastIndexOf("return") > 8) {
+				printTarget("public static LeverVar ");
+			}
+		} else {
+			printTarget("public static void ");
+		}
+		//System.out.println(ctx.getText().length() - ctx.getText().lastIndexOf("return"));
+	}
+	@Override public void enterFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
+		printTarget("(");
+	}
+
+	@Override public void exitFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
+		printTarget(")");
+	}
+
+	@Override public void enterFormalParameterA(LeverParser.FormalParameterAContext ctx) { 
+		printTarget("LeverVar " );
+	}
+
+	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) { 
+		printTarget(", LeverVar " );
+	}
+	@Override public void enterLastFormalParameter(LeverParser.LastFormalParameterContext ctx) { 
+		System.out.println("what the hell indeed");
+		printTarget("What the hell is going on");
 	}
 
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
