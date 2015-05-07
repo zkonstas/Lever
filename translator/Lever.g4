@@ -97,21 +97,25 @@ variableDeclaration
     :   type declarationList
     ;
 
-statement
-    :   block
-    |   IF parExpression statement (ELSE statement)?
+nonBlockStatement
+	:   IF parExpression statement (ELSE statement)?
     |	forStatement
     |   WHILE parExpression statement										
     |   RETURN expression? ';'
-    |   BREAK Identifier? ';'
-    |   CONTINUE Identifier? ';'
+    |   BREAK ';'
+    |   CONTINUE ';'
     |   ';'
     |   statementExpression ';'
     ;
 
+statement
+	:	block
+	|	nonBlockStatement
+	;
+
 forStatement
-	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')' statement	# forIn
-	|	FOR EACH '(' TypeSymbol 'in' Identifier ')' statement				# forEach
+	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')' statement		# forIn
+	|	FOR EACH '(' (AT | Identifier) IN Identifier ')' statement	# forEach
 	;
 
 // EXPRESSIONS
@@ -161,6 +165,7 @@ primary
     |   'this'
     |   literal
     |   Identifier
+	|	AT
     ;
 
 /////////////////
@@ -187,17 +192,14 @@ WHILE		: 'while';
 
 AT			: '@';
 HASHTAG		: '#';
+ATVAR		: 'uSeR';
 
 // LITERALS
-
-TypeSymbol
-	: '@'
-    | '#'
-    ; 
 
 NumberLiteral
 	: '-'?[0-9]+('.'[0-9]+)?
     ;
+
 
 // §3.10.3 Boolean Literals
 
