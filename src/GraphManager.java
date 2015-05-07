@@ -17,17 +17,21 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 
-
 /**
  * Created by royhermann on 5/7/15.
  */
 public class GraphManager {
 
-    public GraphManager(){
+    public GraphManager() {
 
     }
 
-    public static void graphLineChartWithTitle(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints){
+
+    public static void graphLineChartWithTitle(String title, String xTitle, String yTitle, double[] dataPoints) {
+        graphLineChartWithTitle(title, xTitle, yTitle, null, null, dataPoints);
+    }
+
+    public static void graphLineChartWithTitle(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
         // Defining lines
         final int NUM_POINTS = dataPoints.length;
 

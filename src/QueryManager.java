@@ -30,7 +30,6 @@ public class QueryManager {
     Result customResult;
 
 
-
     /**
      * Class Constructor
      */
@@ -46,6 +45,7 @@ public class QueryManager {
 
     /**
      * Add a string composed of multiple paramters to the query
+     *
      * @param queryString The string to add to the search
      * @return Formatted string matching query restrictions
      */
@@ -55,16 +55,17 @@ public class QueryManager {
 
         //Format the string to match query restrictions
         /* NOT IMPLEMENTED YET */
-        for(String str : paramters)
+        for (String str : paramters)
 
 
-        System.out.println(paramters);
+            System.out.println(paramters);
         return returnString;
 
     }
 
     /**
      * Adds a single string to the query
+     *
      * @param queryString The specific string to add to the query
      */
     public void addStringToQuery(String queryString) {
@@ -80,6 +81,7 @@ public class QueryManager {
 
     /**
      * Adds a parameter to the search that will return tweets composed by a specific user
+     *
      * @param userName The username to add to the query parameters
      */
     public void addFromUser(String userName) {
@@ -90,6 +92,7 @@ public class QueryManager {
 
     /**
      * Adds a parameter to the search that will return tweets about a specific topic
+     *
      * @param topic The topic to add to the query parameters
      */
     public void addTopic(String topic) {
@@ -102,6 +105,7 @@ public class QueryManager {
 
     /**
      * Outputs any object to the console
+     *
      * @param object The object to output to transfer to a string representation
      * @return The string representation of the objet paramater
      */
@@ -136,29 +140,36 @@ public class QueryManager {
 
 
         this.masterQuery = new Query(queryString);
-        this.masterQuery.setCount(1000);
+        this.masterQuery.setCount(100); // set 100 tweets per query
+        long minTweet = 0;
         //Add coordinates to search if there exists such a restriction
-        if(geoCoordinates != null)
+        if (geoCoordinates != null)
             this.masterQuery.geoCode(geoCoordinates, 100, "150 km");
-
-        try {
-            this.queryResult = twitter.search(this.masterQuery);
-            List<Status> tweets = this.queryResult.getTweets();
-            for (Status tweet : tweets) {
-                output(tweet);
+        for (int i = 0; i < 1; i++) { //default go for 5 queries, aka 500 tweets total
+            try {
+                if (i != 0)
+                    this.masterQuery.setMaxId(minTweet); //for paging multiple queries together
+                this.queryResult = twitter.search(this.masterQuery);
+                List<Status> tweets = this.queryResult.getTweets();
+                for (Status tweet : tweets) {
+                    output(tweet);
+                    minTweet = tweet.getId();
+                }
+            } catch (TwitterException e) {
+                e.printStackTrace();
             }
-        } catch (TwitterException e) {
-            e.printStackTrace();
         }
+
     }
 
 
     /**
      * Get coordinates for location - Need to figure out how to integrate with search
+     *
      * @param location - The location that you want to search for
      * @throws Exception
      */
-    public Map<String,String> sendGetForLocation(String location) throws Exception {
+    public double[] sendGetForLocation(String location) throws Exception {
 
         //Replace spaces with '+' char for web query
         location = location.replace(" ", "+");
@@ -186,22 +197,34 @@ public class QueryManager {
         in.close();
 
         //print result
-        Gson gson=new Gson();
-        Map<String,Object> map=new HashMap<String,Object>();
-        map= gson.fromJson(response.toString(), map.getClass());
+        Gson gson = new Gson();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map = gson.fromJson(response.toString(), map.getClass());
         ArrayList<Object> list = (ArrayList<Object>) map.get("results");
-        Map <String,Object> basicInfo = (Map<String,Object>)list.get(0);
-        Map <String,Object> locationMap = (Map<String,Object>)((Map<String,Object>)basicInfo.get("geometry")).get("location");
+        Map<String, Object> basicInfo = (Map<String, Object>) list.get(0);
+        Map<String, Object> locationMap = (Map<String, Object>) ((Map<String, Object>) basicInfo.get("geometry")).get("location");
 
 
+        HashMap<String, Double> retMap = new HashMap<String, Double>();
+        double lat = Double.parseDouble(locationMap.get("lat").toString());
+        double longitude = Double.parseDouble(locationMap.get("lng").toString());
+        double[] coordinates = new double[2];
+        coordinates[0] = lat;
+        coordinates[1] = longitude;
 
-        HashMap<String,String> retMap = new HashMap<String, String>();
-        retMap.put("lat", locationMap.get("lat").toString());
-        retMap.put("long", locationMap.get("lng").toString());
 
-//        System.out.println(locationMap.get("lat")+"    "+locationMap.get("lng"));
+        System.out.println(lat+" "+longitude);
 
-        return retMap;
+        FilterQuery fq = new FilterQuery();
+        double lat1 = lat - .25;
+        double longitude1 = longitude - .25;
+        double lat2 = lat + .25;
+        double longitude2 = longitude + .25;
+//        twitterStream.addListener(listener);
+        double[][] bb= {{longitude1, lat1}, {longitude2, lat2}};
+        fq.locations(bb);
+
+        return coordinates;
 
     }
 
@@ -228,8 +251,9 @@ public class QueryManager {
     }
 
 
-    public void graphByTime() {
-
+    public void printAllStatuses() {
+        for (Status tweet : this.queryResult.getTweets())
+            System.out.println(tweet.getText());
     }
 
 

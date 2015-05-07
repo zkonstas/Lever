@@ -51,20 +51,56 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        queryUsingOurQueryManager();
+//        example1();
+        example2();
 //        createSampleGraph();
 
     }
 
-    public static void queryUsingOurQueryManager(){
+    /**
+     * Here we run a sample query fetching all tweets from two users
+     */
+    public static void example1(){
+
         QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(10);
         qm.addFromUser("realmadrid");
         qm.addFromUser("fcbarcelona");
+
         qm.get();
     }
 
-    public static void createSampleGraph(){
-        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new String[]{"howdy"},new String[]{"howdy"},new double[]{50.0,2.0,12.0});
+    /**
+     * Here we run a sample query fetching all tweets about a certain topic
+     */
+    public static void example2(){
+        QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(10);
+        qm.addTopic("#hackdisrupt");
+        qm.get();
+        qm.printAllStatuses();
+    }
+
+    /**
+     * Here we run a sample query fetching all tweets in a certain location
+     */
+    public static void example3() throws Exception {
+        QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(10);
+        qm.sendGetForLocation("new york");
+        qm.get();
+        qm.printAllStatuses();
+
+    }
+
+    /**
+     * Here we create a graph line chart with a title, axis titles, axis labels, and data points
+     */
+    public static void exampleGraph(){
+        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new double[]{50.0,2.0,12.0});
+
+        //optionally can add labels to each grid point
+//        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new String[]{"howdy"},new String[]{"howdy"},new double[]{50.0,2.0,12.0});
     }
     public static void queryForSomething(String something) {
         Twitter twitter = new TwitterFactory().getInstance();
