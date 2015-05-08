@@ -25,7 +25,6 @@ public class QueryManager {
     ArrayList<String> userList;
     ArrayList<String> topicList;
     ArrayList<String> generalStringList;
-    GeoLocation geoCoordinates;
     QueryResult queryResult;
     Result customResult;
     int numberOfPages;
@@ -42,7 +41,6 @@ public class QueryManager {
         this.generalStringList = new ArrayList<String>();
         this.masterQuery = new Query();
         this.customResult = null;
-        this.geoCoordinates = null;
         this.numberOfPages = 1;
         this.filterQuery = new FilterQuery();
 
@@ -148,9 +146,6 @@ public class QueryManager {
         this.masterQuery.setQuery(queryString);
 
         long minTweet = 0;
-        //Add coordinates to search if there exists such a restriction
-        if (geoCoordinates != null)
-            this.masterQuery.geoCode(geoCoordinates, 100, "150 km");
         for (int i = 0; i < this.numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
             try {
                 if (i != 0)

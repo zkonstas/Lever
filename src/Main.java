@@ -20,10 +20,12 @@ public class Main {
 
 //        example1();// simple user query
 //        example2(); // simple hashtag query
-        example3();//simple location query
-//        example4();//query with bar graph
+//        example3();//simple location query
+        example4();//query with bar graph
 //        example5();//query with line graph
-
+//        example6();//sentiment analysis
+//        GraphManager gm = new GraphManager();
+//        gm.createLineChart(new double[]{120,200,50});
     }
 
     /**
@@ -73,31 +75,31 @@ public class Main {
      */
     public static void example4() {
 
-        GraphManager gm = new GraphManager();
-        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
-        return;
-
-//        QueryManager qm = new QueryManager();
-//        qm.masterQuery.setCount(100);
-//        qm.addFromUser("realmadrid");
-//        qm.addFromUser("fcbarcelona");
-//        qm.get();
-//
-//        //received resuts
-//        int messi = 0;
-//        int ronaldo = 0;
-//        for (Status status : qm.customResult.statuses) {
-//            if (status.getText().toLowerCase().contains("messi"))
-//                messi++;
-//            if (status.getText().toLowerCase().contains("ronaldo"))
-//                ronaldo++;
-//        }
-//
-//        int max = (messi > ronaldo) ? messi : ronaldo;
-//
-//
 //        GraphManager gm = new GraphManager();
-//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions", new String[]{"Messi", "Ronaldo"}, new String[]{"0", String.valueOf(max)}, new double[]{messi, ronaldo});
+//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
+//        return;
+
+        QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(100);
+        qm.addFromUser("realmadrid");
+        qm.addFromUser("fcbarcelona");
+        qm.get();
+
+        //received resuts
+        int messi = 0;
+        int ronaldo = 0;
+        for (Status status : qm.customResult.statuses) {
+            if (status.getText().toLowerCase().contains("messi"))
+                messi++;
+            if (status.getText().toLowerCase().contains("ronaldo"))
+                ronaldo++;
+        }
+
+        int max = (messi > ronaldo) ? messi : ronaldo;
+
+
+        GraphManager gm = new GraphManager();
+        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions", new String[]{"Messi", "Ronaldo"}, null, new double[]{messi, ronaldo});
 
     }
 
@@ -138,6 +140,18 @@ public class Main {
 
     }
 
+    /**
+     * Sentiment analysis - not working yet
+     */
+    public static void example6() {
+        QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(10);
+        qm.addGeneralSearchString("england :(");
+        qm.get();
+        System.out.println(qm.customResult.getSize());
+        for(int i=0;i<qm.customResult.getSize();i++)
+            System.out.println(qm.customResult.statuses.get(i).getText());
+    }
 
     public static void output(Object obj) {
         //Fix this eventually

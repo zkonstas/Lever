@@ -32,6 +32,9 @@ public class GraphManager {
     }
 
 
+    public static void createLineChart(double[] dataPoints) {
+        createLineChart(null,null,null, null, null, dataPoints);
+    }
     public static void createLineChart(String title, String xTitle, String yTitle, double[] dataPoints) {
         createLineChart(title, xTitle, yTitle, null, null, dataPoints);
     }
@@ -39,6 +42,15 @@ public class GraphManager {
     public static void createLineChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
         // Defining lines
         final int NUM_POINTS = dataPoints.length;
+
+        int sum = 0;
+        for(int i=0;i<dataPoints.length;i++){
+            sum = sum + (int)dataPoints[i];
+        }
+        for(int i=0;i<dataPoints.length;i++){
+            dataPoints[i] = (dataPoints[i]/sum)*100;
+        }
+
 
         Line line1 = Plots.newLine(Data.newData(dataPoints));
         line1.setLineStyle(LineStyle.newLineStyle(3, 1, 0));
@@ -48,7 +60,8 @@ public class GraphManager {
         // Defining chart.
         LineChart chart = GCharts.newLineChart(line1);
         chart.setSize(600, 450);
-        chart.setTitle(title, Color.BLUE, 14);
+        if(title != null)
+            chart.setTitle(title, Color.BLUE, 14);
 
         // Defining axis info and styles
         AxisStyle axisStyle = AxisStyle.newAxisStyle(Color.BLACK, 12, AxisTextAlignment.CENTER);
@@ -58,9 +71,13 @@ public class GraphManager {
             AxisLabels xAxis = AxisLabelsFactory.newAxisLabels(Arrays.asList(xLabels)); //labels
             xAxis.setAxisStyle(axisStyle); //style
             chart.addXAxisLabels(xAxis);
+
         }
-        AxisLabels xAxis2 = AxisLabelsFactory.newAxisLabels(xTitle, 50.0); //labels
-        xAxis2.setAxisStyle(AxisStyle.newAxisStyle(Color.BLACK, 14, AxisTextAlignment.CENTER)); //style
+        if(xTitle != null) {
+            AxisLabels xAxis2 = AxisLabelsFactory.newAxisLabels(xTitle, 50.0); //labels
+            xAxis2.setAxisStyle(AxisStyle.newAxisStyle(Color.BLACK, 14, AxisTextAlignment.CENTER)); //style
+            chart.addXAxisLabels(xAxis2);
+        }
 
 
         //Y AXIS//
@@ -69,15 +86,17 @@ public class GraphManager {
             yAxis.setAxisStyle(axisStyle); //style
             chart.addYAxisLabels(yAxis);
         }
-        AxisLabels yAxis2 = AxisLabelsFactory.newAxisLabels(yTitle, 50.0); //title
-        yAxis2.setAxisStyle(AxisStyle.newAxisStyle(Color.BLACK, 14, AxisTextAlignment.CENTER)); //style
-        yAxis2.setAxisStyle(axisStyle); //style
+        if(yTitle!=null) {
+            AxisLabels yAxis2 = AxisLabelsFactory.newAxisLabels(yTitle, 50.0); //title
+            yAxis2.setAxisStyle(AxisStyle.newAxisStyle(Color.BLACK, 14, AxisTextAlignment.CENTER)); //style
+            yAxis2.setAxisStyle(axisStyle); //style
+            chart.addYAxisLabels(yAxis2);
+        }
 
-        // Adding axis info to chart.
+        AxisLabels yAxisRange = AxisLabelsFactory.newNumericRangeAxisLabels(0, sum);
+        chart.addYAxisLabels(yAxisRange);
 
 
-        chart.addXAxisLabels(xAxis2);
-        chart.addYAxisLabels(yAxis2);
 
         // Defining background and chart fills.
         chart.setBackgroundFill(Fills.newSolidFill(Color.WHITE));
@@ -86,15 +105,27 @@ public class GraphManager {
         displayImageFromURL(url);
 
     }
-
+    public void createBarChart(double[] dataPoints) {
+        createBarChart(null,null,null,null,null,dataPoints);
+    }
     public void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
-        // EXAMPLE CODE START
+
         // Defining data plots.
         if (dataPoints.length >= 8) {
             System.out.println("too many data points");
             return;
         }
         Color[] colors = new Color[]{BLUEVIOLET, ORANGERED, LIMEGREEN, ORANGE, RED, BISQUE, PALEGOLDENROD, YELLOWGREEN, BURLYWOOD};
+
+        int sum = 0;
+        int max = 0;
+        for(int i=0;i<dataPoints.length;i++){
+            sum = sum + (int)dataPoints[i];
+            if(dataPoints[i]> max) max = (int)dataPoints[i];
+        }
+        for(int i=0;i<dataPoints.length;i++){
+            dataPoints[i] = (dataPoints[i]/sum)*100;
+        }
 
 
         BarChartPlot team = Plots.newBarChartPlot(Data.newData(dataPoints));
@@ -115,27 +146,35 @@ public class GraphManager {
 
 
         // Defining axis info and styles
-        AxisStyle axisStyle = AxisStyle.newAxisStyle(BLACK, 13, AxisTextAlignment.CENTER);
-        AxisLabels xAxisTitle = AxisLabelsFactory.newAxisLabels(xTitle, 50.0);
-        xAxisTitle.setAxisStyle(axisStyle);
-        AxisLabels yAxisTitle = AxisLabelsFactory.newAxisLabels(yTitle, 50.0);
-        yAxisTitle.setAxisStyle(axisStyle);
-        AxisLabels yAxisRange = AxisLabelsFactory.newNumericRangeAxisLabels(0,25);
-
-
-
-        // Adding axis info to chart.
-        chart.addXAxisLabels(AxisLabelsFactory.newAxisLabels(xLabels));
-        chart.addYAxisLabels(AxisLabelsFactory.newNumericRangeAxisLabels(0, 100));
-        chart.addYAxisLabels(xAxisTitle);
-        chart.addXAxisLabels(yAxisTitle);
+        AxisLabels yAxisRange = AxisLabelsFactory.newNumericRangeAxisLabels(0, sum);
         chart.addYAxisLabels(yAxisRange);
 
+        AxisStyle axisStyle = AxisStyle.newAxisStyle(BLACK, 13, AxisTextAlignment.CENTER);
+        if(xTitle!=null) {
+            AxisLabels xAxisTitle = AxisLabelsFactory.newAxisLabels(xTitle, 50.0);
+            xAxisTitle.setAxisStyle(axisStyle);
+            chart.addXAxisLabels(xAxisTitle);
+        }
+        if(yTitle != null) {
+            AxisLabels yAxisTitle = AxisLabelsFactory.newAxisLabels(yTitle, 50.0);
+            yAxisTitle.setAxisStyle(axisStyle);
+            chart.addYAxisLabels(yAxisTitle);
+        }
+        if(xLabels != null){
+            AxisLabels xAxis = AxisLabelsFactory.newAxisLabels(xLabels);
+            xAxis.setAxisStyle(axisStyle);
+            chart.addXAxisLabels(xAxis);
+        }
+        if(yLabels != null){
+            AxisLabels yAxis = AxisLabelsFactory.newAxisLabels(Arrays.asList(yLabels)); //labels
+            yAxis.setAxisStyle(axisStyle); //style
+            chart.addYAxisLabels(yAxis);
+        }
 
-        //axis range
 
 
-        chart.setSize(600, 450);
+
+        chart.setSize(dataPoints.length*100+200, 450);
         chart.setBarWidth(100);
         chart.setSpaceWithinGroupsOfBars(20);
         chart.setDataStacked(true);

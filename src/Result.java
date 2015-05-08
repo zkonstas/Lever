@@ -30,9 +30,10 @@ public class Result {
         for(int i=0;i<queryResult.getTweets().size();i++){
             users.add(queryResult.getTweets().get(i).getUser());
 
-            //add all statuses to local statuses variable
-            this.statuses.addAll(queryResult.getTweets());
+
         }
+        //add all statuses to local statuses variable
+        this.statuses.addAll(queryResult.getTweets());
         this.uniqueUsers.addAll(users);
     }
 
