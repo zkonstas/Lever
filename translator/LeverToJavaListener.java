@@ -27,6 +27,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 	private HashSet<String> leverConstructs = new HashSet<String>();
 	private HashSet<String> leverTerminals = new HashSet<String>();
 
+	private static String userKey = "uSeR";
+	
 	public LeverToJavaListener(LeverParser parser, String _fileName) {
 		this.parser = parser;
 
@@ -64,10 +66,17 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverConstructs.add("output");
 
 
+<<<<<<< HEAD
 		leverTerminals.add(";");
 		//leverTerminals.add("true");
 		//leverTerminals.add("false");
+=======
+		//leverTerminals.add(";");
+		leverTerminals.add("true");
+		leverTerminals.add("false");
+>>>>>>> origin/chaiwen
 		leverTerminals.add("for");
+		leverTerminals.add("each");
 		leverTerminals.add("in");
 		//leverTerminals.add("(");
 		//leverTerminals.add(")");
@@ -75,6 +84,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
 		leverTerminals.add("var");
+		leverTerminals.add("program");
 		
 	}
 	private void openBraces() {
@@ -86,7 +96,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget("\n");
 		printTabs();
 		printTarget("}\n");
-		
 	}
 	private void printTabs() {
 		int i = indents;
@@ -113,6 +122,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void exitMainProgram(LeverParser.MainProgramContext ctx) {
+		//printTarget("\n");
 		closeBraces();
 
 		try {
@@ -131,26 +141,28 @@ public class LeverToJavaListener extends LeverBaseListener {
 	public void exitBlock(LeverParser.BlockContext ctx) {
 		//closeBraces();
 	}
+	@Override public void enterNonBlockStatement(LeverParser.NonBlockStatementContext ctx) {
+		//printTarget("\n");
+		printTabs();	
+	}
 
 	@Override
 	public void enterStatement(LeverParser.StatementContext ctx) {
-		printTabs();
-		
+				
+		//printTabs();
+
 		//TokenStream tokens = parser.getTokenStream();
 		//String i = "blah";
-		if (ctx.IF() != null) {
+		//if (ctx.IF() != null) {
 			//i = tokens.getText(ctx.IF());
 			//i = ctx.IF().toString();
 			//System.out.println("asdf " + i);
 		//	printTarget("if ");
-		}
-		
-		
-		
+		//}
 	}
 
 	@Override public void exitStatement(LeverParser.StatementContext ctx) {
-		printTarget("\n");	
+		//printTarget("\n");	
 	}
 	
 	@Override
@@ -171,6 +183,20 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override
 	public void enterForEach(LeverParser.ForEachContext ctx) {
 		
+		printTarget("for (String ");
+
+		TerminalNode userTerminal = ctx.getToken(LeverLexer.AT, 0);
+		if (userTerminal != null) {
+			printTarget(userKey + " : ");
+			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + ".user) ");
+
+		} else {
+			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + " : ");
+			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ")");
+		}
+
+		
+
 		
 	}
 
@@ -183,7 +209,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	@Override
 	public void exitParExpression(LeverParser.ParExpressionContext ctx) {
-		printTarget(")");
+		printTarget(") ");
 		
 	}
 
@@ -200,11 +226,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
-		
+			
 	}
 	@Override
 	public void exitStatementExpression(LeverParser.StatementExpressionContext ctx) {
-		printTarget(";");
+		//printTarget(";");
 	}
 	
 	@Override
@@ -258,7 +284,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	@Override public void exitInitialization(LeverParser.InitializationContext ctx) {
-		printTarget(";\n");
+		//printTarget(";\n");
 	}
 
 	@Override public void enterVariableInit(LeverParser.VariableInitContext ctx) {
@@ -273,13 +299,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 		int type = token.getType();
 		String id = token.getText();
 
+		String tmp;
 		switch(type) {
 			case LeverLexer.Identifier:
 				if (id.equals("output")) {
 					printTarget("LeverAPI.output");
 				} else {
 
-					String tmp = node.getParent().getChild(0).toString();
+					tmp = node.getParent().getChild(0).toString();
 					if (leverConstructs.contains(tmp)) {
 
 					} else {
@@ -291,13 +318,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 				
 				break;
 
-
+			case LeverLexer.SEMI:
+				printTarget(";\n");
+				break;
 
 			case LeverLexer.NumberLiteral:
-				String tmp = node.getParent().getChild(0).toString();
+				tmp = node.getParent().getChild(0).toString();
 				if (leverConstructs.contains(tmp)) {
 					break;
 				}
+				//printTarget(id);
+				//break;
+
 			case LeverLexer.StringLiteral:
 				printTarget(id);
 
@@ -313,14 +345,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 				printTarget("if ");
 				break;
 			case LeverLexer.ELSE:
-				printTarget("else");
+				printTarget(" else ");
 				break;
 			case LeverLexer.WHILE:
 				printTarget("while ");
-				break;
-
-			case LeverLexer.ADD:
-				printTarget(" + ");
 				break;
 
 			case LeverLexer.LBRACE:
@@ -330,14 +358,29 @@ public class LeverToJavaListener extends LeverBaseListener {
 			case LeverLexer.RBRACE:
 				closeBraces();
 				break;
+
+			case LeverLexer.BANG:
+				printTarget(id);
+				break;
+			case LeverLexer.BREAK:
+				printTarget(id);
+				break;
+
+			case LeverLexer.AT:
+				tmp = node.getParent().getChild(0).toString();
+				if (leverConstructs.contains(tmp)) {
+
+				} else {
+					printTarget(userKey);
+				}
+				break;
+
 			default:
 				if (!leverTerminals.contains(id)) {
-					printTarget(id);
+					printTarget(id + " ");
 
 				}
 			
-
-
 		}
 	}
 }
