@@ -4,9 +4,7 @@ JFLAGS = -g
 SOURCEFILES = \
 	LeverLexer.java \
 	LeverParser.java \
-	LeverListener.java \
-	LeverBaseListener.java \
-	LeverToJavaListener.java \
+	*Listener.java \
 	Leverc.java \
 	LeverAPI.java
 

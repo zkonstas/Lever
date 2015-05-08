@@ -29,7 +29,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	private static String userKey = "uSeR";
 	
-	public LeverToJavaListener(LeverParser parser, String _fileName) {
+	public LeverToJavaListener(LeverParser parser, String _fileName, HashMap symbolTable) {
 		this.parser = parser;
 
 		initConstructs();
@@ -213,12 +213,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
-
-		//get expression
-		//check if there is '=''
-		//get type from right expression
-		//get identifier from left
-		//create appropriate type and java identifier
 			
 	}
 	@Override
