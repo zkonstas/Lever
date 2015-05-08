@@ -6,10 +6,7 @@ import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main {
@@ -17,15 +14,26 @@ public class Main {
     public static void main(String[] args) {
 
 
-
-//        example1();// simple user query
-//        example2(); // simple hashtag query
-//        example3();//simple location query
+        newExamples1();
+        example1();// simple user query
+        example2(); // simple hashtag query
+        example3();//simple location query
         example4();//query with bar graph
-//        example5();//query with line graph
-//        example6();//sentiment analysis
+        example5();//query with line graph
+        example6();//sentiment analysis
 //        GraphManager gm = new GraphManager();
 //        gm.createLineChart(new double[]{120,200,50});
+
+
+
+    }
+
+    public static void newExamples1(){
+        ArrayList<Object> al = new ArrayList<>();
+        al.add("@realmadrid");
+        al.add("#futbol");
+        Result result = QueryManager.getResultFromArguments(al);
+        System.out.println(result);
     }
 
     /**
@@ -37,8 +45,6 @@ public class Main {
         qm.masterQuery.setCount(100);
         qm.addFromUser("realmadrid");
         qm.addFromUser("fcbarcelona");
-
-
         qm.get();
     }
 

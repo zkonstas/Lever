@@ -10,13 +10,19 @@ public class Result {
 
     Set<User> uniqueUsers;
     ArrayList<Status> statuses;
-//    QueryResult origResult;
+      private static Result instance = null;
 
     /* Constructor */
-    public Result(QueryResult queryResult) {
-        this.uniqueUsers = new HashSet<User>();
-        this.statuses = (ArrayList<Status>) queryResult.getTweets();
-//        this.origResult = queryResult;
+
+//    protected Result() {
+//        // Exists only to defeat instantiation.
+//    }
+
+    public static Result getInstance() {
+        if(instance == null) {
+            instance = new Result();
+        }
+        return instance;
     }
 
     public Result() {
@@ -78,6 +84,16 @@ public class Result {
 
     public void addStatuses(List<Status> statuses) {
         this.statuses.addAll(statuses);
+    }
+
+    @Override
+    public String toString(){
+        String retValue = "";
+        for (int i=0;i<this.statuses.size();i++) {
+            Status tweet = this.statuses.get(i);
+            retValue = retValue+"@" + tweet.getUser().getScreenName() + " - " + tweet.getText()+"\n";
+        }
+        return retValue;
     }
 
 

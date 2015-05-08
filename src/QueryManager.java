@@ -49,21 +49,37 @@ public class QueryManager {
     /**
      * Add a string composed of multiple paramters to the query
      *
-     * @param queryString The string to add to the search
+     * @param arguments arguments fed over from lever which should be to the query
      * @return Formatted string matching query restrictions
      */
-    public String queryFromString(String queryString) {
-        String returnString = "";
-        String[] paramters = queryString.split(" ");
+    public static Result getResultFromArguments(ArrayList<Object> arguments) {
+        Twitter twitter = TwitterFactory.getSingleton();
 
-        //Format the string to match query restrictions
-        /* NOT IMPLEMENTED YET */
-        for (String str : paramters)
+        Query query = new Query();
+        QueryManager.addArgumentsToQuery(arguments,query);
+        QueryResult queryResult;
+        Result result = new Result();
 
+        //start Twitter querying
+        long minTweet = 0;
+        int numberOfPages = 1;
+        for (int i = 0; i < 1; i++) { //default go for 5 queries, aka 500 tweets total
+            try {
+                if (i != 0)
+                    query.setMaxId(minTweet); //for paging multiple queries together
+                queryResult = twitter.search(query);
 
-            System.out.println(paramters);
-        return returnString;
-
+                result.addQueryResult(queryResult);
+                List<Status> tweets = queryResult.getTweets();
+                for (Status tweet : tweets) {
+//                    output(tweet);
+                    minTweet = tweet.getId();
+                }
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+        }
+    return result;
     }
 
     /**
@@ -79,6 +95,13 @@ public class QueryManager {
             addTopic(queryString);
         else if (queryString.charAt(0) != '@' && queryString.charAt(0) != '#')
             addGeneralSearchString(queryString);
+
+    }
+
+    public static void addArgumentsToQuery(ArrayList<Object> arguments,Query query) {
+        //check if user
+        String queryString = QueryManager.getQueryStringForAllParamaters(arguments);
+        query.setQuery(queryString);
 
     }
 
@@ -155,7 +178,7 @@ public class QueryManager {
                 this.customResult.addQueryResult(this.queryResult);
                 List<Status> tweets = this.queryResult.getTweets();
                 for (Status tweet : tweets) {
-                    output(tweet);
+//                    output(tweet);
                     minTweet = tweet.getId();
                 }
             } catch (TwitterException e) {
@@ -254,11 +277,62 @@ public class QueryManager {
         return str;
     }
 
+    private static String getQueryStringForAllParamaters(ArrayList<Object> arguments) {
+        String str = "";
+        /* Users */
+        ArrayList userList = new ArrayList();
+        ArrayList topicList = new ArrayList();
+        ArrayList generalStringList = new ArrayList();
+
+        //add into relevant groups
+        for(int i=0;i<arguments.size();i++){
+            Object a = arguments.get(i);
+            //if it is a string
+            if(a instanceof String) {
+                String string = (String)a;
+                if (string.charAt(i) == '@')
+                    userList.add(string);
+                else if (string.charAt(i) == '#')
+                    topicList.add(string);
+                else
+                    generalStringList.add(string);
+            }
+        }
+
+
+        //Create query string
+        for (int i = 0; i < userList.size(); i++) {
+            str = str + userList.get(i);
+            if (i < userList.size() - 1)
+                str = str + " OR ";
+        }
+        /* Topics/Hashtags */
+        for (int i = 0; i < topicList.size(); i++) {
+            if (str.substring(str.length() - 1) == "")
+                str = str + " ";
+            str = str + topicList.get(i);
+        }
+        /* other search paramters */
+        for (int i = 0; i < generalStringList.size(); i++) {
+            str = str + generalStringList.get(i);
+        }
+
+        return str;
+    }
+
+    private static String formattedUser(String user){
+        if(user.charAt(0) == '@')
+            return "from:"+user.substring(1);
+        else
+            return "from:"+user;
+    }
 
     public void printAllStatuses() {
         for (Status tweet : this.queryResult.getTweets())
             System.out.println(tweet.getText());
     }
+
+
 
 
 }
