@@ -404,6 +404,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 			case LeverLexer.Identifier:
 				if (id.equals("output")) {
 					printTarget("LeverAPI.output");
+					
+				} else if (id.equals("input")) {
+					printTarget("LeverAPI.input()");
+				
+				
 				} else {
 
 					tmp = node.getParent().getChild(0).toString();
@@ -424,7 +429,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 			case LeverLexer.NumberLiteral:
 				tmp = node.getParent().getChild(0).toString();
-				if (leverConstructs.contains(tmp)) {
+				if (leverConstructs.contains(tmp)) { //numbers in 'for loop'
 					break;
 				}
 				//printTarget(id);
