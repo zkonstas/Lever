@@ -16,5 +16,14 @@ import java.util.*;
 
 //don't need to override every enter/exit method
 public class LeverToJavaListener extends LeverBaseListener {
-	
+
+	public enum LType {
+    	LString, LInteger, LDouble, LBoolean,
+    	LList, LDictionary, LUser, LTopic, LResult 
+	}
+
+	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+
+
+
 }

@@ -156,15 +156,7 @@ expression
     |   expression AND expression
     |   expression OR expression
     |   expression '?' expression ':' expression
-    |   <assoc=right> expression
-        (   '='
-        |   '+='
-        |   '-='
-        |   '*='
-        |   '/='
-        |   '%='
-        )
-        expression
+    |   expression '=' expression
     ;
 
 primary

@@ -185,10 +185,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + " : ");
 			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ")");
 		}
-
-		
-
-		
 	}
 
 
@@ -217,6 +213,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
+
+		//get expression
+		//check if there is '=''
+		//get type from right expression
+		//get identifier from left
+		//create appropriate type and java identifier
 			
 	}
 	@Override

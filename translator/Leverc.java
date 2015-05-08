@@ -29,8 +29,14 @@ public class Leverc {
 
 		//generic parse tree walker that triggers callbacks
 		ParseTreeWalker walker = new ParseTreeWalker();
-		//walk tree, trigger callbacks
-		walker.walk(new LeverToJavaListener(parser, fileName), tree);
+	
+		VariableCheckingListener varChecker = new VariableCheckingListener(parser);
+
+		//walk tree, do type evaluation and checking and generate symbol table
+		walker.walk(varChecker, tree);
+
+		//Generate Java Code using symbol table
+		walker.walk(new LeverToJavaListener(parser, fileName, varChecker.symbolTable), tree);
 
 
 	}
