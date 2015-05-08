@@ -2,12 +2,14 @@
  * Created by royhermann on 4/9/15.
  */
 
+import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-
 
 
 public class Main {
@@ -15,57 +17,25 @@ public class Main {
     public static void main(String[] args) {
 
 
-//        //Sample Twitter Code
-//        Twitter twitter = TwitterFactory.getSingleton();
 
-//        //1. Hashtags and strings seem to work fine
-//        Query queryA = new Query("#superclassico");
-//        //2. For user searchig, add from:<username>
-//        Query queryB = new Query("from:realmadrid");
-//        //3. For multiple user, seperate by " OR "
-//        Query queryC = new Query("from:realmadrid OR from:barcelonafc");
-//
-//        QueryResult resultA = null;
-//        try {
-//            resultA = twitter.search(queryB);
-//            List<Status> tweets = resultA.getTweets();
-//            final int LIMIT = 10; //set limit to 10
-//            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
-//                Status status = tweets.get(i);
-//                output(status);
-//            }
-//        } catch (TwitterException e) {
-//            e.printStackTrace();
-//        }
-//
-//        QueryResult resultB = null;
-//        try {
-//            resultB = twitter.search(queryA);
-//            List<Status> tweets = resultB.getTweets();
-//            final int LIMIT = 10; //set limit to 10
-//            for (int i = 0; i < tweets.size() && i < LIMIT; i++) {
-//                User user = tweets.get(i).getUser();
-//                output(user);
-//            }
-//        } catch (TwitterException e) {
-//            e.printStackTrace();
-//        }
-
-//        example1();
-        example2();
-//        createSampleGraph();
+//        example1();// simple user query
+//        example2(); // simple hashtag query
+        example3();//simple location query
+//        example4();//query with bar graph
+//        example5();//query with line graph
 
     }
 
     /**
      * Here we run a sample query fetching all tweets from two users
      */
-    public static void example1(){
+    public static void example1() {
 
         QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(10);
+        qm.masterQuery.setCount(100);
         qm.addFromUser("realmadrid");
         qm.addFromUser("fcbarcelona");
+
 
         qm.get();
     }
@@ -73,7 +43,7 @@ public class Main {
     /**
      * Here we run a sample query fetching all tweets about a certain topic
      */
-    public static void example2(){
+    public static void example2() {
         QueryManager qm = new QueryManager();
         qm.masterQuery.setCount(10);
         qm.addTopic("#hackdisrupt");
@@ -84,55 +54,100 @@ public class Main {
     /**
      * Here we run a sample query fetching all tweets in a certain location
      */
-    public static void example3() throws Exception {
+    public static void example3(){
         QueryManager qm = new QueryManager();
         qm.masterQuery.setCount(10);
-        qm.sendGetForLocation("new york");
+        try {
+            qm.sendGetForLocation("Israel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         qm.get();
         qm.printAllStatuses();
 
     }
 
     /**
-     * Here we create a graph line chart with a title, axis titles, axis labels, and data points
+     * Here we run a sample query fetching all tweets from two users.
+     * Then we compare the number of them that have messi vs ronaldo, and draw it on a graph
      */
-    public static void exampleGraph(){
-        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new double[]{50.0,2.0,12.0});
+    public static void example4() {
 
-        //optionally can add labels to each grid point
-//        GraphManager.graphLineChartWithTitle("tweets timeline","time","number of tweets",new String[]{"howdy"},new String[]{"howdy"},new double[]{50.0,2.0,12.0});
+        GraphManager gm = new GraphManager();
+        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
+        return;
+
+//        QueryManager qm = new QueryManager();
+//        qm.masterQuery.setCount(100);
+//        qm.addFromUser("realmadrid");
+//        qm.addFromUser("fcbarcelona");
+//        qm.get();
+//
+//        //received resuts
+//        int messi = 0;
+//        int ronaldo = 0;
+//        for (Status status : qm.customResult.statuses) {
+//            if (status.getText().toLowerCase().contains("messi"))
+//                messi++;
+//            if (status.getText().toLowerCase().contains("ronaldo"))
+//                ronaldo++;
+//        }
+//
+//        int max = (messi > ronaldo) ? messi : ronaldo;
+//
+//
+//        GraphManager gm = new GraphManager();
+//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions", new String[]{"Messi", "Ronaldo"}, new String[]{"0", String.valueOf(max)}, new double[]{messi, ronaldo});
+
     }
-    public static void queryForSomething(String something) {
-        Twitter twitter = new TwitterFactory().getInstance();
-        try {
-            Query query = new Query("#roy");
-            QueryResult result;
-            do {
-                result = twitter.search(query);
-                List<Status> tweets = result.getTweets();
-                for (Status tweet : tweets) {
 
-                }
-            } while ((query = result.nextQuery()) != null);
-            System.exit(0);
-        } catch (TwitterException te) {
-            te.printStackTrace();
-            System.out.println("Failed to search tweets: " + te.getMessage());
-            System.exit(-1);
+    /**
+     * This example searches for all tweets about england elections and compares their time distribution before and after a certain time
+     */
+    public static void example5() {
+
+//        GraphManager gm = new GraphManager();
+//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
+//        return;
+
+        QueryManager qm = new QueryManager();
+        qm.masterQuery.setCount(100);
+        qm.addGeneralSearchString("england elections");
+        qm.get();
+
+        //received resuts
+        Date bufferDate;
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(0);
+        cal.set(Calendar.YEAR, Calendar.MONTH, 7, 12, 0, 0);
+        bufferDate = cal.getTime(); // get back a Date object
+
+        int before = 0;
+        int after = 0;
+        for (Status status : qm.customResult.statuses) {
+            Date statusDate = status.getCreatedAt();
+            Interval interval = new Interval(statusDate, bufferDate); //for time difference
+            if (statusDate.compareTo(bufferDate) < 0) {
+                before++;
+            } else after++;
         }
+
+
+        GraphManager gm = new GraphManager();
+        gm.createBarChart("UK Elections Tweet Metrics", "Time", "Volume", new String[]{"Before 12:00:00PM", "After Before 12:00:00PM"}, new String[]{"0", "100"}, new double[]{before,after});
+
     }
 
 
     public static void output(Object obj) {
         //Fix this eventually
-        if(obj instanceof Status){
+        if (obj instanceof Status) {
             //Object is a status
-            Status tweet = (Status)obj;
+            Status tweet = (Status) obj;
             System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-        }
-        else if(obj instanceof User){
-            User user = (User)obj;
-            System.out.println("@"+user.getScreenName());
+        } else if (obj instanceof User) {
+            User user = (User) obj;
+            System.out.println("@" + user.getScreenName());
         }
 
     }

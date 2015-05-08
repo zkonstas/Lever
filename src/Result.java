@@ -10,21 +10,52 @@ public class Result {
 
     Set<User> uniqueUsers;
     ArrayList<Status> statuses;
+//    QueryResult origResult;
 
     /* Constructor */
-    public Result(QueryResult queryResult){
+    public Result(QueryResult queryResult) {
         this.uniqueUsers = new HashSet<User>();
-        this.statuses = (ArrayList<Status>)queryResult.getTweets();
+        this.statuses = (ArrayList<Status>) queryResult.getTweets();
+//        this.origResult = queryResult;
     }
 
-    public Date[] getTimesOfAllTweets(){
-        Date [] times = new Date[this.statuses.size()];
+    public Result() {
+        this.uniqueUsers = new HashSet<User>();
+        this.statuses = new ArrayList<>();
+    }
+
+    public void addQueryResult(QueryResult queryResult){
+        //add all users from query result
+        ArrayList users = new ArrayList();
+        for(int i=0;i<queryResult.getTweets().size();i++){
+            users.add(queryResult.getTweets().get(i).getUser());
+
+            //add all statuses to local statuses variable
+            this.statuses.addAll(queryResult.getTweets());
+        }
+        this.uniqueUsers.addAll(users);
+    }
+
+
+
+    public Date[] getTimesOfAllTweets() {
+        Date[] times = new Date[this.statuses.size()];
         int i = 0;
-        for(Status status : this.statuses){
+        for (Status status : this.statuses) {
             times[i] = status.getCreatedAt();
         }
         return times;
     }
+
+    public int getSize() {
+        return this.statuses.size();
+    }
+
+    public double getFetchTime(){
+//        return this.origResult.getCompletedIn();
+        return 0.0;
+    }
+
 
 //    /* create a data structure with bin information in regards to number of tweets per time slot */
 //    public HashMap<Date,Integer> getDistributionByMinuteForTime(Date time){
@@ -44,11 +75,9 @@ public class Result {
 //        return amounts;
 //    }
 
-    public void addStatuses(List<Status> statuses){
+    public void addStatuses(List<Status> statuses) {
         this.statuses.addAll(statuses);
     }
-
-
 
 
 }

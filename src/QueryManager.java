@@ -28,6 +28,8 @@ public class QueryManager {
     GeoLocation geoCoordinates;
     QueryResult queryResult;
     Result customResult;
+    int numberOfPages;
+    FilterQuery filterQuery;
 
 
     /**
@@ -38,8 +40,11 @@ public class QueryManager {
         this.userList = new ArrayList<String>();
         this.topicList = new ArrayList<String>();
         this.generalStringList = new ArrayList<String>();
+        this.masterQuery = new Query();
         this.customResult = null;
-        geoCoordinates = null;
+        this.geoCoordinates = null;
+        this.numberOfPages = 1;
+        this.filterQuery = new FilterQuery();
 
     }
 
@@ -104,7 +109,7 @@ public class QueryManager {
     }
 
     /**
-     * Outputs any object to the console
+     * Outputs and returns any object to the console
      *
      * @param object The object to output to transfer to a string representation
      * @return The string representation of the objet paramater
@@ -139,17 +144,20 @@ public class QueryManager {
         this.output("query string = " + queryString);
 
 
-        this.masterQuery = new Query(queryString);
-        this.masterQuery.setCount(100); // set 100 tweets per query
+
+        this.masterQuery.setQuery(queryString);
+
         long minTweet = 0;
         //Add coordinates to search if there exists such a restriction
         if (geoCoordinates != null)
             this.masterQuery.geoCode(geoCoordinates, 100, "150 km");
-        for (int i = 0; i < 1; i++) { //default go for 5 queries, aka 500 tweets total
+        for (int i = 0; i < this.numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
             try {
                 if (i != 0)
                     this.masterQuery.setMaxId(minTweet); //for paging multiple queries together
                 this.queryResult = twitter.search(this.masterQuery);
+                this.customResult = new Result();
+                this.customResult.addQueryResult(this.queryResult);
                 List<Status> tweets = this.queryResult.getTweets();
                 for (Status tweet : tweets) {
                     output(tweet);
@@ -215,14 +223,15 @@ public class QueryManager {
 
         System.out.println(lat+" "+longitude);
 
-        FilterQuery fq = new FilterQuery();
-        double lat1 = lat - .25;
-        double longitude1 = longitude - .25;
-        double lat2 = lat + .25;
-        double longitude2 = longitude + .25;
-//        twitterStream.addListener(listener);
-        double[][] bb= {{longitude1, lat1}, {longitude2, lat2}};
-        fq.locations(bb);
+//        double lat1 = lat - .25;
+//        double longitude1 = longitude - .25;
+//        double lat2 = lat + .25;
+//        double longitude2 = longitude + .25;
+//        double[][] bb= {{lat1,longitude1}, {lat2,longitude2}};
+//        System.out.println(bb[0][0]+","+bb[0][1]+"\n"+bb[1][0]+","+bb[1][1]);
+//        this.filterQuery.locations(bb);
+
+        this.masterQuery.setGeoCode(new GeoLocation(lat,longitude),50, Query.Unit.km);
 
         return coordinates;
 
