@@ -65,12 +65,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 
 		leverTerminals.add(";");
-		leverTerminals.add("true");
-		leverTerminals.add("false");
+		//leverTerminals.add("true");
+		//leverTerminals.add("false");
 		leverTerminals.add("for");
 		leverTerminals.add("in");
-		leverTerminals.add("(");
-		leverTerminals.add(")");
+		//leverTerminals.add("(");
+		//leverTerminals.add(")");
 		leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
@@ -222,7 +222,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	@Override
 	public void enterPrimary(LeverParser.PrimaryContext ctx) {
-	
+		
 	}
 
 
@@ -251,12 +251,19 @@ public class LeverToJavaListener extends LeverBaseListener {
 		LeverParser.VariableDeclaratorContext parent = (LeverParser.VariableDeclaratorContext)ctx.getParent();
 		TerminalNode id = parent.identifierVar().Identifier();
 
+		//Get type and assign it to the appropriate member of LeverVar
+
 		printTabs();
 		printTarget(id.getText() + ".val ");
 	}
 
 	@Override public void exitInitialization(LeverParser.InitializationContext ctx) {
 		printTarget(";\n");
+	}
+
+	@Override public void enterVariableInit(LeverParser.VariableInitContext ctx) {
+
+
 	}
 
 	@Override
