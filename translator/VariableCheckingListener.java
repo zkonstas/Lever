@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.*;
 
 //don't need to override every enter/exit method
-public class LeverToJavaListener extends LeverBaseListener {
+public class VariableCheckingListener extends LeverBaseListener {
 
 	public enum LType {
     	LString, LInteger, LDouble, LBoolean,
@@ -23,6 +23,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+
+	public VariableCheckingListener(LeverParser parser) {
+
+
+	}
 
 
 

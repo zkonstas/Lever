@@ -28,10 +28,15 @@ public class LeverToJavaListener extends LeverBaseListener {
 	private HashSet<String> leverTerminals = new HashSet<String>();
 
 	private static String userKey = "uSeR";
-	
-	public LeverToJavaListener(LeverParser parser, String _fileName) {
-		this.parser = parser;
 
+	private HashMap<String, VariableCheckingListener.LType> symbolTable;
+	
+	public LeverToJavaListener(LeverParser parser, String _fileName,
+		HashMap<String, VariableCheckingListener.LType> _symbolTable) {
+
+		this.parser = parser;
+		this.symbolTable = _symbolTable;
+		
 		initConstructs();
 		
 		//String fileName = _fileName.split(".")[0];
@@ -257,7 +262,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
 		if (ctx.getText().contains("return")) {
 			if (ctx.getText().length() - ctx.getText().lastIndexOf("return") > 8) {
-				printTarget("public static LeverVar ");
+				printTarget("public static ");
+
+				VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+				printTarget(getJavaType(_type) + " ");	
+
+
 			}
 		} else {
 			printTarget("public static void ");
@@ -272,12 +282,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget(")");
 	}
 
-	@Override public void enterFormalParameterA(LeverParser.FormalParameterAContext ctx) { 
-		printTarget("LeverVar " );
+	@Override public void enterFormalParameterA(LeverParser.FormalParameterAContext ctx) {
+		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+		printTarget(getJavaType(_type) + " ");	
+
+		//printTarget("LeverVar " );
 	}
 
-	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) { 
-		printTarget(", LeverVar " );
+	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) {
+		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+		printTarget(", " + getJavaType(_type) + " ");	
+
+		//printTarget(", LeverVar " );
 	}
 	@Override public void enterLastFormalParameter(LeverParser.LastFormalParameterContext ctx) { 
 		System.out.println("what the hell indeed");
@@ -286,12 +302,51 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 		printTabs();
-		printTarget("LeverVar ");	
+
+		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+		printTarget(getJavaType(_type) + " ");	
 	}
 
 	@Override public void exitIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 
-		printTarget(" = new LeverVar();\n");	
+		//printTarget(" = new LeverVar();\n");
+		
+		
+		
+		
+			
+	}
+
+	private String getJavaType(VariableCheckingListener.LType _type) {
+		switch (_type) {
+			case LString:
+				return "String";
+			case LInteger:
+				return "int";
+			case LDouble:
+				return "double";
+			case LBoolean:
+				return "boolean";
+			case LList:
+				return "ArrayList";
+			case LDictionary:
+				return "dictionary";
+
+
+			case LUser:
+				return "String";
+			case LTopic:
+				return "String";
+
+			case LResult:
+				return "Result";
+
+			default:
+				return "???";
+
+
+		}
+
 	}
 
 	@Override public void enterInitialization(LeverParser.InitializationContext ctx) {
@@ -301,8 +356,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		//Get type and assign it to the appropriate member of LeverVar
 
-		printTabs();
-		printTarget(id.getText() + ".val ");
+		//printTabs();
+		//printTarget(id.getText() + ".val ");
 	}
 
 	@Override public void exitInitialization(LeverParser.InitializationContext ctx) {
