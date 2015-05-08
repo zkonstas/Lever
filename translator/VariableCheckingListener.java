@@ -133,8 +133,4 @@ public class VariableCheckingListener extends LeverBaseListener {
 		saveToTable(varId, type);
 	}
 
-	}
-
-
-
 }
