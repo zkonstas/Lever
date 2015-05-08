@@ -282,7 +282,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 			int index = ctxText.lastIndexOf("return");
 			if (ctxText.length() - index > 8) {
 				printTarget("public static ");
-				index == index + 6;
+				index = index + 6;
 				String retrievedIdentifier = ctxText.substring(index, ctxText.length()-2);
 				
 				VariableCheckingListener.LType _type = symbolTable.get(retrievedIdentifier);
@@ -319,7 +319,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 		printTabs();
 
-		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier().getText());
 		printTarget(getJavaType(_type) + " ");	
 	}
 
