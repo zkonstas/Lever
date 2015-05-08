@@ -31,27 +31,106 @@ public class VariableCheckingListener extends LeverBaseListener {
 	}
 
 	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {
-		ParseTree expression = expCtx.getChild(2);
-		LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)expression;
 
-		return null;
+		LType type = null;
+		LeverParser.ExpressionContext exp = expCtx;
+		
+		while (exp != null) {
+
+			if (exp.primary() != null) {
+				//we found a primary expression from which we can get the literal
+				break;
+			}
+
+			//Get first expression
+			exp = exp.expression().get(0);
+		}
+			
+		if (exp.primary() != null) {
+
+			LeverParser.LiteralContext literal = exp.primary().literal();
+
+			if (literal != null) {
+
+				if (literal.NumberLiteral() != null) {
+					
+					if (literal.NumberLiteral().getText().contains(".")) {
+						type = LType.LDouble;
+						// System.out.println("double");						
+					}
+					else {
+						// System.out.println("int");
+						type = LType.LInteger;
+					}
+				}
+				else if (literal.StringLiteral() != null) {
+					// System.out.println("string");
+					type = LType.LString;
+				}
+				else if (literal.BooleanLiteral() != null) {
+					// System.out.println("boolean");
+					type = LType.LBoolean;
+				}
+
+
+			}
+		}
+		return type;
 	}
 
 	@Override public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
 
 		LeverParser.ExpressionContext expCtx = ctx.expression();
 
+		//Check if this is an assignment expression
 		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
-			
-			LType type = getExpressionType(expCtx);
 
-			System.out.println(rExp.getText());
+			//Get variable identifier
+			ParseTree left = expCtx.getChild(0);
+			LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
+			TerminalNode id = lExp.primary().Identifier();
+			String varId = id.getText();
 
+			//Get type of right expression
+			ParseTree right = expCtx.getChild(2);
+			LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
+			LType type = getExpressionType(rExp);
+
+			saveToTable(varId, type);
 		}
-		//check if there is '=''
-		//get type from right expression
-		//get identifier from left
-		//create appropriate type and java identifier
+	}
+
+	public void saveToTable(String varId, LType type) {
+
+		if (!symbolTable.containsKey(varId)) {
+				symbolTable.put(varId, type);
+				
+				// System.out.println(id.getText());
+				// System.out.println(type);
+			}
+			else {
+				if (symbolTable.get(varId) != type) {
+
+					//trying to assign incompatible variable types
+					System.out.println("incompatible types!");
+					System.exit(1);
+				}
+				
+			}
+	}
+
+	@Override
+	public void enterInitialization(LeverParser.InitializationContext ctx) {
+
+		LeverParser.VariableDeclaratorContext parent = (LeverParser.VariableDeclaratorContext)ctx.getParent();
+		TerminalNode id = parent.identifierVar().Identifier();
+		String varId = id.getText();
+
+		LeverParser.ExpressionContext expCtx = ctx.expression();
+		LType type = getExpressionType(expCtx);
+
+		// System.out.println("Initialized " + varId);
+		saveToTable(varId, type);
 	}
 
 }
