@@ -273,10 +273,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) { 
 		printTarget(", LeverVar " );
 	}
-	@Override public void enterLastFormalParameter(LeverParser.LastFormalParameterContext ctx) { 
-		System.out.println("what the hell indeed");
-		printTarget("What the hell is going on");
-	}
 
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 		printTabs();

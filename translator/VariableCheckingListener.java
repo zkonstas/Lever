@@ -30,9 +30,24 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	}
 
+	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {
+		ParseTree expression = expCtx.getChild(2);
+		LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)expression;
+
+		return null;
+	}
+
 	@Override public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
 
 		LeverParser.ExpressionContext expCtx = ctx.expression();
+
+		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
+			
+			LType type = getExpressionType(expCtx);
+
+			System.out.println(rExp.getText());
+
+		}
 		//check if there is '=''
 		//get type from right expression
 		//get identifier from left
