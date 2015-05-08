@@ -64,7 +64,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverConstructs.add("output");
 
 
-		leverTerminals.add(";");
+		//leverTerminals.add(";");
 		leverTerminals.add("true");
 		leverTerminals.add("false");
 		leverTerminals.add("for");
@@ -354,7 +354,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 				break;
 			default:
 				if (!leverTerminals.contains(id)) {
-					printTarget(id);
+					printTarget(id + " ");
 
 				}
 			
