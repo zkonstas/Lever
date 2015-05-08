@@ -109,15 +109,32 @@ public class LeverToJavaListener extends LeverBaseListener {
 		}
 	}
 
-	@Override
-	public void enterMainProgram(LeverParser.MainProgramContext ctx) {
+	@Override public void enterLever(LeverParser.LeverContext ctx) {
+		printTarget("import sun.jvm.hotspot.utilities.Interval;");
+		printTarget("import twitter4j.*;");
+		printTarget("import twitter4j.User;");
+		printTarget("\n");
+		printTarget("import java.util.Calendar;");
+		printTarget("import java.util.Date;");
+		printTarget("import java.util.List;");
+		printTarget("import java.util.Scanner;");
+
+
 		printTarget("public class " + fileName + " ");
 		openBraces();
+		
+	}
+
+	@Override
+	public void enterMainProgram(LeverParser.MainProgramContext ctx) {
 		printTarget("\tpublic static void main(String[] args) ");
 	}
 
 	@Override
 	public void exitMainProgram(LeverParser.MainProgramContext ctx) {
+
+	}
+	@Override public void exitLever(LeverParser.LeverContext ctx) {
 		//printTarget("\n");
 		closeBraces();
 
@@ -137,6 +154,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 	public void exitBlock(LeverParser.BlockContext ctx) {
 		//closeBraces();
 	}
+	@Override public void enterBlockStatement(LeverParser.BlockStatementContext ctx) {
+		
+		
+		
+	}
+
 	@Override public void enterNonBlockStatement(LeverParser.NonBlockStatementContext ctx) {
 		//printTarget("\n");
 		printTabs();	
