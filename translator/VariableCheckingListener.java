@@ -27,7 +27,6 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	public VariableCheckingListener(LeverParser parser) {
 		this.parser = parser;
-
 	}
 
 	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {

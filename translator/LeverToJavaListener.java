@@ -277,14 +277,17 @@ public class LeverToJavaListener extends LeverBaseListener {
 		
 	}
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
-		if (ctx.getText().contains("return")) {
-			if (ctx.getText().length() - ctx.getText().lastIndexOf("return") > 8) {
+		String ctxText = ctx.getText();
+		if (ctxText.contains("return")) {
+			int index = ctxText.lastIndexOf("return");
+			if (ctxText.length() - index > 8) {
 				printTarget("public static ");
-
-				VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
+				index == index + 6;
+				String retrievedIdentifier = ctxText.substring(index, ctxText.length()-2);
+				
+				VariableCheckingListener.LType _type = symbolTable.get(retrievedIdentifier);
 				printTarget(getJavaType(_type) + " ");	
-
-
+				
 			}
 		} else {
 			printTarget("public static void ");
