@@ -13,7 +13,7 @@ public class LeverAPI {
 		else
 			GraphManager.createBarChart(title,xLabels,dataPoints);
 	}
-	
+
 	public static void output(Object obj) {
 		if (obj instanceof Status) {
 			//Object is a status

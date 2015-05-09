@@ -99,8 +99,8 @@ public class QueryManager {
 
         //start Twitter querying
         long minTweet = 0;
-        int numberOfPages = 1;
-        for (int i = 0; i < 1; i++) { //default go for 5 queries, aka 500 tweets total
+        int numberOfPages = 1; //number of times to run the query for getting more results
+        for (int i = 0; i < numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
             try {
                 if (i != 0)
                     query.setMaxId(minTweet); //for paging multiple queries together
@@ -337,7 +337,18 @@ public class QueryManager {
                         System.out.println("failed getting location");
                         e.printStackTrace();
                     }
-
+                }
+                if(map.get("language") != null){
+                    query.setLang(String.valueOf(map.get("language")));
+                }
+                if(map.get("result type") != null){
+                    String rt = String.valueOf(map.get("result type"));
+                    if(rt.equals("popular"))
+                        query.setResultType(Query.ResultType.popular);
+                    else if(rt.equals("recent"))
+                        query.setResultType(Query.ResultType.recent);
+                    else
+                        query.setResultType(Query.ResultType.mixed);
                 }
             }
 
