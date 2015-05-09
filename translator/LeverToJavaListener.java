@@ -74,8 +74,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("for");
 		leverTerminals.add("each");
 		leverTerminals.add("in");
-		//leverTerminals.add("(");
-		//leverTerminals.add(")");
+		leverTerminals.add("("); //do not remove, parenthesis in lever very different ordering
+		leverTerminals.add(")");
 		leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
@@ -131,8 +131,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	}
 	@Override public void exitLever(LeverParser.LeverContext ctx) {
-		//printTarget("\n");
 		closeBraces();
+		//printTarget("exit lever");
 
 		try {
 			bw.close();
@@ -144,11 +144,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterBlock(LeverParser.BlockContext ctx) {
-		//openBraces();
 	}
 	@Override
 	public void exitBlock(LeverParser.BlockContext ctx) {
-		//closeBraces();
 	}
 	@Override public void enterBlockStatement(LeverParser.BlockStatementContext ctx) {
 		
@@ -182,8 +180,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 	
 	@Override
 	public void enterForIn(LeverParser.ForInContext ctx) {
-
-
 		//TokenStream tokens = parser.getTokenStream();
 
 		TerminalNode begin = ctx.getToken(LeverLexer.NumberLiteral, 0);
@@ -191,10 +187,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		printTarget("for (int " + ctx.Identifier() + " = " + begin + "; ");
 		printTarget(ctx.Identifier() + " < " + end + "; " + ctx.Identifier() + "++) ");
-
-
-		
 	}
+	@Override
+	public void exitForIn(LeverParser.ForInContext ctx) {
+	}
+
 	@Override
 	public void enterForEach(LeverParser.ForEachContext ctx) {
 		
@@ -207,7 +204,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		} else {
 			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + " : ");
-			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ")");
+			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ") ");
 		}
 	}
 
@@ -398,6 +395,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 					printTarget("LeverAPI.input()");
 				
 				
+				} else if (id.equals("graph")) {
+					printTarget("LeverAPI.graph");
+
 				} else {
 
 					tmp = node.getParent().getChild(0).toString();

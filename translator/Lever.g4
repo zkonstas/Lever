@@ -66,10 +66,6 @@ formalParameterB
     :   ',' type Identifier
     ;
 
-lastFormalParameter
-    :   type '...' Identifier
-    ;
-
 methodBody
     :   block
     ;
@@ -117,8 +113,16 @@ statement
 	;
 
 forStatement
-	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')' statement		# forIn
-	|	FOR EACH '(' (AT | Identifier) IN Identifier ')' statement	# forEach
+	:	forIn statement
+	|	forEach statement
+	;
+
+forIn
+	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')'
+	;
+
+forEach
+	:	FOR EACH '(' (AT | Identifier) IN Identifier ')'
 	;
 
 // EXPRESSIONS
