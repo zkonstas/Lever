@@ -17,7 +17,7 @@ mainProgram
 	;
     
 methodDefinition
-	: Identifier formalParameters? methodBody
+	: Identifier formalParameterList? methodBody
     ;
 
 declarationList
@@ -50,20 +50,8 @@ type
     :   'var'
     ;
 
-formalParameters
-    :   '(' formalParameterList ')'
-    ;
-
 formalParameterList
-    :   formalParameterA (formalParameterB)*
-    ;
-
-formalParameterA
-    :   type Identifier
-    ;
-
-formalParameterB
-    :   ',' type Identifier
+    :   Identifier (',' Identifier)*
     ;
 
 methodBody

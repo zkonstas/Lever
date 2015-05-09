@@ -24,7 +24,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 	}
 
 	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
-	public HashMap<String, LeverParser.MethodDefinitionContext> functionTable = new HashMap<String, LeverParser.MethodDefinitionContext>();
+	public static HashMap<String, LeverParser.MethodDefinitionContext> functionTable = new HashMap<String, LeverParser.MethodDefinitionContext>();
 
 	private class FunctionDef {
 		int paramNum = -1;
@@ -42,7 +42,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		addVarId(ctx.Identifier().getText());
 	}
 
-	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {
+	public static LType getExpressionType(LeverParser.ExpressionContext expCtx) {
 
 		LType type = null;
 		LeverParser.ExpressionContext exp = expCtx;
@@ -51,10 +51,6 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 			if (exp.primary() != null || exp.methodCall() != null) {
 				//we found a primary or method call expression from which we can get the literal
-				break;
-			}
-			if (exp.methodCall() != null) {
-				//we found a primary expression from which we can get the literal
 				break;
 			}
 			//System.out.println(exp.functionInvocation().getText());
@@ -204,7 +200,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		TerminalNode id = parent.identifierVar().Identifier();
 		String varId = id.getText();
 
-		System.out.println(ctx.getText());
+		//System.out.println(ctx.getText());
 		LeverParser.ExpressionContext expCtx = ctx.expression();
 		LType type = getExpressionType(expCtx);
 
@@ -212,22 +208,51 @@ public class VariableCheckingListener extends LeverBaseListener {
 		initializeVarIdType(varId, type);
 	}
 
+	public static LType getMethodCallType(String funcId) {
+		LType type = null;
+
+		LeverParser.MethodDefinitionContext ctx = functionTable.get(funcId);
+
+
+		LeverParser.BlockContext block = ctx.methodBody().block();
+
+		if (block != null) {
+
+			List statements = block.blockStatement();
+
+			for (Object stm : statements) {
+
+				LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
+
+				if (blSt.statement() != null) {
+
+					if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
+						
+						LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
+						LType typeId = getExpressionType(exp);
+						type = typeId;
+						// initializeVarIdType(funcId, type);
+					}
+				}
+
+			}
+		}
+
+		return type;		
+	}
+
 
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
 
 		String funcId = ctx.Identifier().getText();
+		addVarId(funcId);
 
-		if (!functionTable.containsKey(funcId)) {
-			functionTable.put(funcId, ctx);
+		if (ctx.formalParameters() !=null) {
+			
 		}
-		else {
-			System.out.println("duplicate declaration of function: " + funcId);
-			System.exit(1);
-		}
-		
 
-		// addVarId(varId);
-		
+		functionTable.put(funcId, ctx);
+
 		// LeverParser.BlockContext block = ctx.methodBody().block();
 
 		// if (block != null) {
