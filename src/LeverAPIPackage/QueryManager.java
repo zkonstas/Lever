@@ -1,10 +1,9 @@
+package LeverAPIPackage;
+
 import com.google.gson.Gson;
 import twitter4j.Query;
 import twitter4j.Status;
 import twitter4j.*;
-
-
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,15 +16,15 @@ import java.util.*;
  */
 public class QueryManager {
 
-    Query masterQuery;
-    String queryString;
-    ArrayList<String> userList;
-    ArrayList<String> topicList;
-    ArrayList<String> generalStringList;
-    QueryResult queryResult;
-    Result customResult;
-    int numberOfPages;
-    FilterQuery filterQuery;
+    public Query masterQuery;
+    public String queryString;
+    public ArrayList<String> userList;
+    public ArrayList<String> topicList;
+    public ArrayList<String> generalStringList;
+    public QueryResult queryResult;
+    public Result customResult;
+    public int numberOfPages;
+    public FilterQuery filterQuery;
 
 
     /**

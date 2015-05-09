@@ -1,15 +1,11 @@
+package LeverAPIPackage;
+
 import com.googlecode.charts4j.*;
 import com.googlecode.charts4j.Color;
 import com.googlecode.charts4j.Shape;
-
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import static com.googlecode.charts4j.Color.*;
-
-
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;

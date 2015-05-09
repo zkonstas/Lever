@@ -1,5 +1,6 @@
+package LeverAPIPackage;
+
 import twitter4j.*;
-import twitter4j.User;
 
 import java.util.*;
 
@@ -8,9 +9,9 @@ import java.util.*;
  */
 public class Result {
 
-    Set<User> uniqueUsers;
-    ArrayList<Status> statuses;
-      private static Result instance = null;
+    public Set<User> uniqueUsers;
+    public ArrayList<Status> statuses;
+    private static Result instance = null;
 
     /* Constructor */
 
@@ -19,7 +20,7 @@ public class Result {
 //    }
 
     public static Result getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Result();
         }
         return instance;
@@ -30,10 +31,10 @@ public class Result {
         this.statuses = new ArrayList<>();
     }
 
-    public void addQueryResult(QueryResult queryResult){
+    public void addQueryResult(QueryResult queryResult) {
         //add all users from query result
         ArrayList users = new ArrayList();
-        for(int i=0;i<queryResult.getTweets().size();i++){
+        for (int i = 0; i < queryResult.getTweets().size(); i++) {
             users.add(queryResult.getTweets().get(i).getUser());
 
 
@@ -42,7 +43,6 @@ public class Result {
         this.statuses.addAll(queryResult.getTweets());
         this.uniqueUsers.addAll(users);
     }
-
 
 
     public Date[] getTimesOfAllTweets() {
@@ -58,7 +58,7 @@ public class Result {
         return this.statuses.size();
     }
 
-    public double getFetchTime(){
+    public double getFetchTime() {
 //        return this.origResult.getCompletedIn();
         return 0.0;
     }
@@ -87,11 +87,11 @@ public class Result {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String retValue = "";
-        for (int i=0;i<this.statuses.size();i++) {
+        for (int i = 0; i < this.statuses.size(); i++) {
             Status tweet = this.statuses.get(i);
-            retValue = retValue+"@" + tweet.getUser().getScreenName() + " - " + tweet.getText()+"\n";
+            retValue = retValue + "@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + "\n";
         }
         return retValue;
     }
