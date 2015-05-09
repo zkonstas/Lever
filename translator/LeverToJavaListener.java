@@ -110,15 +110,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	@Override public void enterLever(LeverParser.LeverContext ctx) {
-		printTarget("import sun.jvm.hotspot.utilities.Interval;");
-		printTarget("import twitter4j.*;");
-		printTarget("import twitter4j.User;");
+		printTarget("import sun.jvm.hotspot.utilities.Interval;\n");
+		printTarget("import twitter4j.*;\n");
+		printTarget("import twitter4j.User;\n");
 		printTarget("\n");
-		printTarget("import java.util.Calendar;");
-		printTarget("import java.util.Date;");
-		printTarget("import java.util.List;");
-		printTarget("import java.util.Scanner;");
-
+		printTarget("import java.util.*;\n\n");
 
 		printTarget("public class " + fileName + " ");
 		openBraces();
@@ -135,8 +131,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	}
 	@Override public void exitLever(LeverParser.LeverContext ctx) {
-		//printTarget("\n");
 		closeBraces();
+		//printTarget("exit lever");
 
 		try {
 			bw.close();
@@ -148,11 +144,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterBlock(LeverParser.BlockContext ctx) {
-		//openBraces();
 	}
 	@Override
 	public void exitBlock(LeverParser.BlockContext ctx) {
-		//closeBraces();
 	}
 	@Override public void enterBlockStatement(LeverParser.BlockStatementContext ctx) {
 		
@@ -186,8 +180,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 	
 	@Override
 	public void enterForIn(LeverParser.ForInContext ctx) {
-
-
 		//TokenStream tokens = parser.getTokenStream();
 
 		TerminalNode begin = ctx.getToken(LeverLexer.NumberLiteral, 0);
@@ -195,10 +187,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		printTarget("for (int " + ctx.Identifier() + " = " + begin + "; ");
 		printTarget(ctx.Identifier() + " < " + end + "; " + ctx.Identifier() + "++) ");
-
-
-		
 	}
+	@Override
+	public void exitForIn(LeverParser.ForInContext ctx) {
+	}
+
 	@Override
 	public void enterForEach(LeverParser.ForEachContext ctx) {
 		
@@ -211,7 +204,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		} else {
 			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + " : ");
-			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ")");
+			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ") ");
 		}
 	}
 
@@ -276,11 +269,13 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void exitVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
 		
 	}
-	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
+	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) {
+
 
 		String varId = ctx.Identifier().getText();
 		VariableCheckingListener.LType type = symbolTable.get(varId);
 
+		printTabs();
 		printTarget("public static ");
 
 		if (type != null) {
@@ -400,6 +395,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 					printTarget("LeverAPI.input()");
 				
 				
+				} else if (id.equals("graph")) {
+					printTarget("LeverAPI.graph");
+
 				} else {
 
 					tmp = node.getParent().getChild(0).toString();
