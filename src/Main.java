@@ -14,9 +14,9 @@ public class Main {
     public static void main(String[] args) {
 
 
-//        newExample1(); //simple
+        newExample1(); //simple
 //        newExample2(); //UK election with graph
-        newExample3(); //UK election between cities
+//        newExample3(); //UK election between cities
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -39,7 +39,7 @@ public class Main {
      * }
      */
     public static void newExample1() {
-        Result result = LeverAPI.get("#nyc,[\"location\":\"new york\"], #manhattan");
+        Result result = LeverAPI.get("#nyc,[\"location\":\"new york\",\"since\":\"2015-05-04\",\"until\":\"2015-05-07\",\"result type\":\"recent\"], #manhattan");
         LeverAPI.output(result);
     }
 

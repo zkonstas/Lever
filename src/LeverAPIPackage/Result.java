@@ -100,7 +100,7 @@ public class Result {
         String retValue = "";
         for (int i = 0; i < this.statuses.size(); i++) {
             Status tweet = this.statuses.get(i);
-            retValue = retValue + "@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + "\n";
+            retValue = retValue + "@" + tweet.getUser().getScreenName() + " - " + tweet.getText() +tweet.getCreatedAt() +"\n";
         }
         return retValue;
     }
