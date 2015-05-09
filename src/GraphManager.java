@@ -7,15 +7,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import static com.googlecode.charts4j.Color.*;
-import static com.googlecode.charts4j.UrlUtil.normalize;
-import static org.junit.Assert.assertEquals;
+
+
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 
 /**
