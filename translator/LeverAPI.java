@@ -7,13 +7,13 @@ public class LeverAPI {
 		return QueryManager.getResultFromArguments(str);
 	}
 
-	public static void createBarGraph(String title, String[] xLabels, double[] dataPoints){
-		GraphManager.createBarChart(title,xLabels,dataPoints);
+	pubic static void graph(String barType,String title, String[] xLabels, double[] dataPoints){
+		if(barType.equals("line"))
+			GraphManager.createLineChart(title, xLabels, dataPoints);
+		else
+			GraphManager.createBarChart(title,xLabels,dataPoints);
 	}
-	public static void createLineGraph(String title, String[] xLabels, double[] dataPoints){
-		GraphManager.createLineChart(title, xLabels, dataPoints);
-	}
-
+	
 	public static void output(Object obj) {
 		if (obj instanceof Status) {
 			//Object is a status
