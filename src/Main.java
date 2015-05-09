@@ -2,11 +2,10 @@
  * Created by royhermann on 4/9/15.
  */
 
+import LeverAPIPackage.*;
 import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
-
-
 import java.util.*;
 
 
