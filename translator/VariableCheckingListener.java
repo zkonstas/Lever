@@ -29,6 +29,11 @@ public class VariableCheckingListener extends LeverBaseListener {
 		this.parser = parser;
 	}
 
+	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
+		//System.out.println(ctx.Identifier().getText());
+		addVarId(ctx.Identifier().getText());
+	}
+
 	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {
 
 		LType type = null;
@@ -95,27 +100,63 @@ public class VariableCheckingListener extends LeverBaseListener {
 			LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
 			LType type = getExpressionType(rExp);
 
-			saveToTable(varId, type);
+			assignVarIdType(varId, type);
 		}
 	}
 
-	public void saveToTable(String varId, LType type) {
+	public void addVarId(String varId) {
 
 		if (!symbolTable.containsKey(varId)) {
-				symbolTable.put(varId, type);
+				symbolTable.put(varId, null);
 				
 				// System.out.println(id.getText());
 				// System.out.println(type);
-			}
-			else {
-				if (symbolTable.get(varId) != type) {
+		}
+		else {
+			//variable identifier has already been declared
+			System.out.println("duplicate declaration of identifier: " + varId);
+			System.exit(1);
+		}
+	}
 
+	public void initializeVarIdType(String varId, LType type) {
+
+		if (symbolTable.containsKey(varId)) {
+				symbolTable.put(varId, type);
+				// System.out.println(id.getText());
+				// System.out.println(type);
+		}
+		else {
+
+			System.out.println("semantic check error!");
+			System.exit(1);	
+		}
+	}
+
+	public void assignVarIdType(String varId, LType type) {
+
+		if (symbolTable.containsKey(varId)) {
+
+			LType assignedType = symbolTable.get(varId);
+
+			if (assignedType != null) {
+
+				if (assignedType != type) {
 					//trying to assign incompatible variable types
-					System.out.println("incompatible types!");
+					System.out.println("incompatible type assignment");
 					System.exit(1);
 				}
-				
 			}
+			else {
+				symbolTable.put(varId, type);
+			}
+		}
+		else {
+			//trying to assign incompatible variable types
+			System.out.println("identifier has not been declared!");
+			System.out.println("identifier: " + varId);
+			System.exit(1);
+		}
 	}
 
 	@Override
@@ -130,7 +171,39 @@ public class VariableCheckingListener extends LeverBaseListener {
 		LType type = getExpressionType(expCtx);
 
 		// System.out.println("Initialized " + varId);
-		saveToTable(varId, type);
+		initializeVarIdType(varId, type);
+	}
+
+
+	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
+
+		String varId = ctx.Identifier().getText();
+		addVarId(varId);
+		
+		LeverParser.BlockContext block = ctx.methodBody().block();
+
+		if (block != null) {
+
+			List statements = block.blockStatement();
+
+			for (Object stm : statements) {
+
+				LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
+
+				if (blSt.statement() != null) {
+
+					if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
+						
+						LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
+						LType type = getExpressionType(exp);
+						initializeVarIdType(varId, type);
+					}
+				}
+
+			}
+		}
+
+
 	}
 
 }
