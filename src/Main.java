@@ -14,8 +14,8 @@ public class Main {
     public static void main(String[] args) {
 
 
-//        newExample1();
-        newExample2();
+//        newExample1(); //simple
+        newExample2(); //UK election with graph
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -70,7 +70,7 @@ public class Main {
      */
     public static void newExample2(){
 
-        String str = "uk election";
+        String str = "uk election,[\"result type\":\"recent\"]";
         Result result = QueryManager.getResultFromArguments(str);
         int cameronCount = 0;
         int milbandCount = 0;
@@ -81,7 +81,7 @@ public class Main {
                 milbandCount++;
         }
         output(result);
-        GraphManager.createBarChart("tweets of elections about cameron vs bilband", null, "# of mentions", new String[]{"Cameron", "Milband"}, null, new double[]{cameronCount, milbandCount});
+        GraphManager.createBarChart("tweets of elections about cameron vs Milband", null, "# of mentions", new String[]{"Cameron", "Milband"}, null, new double[]{cameronCount, milbandCount});
 
     }
 

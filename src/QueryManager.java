@@ -70,7 +70,8 @@ public class QueryManager {
                     ar.add(elements[i]);
             }
             //remove from string
-            arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(lastCloseBracket+2);
+            int endIndex = (lastCloseBracket+2 > arguments.length()) ? lastCloseBracket+1 : lastCloseBracket+2;
+            arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(endIndex);
             lastCloseBracket = arguments.lastIndexOf("]");
             lastOpenBracket = arguments.lastIndexOf("[");
         }
