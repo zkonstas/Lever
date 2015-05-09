@@ -75,11 +75,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("for");
 		leverTerminals.add("each");
 		leverTerminals.add("in");
+
+        //don't keep (,), gets complicated for nested arithmetic etc
 		leverTerminals.add("("); //do not remove, parenthesis in lever very different ordering
 		leverTerminals.add(")");
 		//leverTerminals.add(",");
+
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
+        leverTerminals.add("true"); //do not remove, handle the same way as yes/no
+        leverTerminals.add("false");
+
+
 		leverTerminals.add("var");
 		leverTerminals.add("program");
 
@@ -254,9 +261,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 		//printTarget(ctx.StringLiteral().getText());
 		if (ctx.BooleanLiteral() != null) {
 			String lit = ctx.BooleanLiteral().toString();
-			if (lit.equals("yes")) {
+			if (lit.equals("yes") || lit.equals("true")) {
 				printTarget("true");
-			} else if (lit.equals("no")) {
+			} else if (lit.equals("no") || lit.equals("false")) {
 				printTarget("false");
 			}
 			//System.out.println(ctx.BooleanLiteral().toString());
@@ -491,7 +498,16 @@ public class LeverToJavaListener extends LeverBaseListener {
                     if (noSpaceAfter.contains(id)) {
                         printTarget(id);
                     } else {
-                        printTarget(id + " ");
+
+
+
+                        tmp = node.getParent().getChild(0).toString();
+                        if (tmp.equals("for") && id.equals(",")) {
+
+                        } else {
+                            printTarget(id + " ");
+                        }
+
                     }
 
 

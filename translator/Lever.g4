@@ -140,12 +140,14 @@ expressionB
 
 expression
     :   primary
+    |   parExpression
     |   expression '.' Identifier
     |   expression '.' 'this'
     |	methodCall
     |   expression '[' expression ']'
     |   '(' type ')' expression
     |   expression ('++' | '--')
+    |   ('+'|'-'|'++'|'--') expression
     |   ('+'|'-'|'++'|'--') expression
     |   ('!') expression
     |   expression ('*'|'/'|'%') expression
@@ -163,8 +165,7 @@ methodCall
     ;
 
 primary
-    :   '(' expression ')'
-    |   'this'
+    :   'this'
     |   literal
     |   Identifier
 	|	AT
