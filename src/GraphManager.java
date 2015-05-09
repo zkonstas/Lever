@@ -7,15 +7,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import static com.googlecode.charts4j.Color.*;
-import static com.googlecode.charts4j.UrlUtil.normalize;
-import static org.junit.Assert.assertEquals;
+
+
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 
 /**
@@ -23,7 +21,6 @@ import java.util.logging.Logger;
  */
 
 
-//TODO: Add axis range/bounds/scale to match data that is being used
 
 public class GraphManager {
 
@@ -34,6 +31,9 @@ public class GraphManager {
 
     public static void createLineChart(double[] dataPoints) {
         createLineChart(null,null,null, null, null, dataPoints);
+    }
+    public static void createLineChart(String title, String[] xLabels,double[] dataPoints) {
+        createLineChart(title,null,null, xLabels, null, dataPoints);
     }
     public static void createLineChart(String title, String xTitle, String yTitle, double[] dataPoints) {
         createLineChart(title, xTitle, yTitle, null, null, dataPoints);
@@ -108,6 +108,11 @@ public class GraphManager {
     public static void createBarChart(double[] dataPoints) {
         createBarChart(null,null,null,null,null,dataPoints);
     }
+
+    public static void createBarChart(String title, String[] xLabels,double[] dataPoints) {
+        createBarChart(title,null,null,xLabels,null,dataPoints);
+    }
+
     public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
 
         // Defining data plots.
