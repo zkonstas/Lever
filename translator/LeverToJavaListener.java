@@ -69,6 +69,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	private void initConstructs() {
 		leverConstructs.add("for");
 		leverConstructs.add("output");
+		leverConstructs.add("get");
 
 
 		leverTerminals.add("for");
@@ -81,6 +82,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("no");
 		leverTerminals.add("var");
 		leverTerminals.add("program");
+		//leverTerminals.add("get");
 		
 	}
 	private void openBraces() {
@@ -221,12 +223,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterExpressionList(LeverParser.ExpressionListContext ctx) {
-		printTarget("(");
+		if (!leverTerminals.contains("dontPrintParams"))
+			printTarget("(");
 
 	}
 	@Override
 	public void exitExpressionList(LeverParser.ExpressionListContext ctx) {
-		printTarget(")");
+		if (!leverTerminals.contains("dontPrintParams"))
+			printTarget(")");
 
 	}
 
@@ -249,7 +253,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 			} else if (lit.equals("no") || lit.equals("false")) {
 				printTarget("false");
 			}
-			//System.out.println(ctx.BooleanLiteral().toString());
 		}
 	}
 	@Override
@@ -258,7 +261,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
-		printTarget(", ");
+		if (!leverTerminals.contains("dontPrintParams")) {
+			printTarget(", ");
+		}
+			
 	}
 
 	@Override public void enterVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
@@ -302,7 +308,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) {
 		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
-		printTarget(", " + getJavaType(_type) + " ");	
+			printTarget(", " + getJavaType(_type) + " ");	
 
 		//printTarget(", LeverVar " );
 	}
@@ -311,7 +317,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTabs();
 
 		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier().getText());
-		printTarget(getJavaType(_type) + " ");	
+		if (_type != null)
+			printTarget(getJavaType(_type) + " ");	
 	}
 
 	@Override public void exitIdentifierVar(LeverParser.IdentifierVarContext ctx) {
@@ -325,6 +332,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	private String getJavaType(VariableCheckingListener.LType _type) {
+		if (_type != null)
 		switch (_type) {
 			case LString:
 				return "String";
@@ -353,9 +361,24 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 
 		}
+		else
+			return null;
 
+		}
+
+	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) { 
+		if (ctx.Identifier().getText().equals("get")) {
+			leverTerminals.add("dontPrintParams");
+			String text = ctx.getText();
+			printTarget("QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+		}
 	}
 
+	@Override public void exitMethodCall(LeverParser.MethodCallContext ctx) { 
+		if (ctx.Identifier().getText().equals("get")) {
+			leverTerminals.remove("dontPrintParams");
+		}
+	}
 	@Override public void enterInitialization(LeverParser.InitializationContext ctx) {
 
 		LeverParser.VariableDeclaratorContext parent = (LeverParser.VariableDeclaratorContext)ctx.getParent();
@@ -396,16 +419,16 @@ public class LeverToJavaListener extends LeverBaseListener {
 				} else if (id.equals("graph")) {
 					printTarget("LeverAPI.graph");
 
-				} else {
+				} else if (id.equals("get")) {
 
+				} else {
 					tmp = node.getParent().getChild(0).toString();
-					if (leverConstructs.contains(tmp)) {
+					if (leverConstructs.contains(tmp)  || (leverTerminals.contains("dontPrintParams"))) {
 
 					} else {
 						printTarget(id);
 
 					}
-					//System.out.println(node.getParent().getChild(0) + ", " + id);
 				}
 				
 				break;
@@ -424,7 +447,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 			case LeverLexer.StringLiteral:
 				printTarget(id);
-
 				break;
 
 			case LeverLexer.AND:
@@ -468,9 +490,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 				break;
 
 			default:
-				if (!leverTerminals.contains(id)) {
+				if (!(leverTerminals.contains(id) || (leverTerminals.contains("dontPrintParams")))) {
 					printTarget(id + " ");
-
 				}
 			
 		}

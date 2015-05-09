@@ -75,6 +75,7 @@ literal
     |   StringLiteral
     |   BooleanLiteral
     |   'null'
+    |   LeverLiteral
     ;
 
 // STATEMENTS / BLOCKS
@@ -197,10 +198,15 @@ WHILE		: 'while';
 // LEVER SYMBOLS
 
 AT			: '@';
-HASHTAG		: '#';
+HASHTAG     : '#';
 ATVAR		: 'uSeR';
 
 // LITERALS
+
+LeverLiteral
+    : '#' StringCharacters
+    | '@' StringCharacters
+    ;
 
 NumberLiteral
 	: '-'?[0-9]+('.'[0-9]+)?
@@ -229,7 +235,7 @@ StringCharacters
 
 fragment
 StringCharacter
-    :   ~["\\]
+    :   ~[;"\\]
     |   EscapeSequence
     ;
 
