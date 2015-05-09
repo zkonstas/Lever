@@ -42,8 +42,6 @@ public class Main {
 
 //        String str = "#comedy,#nyc,[\"location\":\"new york\",\"language\":\"en\"], #manhattan";
         String str = "#nyc,[\"location\":\"new york\", #manhattan";
-
-
         Result result = LeverAPI.get(str);
         LeverAPI.output(result);
     }

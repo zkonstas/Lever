@@ -23,7 +23,6 @@ import java.util.logging.Logger;
  */
 
 
-//TODO: Add axis range/bounds/scale to match data that is being used
 
 public class GraphManager {
 
