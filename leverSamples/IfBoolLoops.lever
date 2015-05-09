@@ -1,0 +1,29 @@
+program {
+	if (yes)
+		output "hello world!\n";
+	else
+		output "goodbye world!\n";
+
+	if (false AND no) {
+		output "this will never get printed";
+		output "this neither";
+	}
+
+	if (true OR !no) {
+		output "hello parenthesis";
+	} else {
+		output "bye";
+	}
+
+	while (yes) {
+		output "looping forever";
+	}
+
+
+	for index in (0,5) {
+		output index;
+		if (index > 2 ) {
+			output 1 + 2;
+		}
+	}
+}
