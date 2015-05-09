@@ -37,13 +37,8 @@ initialization
     | '=' arrayInit
     ;
 
-variableInit
-    :   arrayInit 
-    |   expression
-    ;
-
 arrayInit
-    :   '[' (variableInit (',' variableInit)* (',')? )? ']'
+    :   '[' (expression (',' expression)* (',')? )? ']'
     ;
 
 type
@@ -147,7 +142,7 @@ expression
     :   primary
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |	Identifier expressionList?
+    |	methodCall
     |   expression '[' expression ']'
     |   '(' type ')' expression
     |   expression ('++' | '--')
@@ -161,6 +156,10 @@ expression
     |   expression OR expression
     |   expression '?' expression ':' expression
     |   expression '=' expression
+    ;
+
+methodCall
+    :   Identifier expressionList?
     ;
 
 primary
