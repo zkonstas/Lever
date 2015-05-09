@@ -172,9 +172,12 @@ methodCall
     :   Identifier expressionList?
     ;
 
+methodCall
+    :   Identifier expressionList?
+    ;
+
 primary
     :   '(' expression ')'
-    |   'this'
     |   literal
     |   Identifier
 	|	AT

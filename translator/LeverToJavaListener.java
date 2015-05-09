@@ -77,7 +77,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("in");
 		leverTerminals.add("(");
 		leverTerminals.add(")");
-		leverTerminals.add(",");
+		//leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
 		leverTerminals.add("var");
@@ -209,8 +209,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ") ");
 		}
 	}
-
-
 
 	@Override
 	public void enterParExpression(LeverParser.ParExpressionContext ctx) {
