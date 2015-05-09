@@ -6,6 +6,7 @@ import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
 
+
 import java.util.*;
 
 
@@ -14,8 +15,8 @@ public class Main {
     public static void main(String[] args) {
 
 
-//        newExample1(); //simple
-        newExample2(); //UK election with graph
+        newExample1(); //simple
+//        newExample2(); //UK election with graph
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -26,63 +27,61 @@ public class Main {
 //        gm.createLineChart(new double[]{120,200,50});
 
 
-
     }
 
     /**
      * In Lever:
      * program {
-     *
-     *     var result = get #nyc, ["location" : "new york"],#manhattan;
-     *     output result;
-     *
+     * <p/>
+     * var result = get #nyc, ["location" : "new york"],#manhattan;
+     * output result;
+     * <p/>
      * }
      */
-    public static void newExample1(){
+    public static void newExample1() {
 
 //        String str = "#comedy,#nyc,[\"location\":\"new york\",\"language\":\"en\"], #manhattan";
         String str = "#nyc,[\"location\":\"new york\", #manhattan";
 
 
-        Result result = QueryManager.getResultFromArguments(str);
-        output(result);
+        Result result = LeverAPI.get(str);
+        LeverAPI.output(result);
     }
 
     /**
      * In Lever: //not sure about this, we will need to talk about it
      * program{
-     *
-     *     var result = get "uk election";
-     *     var cameronCount = 0;
-     *     var milbandCount = 0;
-     *     for(int i=0;i<result.statuses.size;i++){
-     *          if(result.statuses.getText.contains("cameron"))
-     *              cameronCount = cameronCount +1;
-     *          if(result.statuses.getText.contains("milband"))
-     *              milbandCount = milbandCount+1;
-     *
-     *     }
-     *
-     *     Graph.barGraph("recent election tweets",["cameron","milband"],[cameronCount,milbandCount]);
-     *
-     *
+     * <p/>
+     * var result = get "uk election";
+     * var cameronCount = 0;
+     * var milbandCount = 0;
+     * for(int i=0;i<result.statuses.size;i++){
+     * if(result.statuses.getText.contains("cameron"))
+     * cameronCount = cameronCount +1;
+     * if(result.statuses.getText.contains("milband"))
+     * milbandCount = milbandCount+1;
+     * <p/>
+     * }
+     * <p/>
+     * Graph.barGraph("recent election tweets",["cameron","milband"],[cameronCount,milbandCount]);
+     * <p/>
+     * <p/>
      * }
      */
-    public static void newExample2(){
+    public static void newExample2() {
 
         String str = "uk election,[\"result type\":\"recent\"]";
-        Result result = QueryManager.getResultFromArguments(str);
+        Result result = LeverAPI.get(str);
         int cameronCount = 0;
         int milbandCount = 0;
-        for(int i=0;i<result.statuses.size();i++){
-            if(result.statuses.get(i).getText().toLowerCase().contains("cameron"))
+        for (int i = 0; i < result.statuses.size(); i++) {
+            if (result.statuses.get(i).getText().toLowerCase().contains("cameron"))
                 cameronCount++;
-            if(result.statuses.get(i).getText().toLowerCase().contains("milband"))
+            if (result.statuses.get(i).getText().toLowerCase().contains("milband"))
                 milbandCount++;
         }
-        output(result);
-        GraphManager.createBarChart("tweets of elections about cameron vs Milband", null, "# of mentions", new String[]{"Cameron", "Milband"}, null, new double[]{cameronCount, milbandCount});
-
+        LeverAPI.output(result);
+        LeverAPI.graph("bar", "tweets of elections about cameron vs Milband", new String[]{"Cameron", "Milband"}, new double[]{cameronCount, milbandCount});
     }
 
     /**
@@ -111,7 +110,7 @@ public class Main {
     /**
      * Here we run a sample query fetching all tweets in a certain location
      */
-    public static void example3(){
+    public static void example3() {
         QueryManager qm = new QueryManager();
         qm.masterQuery.setCount(10);
         try {
@@ -191,7 +190,7 @@ public class Main {
 
 
         GraphManager gm = new GraphManager();
-        gm.createBarChart("UK Elections Tweet Metrics", "Time", "Volume", new String[]{"Before 12:00:00PM", "After Before 12:00:00PM"}, new String[]{"0", "100"}, new double[]{before,after});
+        gm.createBarChart("UK Elections Tweet Metrics", "Time", "Volume", new String[]{"Before 12:00:00PM", "After Before 12:00:00PM"}, new String[]{"0", "100"}, new double[]{before, after});
 
     }
 
@@ -204,7 +203,7 @@ public class Main {
         qm.addGeneralSearchString("england :(");
         qm.get();
         System.out.println(qm.customResult.getSize());
-        for(int i=0;i<qm.customResult.getSize();i++)
+        for (int i = 0; i < qm.customResult.getSize(); i++)
             System.out.println(qm.customResult.statuses.get(i).getText());
     }
 
@@ -217,8 +216,7 @@ public class Main {
         } else if (obj instanceof User) {
             User user = (User) obj;
             System.out.println("@" + user.getScreenName());
-        }
-        else{
+        } else {
             System.out.println(obj.toString());
         }
 
