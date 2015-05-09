@@ -10,6 +10,7 @@ import twitter4j.*;
 import javax.xml.bind.SchemaOutputResolver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -50,13 +51,13 @@ public class QueryManager {
      * Add a string composed of multiple paramters to the query
      *
      * @param arguments arguments fed over from lever which should be to the query
-     * @return Formatted string matching query restrictions
+     * @return A Result containing the basic and vital information from the search query
      */
     public static Result getResultFromArguments(ArrayList<Object> arguments) {
         Twitter twitter = TwitterFactory.getSingleton();
 
         Query query = new Query();
-        QueryManager.addArgumentsToQuery(arguments,query);
+        QueryManager.getQueryStringForAllParamaters(arguments,query);
         QueryResult queryResult;
         Result result = new Result();
 
@@ -98,12 +99,7 @@ public class QueryManager {
 
     }
 
-    public static void addArgumentsToQuery(ArrayList<Object> arguments,Query query) {
-        //check if user
-        String queryString = QueryManager.getQueryStringForAllParamaters(arguments);
-        query.setQuery(queryString);
 
-    }
 
     /**
      * Adds a parameter to the search that will return tweets composed by a specific user
@@ -195,7 +191,7 @@ public class QueryManager {
      * @param location - The location that you want to search for
      * @throws Exception
      */
-    public double[] sendGetForLocation(String location) throws Exception {
+    public static GeoLocation sendGetForLocation(String location) throws Exception {
 
         //Replace spaces with '+' char for web query
         location = location.replace(" ", "+");
@@ -249,9 +245,9 @@ public class QueryManager {
 //        System.out.println(bb[0][0]+","+bb[0][1]+"\n"+bb[1][0]+","+bb[1][1]);
 //        this.filterQuery.locations(bb);
 
-        this.masterQuery.setGeoCode(new GeoLocation(lat,longitude),50, Query.Unit.km);
+        GeoLocation geoLocation = new GeoLocation(lat,longitude);
 
-        return coordinates;
+        return geoLocation;
 
     }
 
@@ -277,7 +273,7 @@ public class QueryManager {
         return str;
     }
 
-    private static String getQueryStringForAllParamaters(ArrayList<Object> arguments) {
+    private static String getQueryStringForAllParamaters(ArrayList<Object> arguments, Query query) {
         String str = "";
         /* Users */
         ArrayList userList = new ArrayList();
@@ -297,25 +293,42 @@ public class QueryManager {
                 else
                     generalStringList.add(string);
             }
+            if(a instanceof Map) {
+                Map map = (HashMap)a;
+                if(map.get("location")!=null){
+                    String location = (String)map.get("location");
+                    try {
+                        query.setGeoCode(QueryManager.sendGetForLocation(location),50, Query.Unit.km);
+                    } catch (Exception e) {
+                        System.out.println("failed getting location");
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
         }
 
 
         //Create query string
         for (int i = 0; i < userList.size(); i++) {
             str = str + userList.get(i);
-            if (i < userList.size() - 1)
+            if (i < userList.size() - 1 && userList.size() > 1)
                 str = str + " OR ";
         }
         /* Topics/Hashtags */
         for (int i = 0; i < topicList.size(); i++) {
-            if (str.substring(str.length() - 1) == "")
-                str = str + " ";
-            str = str + topicList.get(i);
+//
+//            if (str.substring(str.length() - 1) == "")
+//                str = str + " ";
+            str = str + topicList.get(i)+" ";
         }
         /* other search paramters */
         for (int i = 0; i < generalStringList.size(); i++) {
-            str = str + generalStringList.get(i);
+            str = str + generalStringList.get(i)+" ";
         }
+
+        query.setQuery(str);
 
         return str;
     }
