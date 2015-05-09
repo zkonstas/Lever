@@ -5,8 +5,7 @@ SOURCEFILES = \
 	LeverLexer.java \
 	LeverParser.java \
 	*Listener.java \
-	Leverc.java \
-	LeverAPI.java
+	Leverc.java 
 
 CLASSFILES = $(SOURCEFILES:.java=.class)
 
