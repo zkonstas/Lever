@@ -19,8 +19,9 @@ public class VariableCheckingListener extends LeverBaseListener {
 	LeverParser parser;
 
 	public enum LType {
-    	LVoid, LString, LInteger, LDouble, LBoolean,
-    	LList, LDictionary, LUser, LTopic, LResult 
+    	LString, LInteger, LDouble, LBoolean,
+    	LDictionary, LUser, LTopic, LResult,
+        LListString, LListInteger, LListDouble, LListBoolean, LListUser, LListTopic
 	}
 
 	public static HashMap<String, LType> symbolTable = new HashMap<String, LType>();
@@ -70,7 +71,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 						// System.out.println("double");						
 					}
 					else {
-						// System.out.println("int");
+						//System.out.println("int");
 						type = LType.LInteger;
 					}
 				}
@@ -193,6 +194,26 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 	}
 
+	public void saveToTable(String varId, LType type, ParserRuleContext ctx) {
+
+        if (!symbolTable.containsKey(varId)) {
+            symbolTable.put(varId, type);
+
+            // System.out.println(id.getText());
+            // System.out.println(type);
+        } else {
+			if (symbolTable.get(varId) != type) {
+                exitErrorLine("Incompatible types!", ctx);
+				//trying to assign incompatible variable types
+			}
+		}
+	}
+
+    private void exitErrorLine(String _error, ParserRuleContext _ctx) {
+        System.out.println("Sorry, Lever compile failed! :(");
+        System.out.println("line " + _ctx.getStart().getLine() + ": " + _error);
+        System.exit(1);
+    }
 	@Override
 	public void enterInitialization(LeverParser.InitializationContext ctx) {
 
@@ -200,9 +221,40 @@ public class VariableCheckingListener extends LeverBaseListener {
 		TerminalNode id = parent.identifierVar().Identifier();
 		String varId = id.getText();
 
+        LType type = null;
 		LeverParser.ExpressionContext expCtx = ctx.expression();
-		LType type = getExpressionType(expCtx);
+        if (expCtx != null) {
+            type = getExpressionType(expCtx);
+        } else {
+            LeverParser.ArrayInitContext arrCtx = ctx.arrayInit();
+            if (arrCtx != null) {
+                type = getExpressionType(arrCtx.expression(0));
 
+                switch(type) {
+                    case LInteger:
+                        type = LType.LListInteger;
+                        break;
+                    case LDouble:
+                        type = LType.LListDouble;
+                        break;
+                    case LString:
+                        type = LType.LListString;
+                        break;
+                    case LBoolean:
+                        type = LType.LListBoolean;
+                        break;
+                }
+                //System.out.println(type.name());
+            }
+
+        }
+
+        if (type == null) {
+            exitErrorLine("can't figure out what type this var is!", ctx);
+        } else {
+            // System.out.println("Initialized " + varId);
+            saveToTable(varId, type, ctx);
+        }
 		// System.out.println("Initialized " + varId);
 		initializeVarIdType(varId, type);
 	}
@@ -274,7 +326,6 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 		// 	}
 		// }
-
 
 	}
 

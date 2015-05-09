@@ -37,13 +37,8 @@ initialization
     | '=' arrayInit
     ;
 
-variableInit
-    :   arrayInit 
-    |   expression
-    ;
-
 arrayInit
-    :   '[' (variableInit (',' variableInit)* (',')? )? ']'
+    :   LBRACK (expression (',' expression)* (',')? )? RBRACK
     ;
 dictionary
     :   '[' expression ':' expression (',' expression ':' expression)* ']'
@@ -137,12 +132,14 @@ expressionB
 
 expression
     :   primary
+    |   parExpression
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |   methodCall
-    |   expression '[' expression ']'
+    |	methodCall
+    |   expression arrayAccess
     |   '(' type ')' expression
     |   expression ('++' | '--')
+    |   ('+'|'-'|'++'|'--') expression
     |   ('+'|'-'|'++'|'--') expression
     |   ('!') expression
     |   expression ('*'|'/'|'%') expression
@@ -159,9 +156,13 @@ expression
 methodCall
     :   Identifier expressionList?
     ;
-    
+
+arrayAccess
+    :   LBRACK expression RBRACK
+    ;
+
 primary
-    :   '(' expression ')'
+    :   'this'
     |   literal
     |   Identifier
 	|	AT
