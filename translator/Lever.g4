@@ -66,10 +66,6 @@ formalParameterB
     :   ',' type Identifier
     ;
 
-lastFormalParameter
-    :   type '...' Identifier
-    ;
-
 methodBody
     :   block
     ;

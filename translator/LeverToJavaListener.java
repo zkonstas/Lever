@@ -74,8 +74,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("for");
 		leverTerminals.add("each");
 		leverTerminals.add("in");
-		//leverTerminals.add("(");
-		//leverTerminals.add(")");
+		leverTerminals.add("(");
+		leverTerminals.add(")");
 		leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
@@ -277,22 +277,20 @@ public class LeverToJavaListener extends LeverBaseListener {
 		
 	}
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
-		String ctxText = ctx.getText();
-		if (ctxText.contains("return")) {
-			int index = ctxText.lastIndexOf("return");
-			if (ctxText.length() - index > 8) {
-				printTarget("public static ");
-				index = index + 6;
-				String retrievedIdentifier = ctxText.substring(index, ctxText.length()-2);
-				
-				VariableCheckingListener.LType _type = symbolTable.get(retrievedIdentifier);
-				printTarget(getJavaType(_type) + " ");	
-				
-			}
-		} else {
-			printTarget("public static void ");
+
+		String varId = ctx.Identifier().getText();
+		VariableCheckingListener.LType type = symbolTable.get(varId);
+
+		printTarget("public static ");
+
+		if (type != null) {
+			printTarget(getJavaType(type) + " ");			
 		}
-		//System.out.println(ctx.getText().length() - ctx.getText().lastIndexOf("return"));
+		else {
+			printTarget("void ");
+		}
+
+		//Check to see if there are any 
 	}
 	@Override public void enterFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
 		printTarget("(");
