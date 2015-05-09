@@ -332,6 +332,12 @@ public class QueryManager {
                 if (map.get("language") != null) {
                     query.setLang(String.valueOf(map.get("language")));
                 }
+                if (map.get("since") != null) {
+                    query.setSince(String.valueOf(map.get("since")));
+                }
+                if (map.get("until") != null) {
+                    query.setSince(String.valueOf(map.get("until")));
+                }
                 if (map.get("result type") != null) {
                     String rt = String.valueOf(map.get("result type"));
                     if (rt.equals("popular"))
