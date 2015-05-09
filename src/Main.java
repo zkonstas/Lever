@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
 
 
-        newExamples1();
+        newExample1();
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -28,14 +28,19 @@ public class Main {
 
     }
 
-    public static void newExamples1(){
+    public static void newExample1(){
         ArrayList<Object> al = new ArrayList<>();
         al.add("#comedy");
         al.add("#nyc");
         HashMap map = new HashMap();
         map.put("location","new york");
         al.add(map);
-        Result result = QueryManager.getResultFromArguments(al);
+
+//        String str = "#comedy,#nyc,[\"location\":\"new york\",\"language\":\"en\"], #manhattan";
+        String str = "#nyc,[\"location\":\"new york\", #manhattan";
+
+
+        Result result = QueryManager.getResultFromArguments(str);
         System.out.println(result);
     }
 

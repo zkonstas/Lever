@@ -47,17 +47,45 @@ public class QueryManager {
 
     }
 
+    public static ArrayList<Object> arrayListFromStringArguments(String arguments) {
+        ArrayList<Object> al = new ArrayList<>();
+        int lastCloseBracket = arguments.lastIndexOf("]");
+        int lastOpenBracket = arguments.lastIndexOf("[");
+        //1. Remove all maps
+        while (lastCloseBracket != -1 && lastOpenBracket != -1) {
+            String s = arguments.substring(lastOpenBracket+1, lastCloseBracket);
+            Map map = new HashMap();
+            String[] pairs = s.split(",");
+            for (int i = 0; i < pairs.length; i++) {
+                String[] pair = pairs[i].split(":");
+                map.put(pair[0], pair[1]);
+            }
+            al.add(map);
+            //remove from string
+            arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(lastCloseBracket+2);
+            lastCloseBracket = arguments.lastIndexOf("]");
+            lastOpenBracket = arguments.lastIndexOf("[");
+        }
+        String[] ars = arguments.split(",");
+        for (String str : ars) {
+            al.add(str);
+        }
+
+        return al;
+    }
+
     /**
      * Add a string composed of multiple paramters to the query
      *
      * @param arguments arguments fed over from lever which should be to the query
      * @return A Result containing the basic and vital information from the search query
      */
-    public static Result getResultFromArguments(ArrayList<Object> arguments) {
+    public static Result getResultFromArguments(String arguments) {
         Twitter twitter = TwitterFactory.getSingleton();
 
         Query query = new Query();
-        QueryManager.getQueryStringForAllParamaters(arguments,query);
+        ArrayList<Object> args = QueryManager.arrayListFromStringArguments(arguments);
+        QueryManager.getQueryStringForAllParamaters(args, query);
         QueryResult queryResult;
         Result result = new Result();
 
@@ -80,7 +108,7 @@ public class QueryManager {
                 e.printStackTrace();
             }
         }
-    return result;
+        return result;
     }
 
     /**
@@ -98,7 +126,6 @@ public class QueryManager {
             addGeneralSearchString(queryString);
 
     }
-
 
 
     /**
@@ -159,7 +186,6 @@ public class QueryManager {
 
         String queryString = this.getQueryStringForAllParamaters();
         this.output("query string = " + queryString);
-
 
 
         this.masterQuery.setQuery(queryString);
@@ -235,7 +261,7 @@ public class QueryManager {
         coordinates[1] = longitude;
 
 
-        System.out.println(lat+" "+longitude);
+        System.out.println(lat + " " + longitude);
 
 //        double lat1 = lat - .25;
 //        double longitude1 = longitude - .25;
@@ -245,7 +271,7 @@ public class QueryManager {
 //        System.out.println(bb[0][0]+","+bb[0][1]+"\n"+bb[1][0]+","+bb[1][1]);
 //        this.filterQuery.locations(bb);
 
-        GeoLocation geoLocation = new GeoLocation(lat,longitude);
+        GeoLocation geoLocation = new GeoLocation(lat, longitude);
 
         return geoLocation;
 
@@ -281,11 +307,11 @@ public class QueryManager {
         ArrayList generalStringList = new ArrayList();
 
         //add into relevant groups
-        for(int i=0;i<arguments.size();i++){
+        for (int i = 0; i < arguments.size(); i++) {
             Object a = arguments.get(i);
             //if it is a string
-            if(a instanceof String) {
-                String string = (String)a;
+            if (a instanceof String) {
+                String string = (String) a;
                 if (string.charAt(i) == '@')
                     userList.add(string);
                 else if (string.charAt(i) == '#')
@@ -293,12 +319,12 @@ public class QueryManager {
                 else
                     generalStringList.add(string);
             }
-            if(a instanceof Map) {
-                Map map = (HashMap)a;
-                if(map.get("location")!=null){
-                    String location = (String)map.get("location");
+            if (a instanceof Map) {
+                Map map = (HashMap) a;
+                if (map.get("location") != null) {
+                    String location = (String) map.get("location");
                     try {
-                        query.setGeoCode(QueryManager.sendGetForLocation(location),50, Query.Unit.km);
+                        query.setGeoCode(QueryManager.sendGetForLocation(location), 50, Query.Unit.km);
                     } catch (Exception e) {
                         System.out.println("failed getting location");
                         e.printStackTrace();
@@ -321,11 +347,11 @@ public class QueryManager {
 //
 //            if (str.substring(str.length() - 1) == "")
 //                str = str + " ";
-            str = str + topicList.get(i)+" ";
+            str = str + topicList.get(i) + " ";
         }
         /* other search paramters */
         for (int i = 0; i < generalStringList.size(); i++) {
-            str = str + generalStringList.get(i)+" ";
+            str = str + generalStringList.get(i) + " ";
         }
 
         query.setQuery(str);
@@ -333,19 +359,17 @@ public class QueryManager {
         return str;
     }
 
-    private static String formattedUser(String user){
-        if(user.charAt(0) == '@')
-            return "from:"+user.substring(1);
+    private static String formattedUser(String user) {
+        if (user.charAt(0) == '@')
+            return "from:" + user.substring(1);
         else
-            return "from:"+user;
+            return "from:" + user;
     }
 
     public void printAllStatuses() {
         for (Status tweet : this.queryResult.getTweets())
             System.out.println(tweet.getText());
     }
-
-
 
 
 }
