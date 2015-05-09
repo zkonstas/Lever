@@ -15,12 +15,12 @@ public class Main {
 
 
         newExamples1();
-        example1();// simple user query
-        example2(); // simple hashtag query
-        example3();//simple location query
-        example4();//query with bar graph
-        example5();//query with line graph
-        example6();//sentiment analysis
+//        example1();// simple user query
+//        example2(); // simple hashtag query
+//        example3();//simple location query
+//        example4();//query with bar graph
+//        example5();//query with line graph
+//        example6();//sentiment analysis
 //        GraphManager gm = new GraphManager();
 //        gm.createLineChart(new double[]{120,200,50});
 
@@ -30,8 +30,11 @@ public class Main {
 
     public static void newExamples1(){
         ArrayList<Object> al = new ArrayList<>();
-        al.add("@realmadrid");
-        al.add("#futbol");
+        al.add("#comedy");
+        al.add("#nyc");
+        HashMap map = new HashMap();
+        map.put("location","new york");
+        al.add(map);
         Result result = QueryManager.getResultFromArguments(al);
         System.out.println(result);
     }
