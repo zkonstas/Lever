@@ -53,14 +53,22 @@ public class QueryManager {
         int lastOpenBracket = arguments.lastIndexOf("[");
         //1. Remove all maps
         while (lastCloseBracket != -1 && lastOpenBracket != -1) {
-            String s = arguments.substring(lastOpenBracket+1, lastCloseBracket);
-            Map map = new HashMap();
-            String[] pairs = s.split(",");
-            for (int i = 0; i < pairs.length; i++) {
-                String[] pair = pairs[i].split(":");
-                map.put(pair[0], pair[1]);
+            String s = arguments.substring(lastOpenBracket+1, lastCloseBracket); //create string of just map/array
+            if(s.contains(":")) { //it is a map/dictionary
+                Map map = new HashMap();
+                String[] pairs = s.split(",");
+                for (int i = 0; i < pairs.length; i++) {
+                    String[] pair = pairs[i].split(":");
+                    map.put(pair[0], pair[1]);
+                }
+                al.add(map);
             }
-            al.add(map);
+            else{ //it is an array/list
+                ArrayList ar = new ArrayList();
+                String [] elements = s.split(",");
+                for(int i=0;i<elements.length;i++)
+                    ar.add(elements[i]);
+            }
             //remove from string
             arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(lastCloseBracket+2);
             lastCloseBracket = arguments.lastIndexOf("]");
@@ -351,7 +359,7 @@ public class QueryManager {
         }
         /* other search paramters */
         for (int i = 0; i < generalStringList.size(); i++) {
-            str = str + generalStringList.get(i) + " ";
+            str = str + "\""+generalStringList.get(i)+"\"" + " ";
         }
 
         query.setQuery(str);

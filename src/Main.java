@@ -14,7 +14,8 @@ public class Main {
     public static void main(String[] args) {
 
 
-        newExample1();
+//        newExample1();
+        newExample2();
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -28,20 +29,60 @@ public class Main {
 
     }
 
+    /**
+     * In Lever:
+     * program {
+     *
+     *     var result = get #nyc, ["location" : "new york"],#manhattan;
+     *     output result;
+     *
+     * }
+     */
     public static void newExample1(){
-        ArrayList<Object> al = new ArrayList<>();
-        al.add("#comedy");
-        al.add("#nyc");
-        HashMap map = new HashMap();
-        map.put("location","new york");
-        al.add(map);
 
 //        String str = "#comedy,#nyc,[\"location\":\"new york\",\"language\":\"en\"], #manhattan";
         String str = "#nyc,[\"location\":\"new york\", #manhattan";
 
 
         Result result = QueryManager.getResultFromArguments(str);
-        System.out.println(result);
+        output(result);
+    }
+
+    /**
+     * In Lever: //not sure about this, we will need to talk about it
+     * program{
+     *
+     *     var result = get "uk election";
+     *     var cameronCount = 0;
+     *     var milbandCount = 0;
+     *     for(int i=0;i<result.statuses.size;i++){
+     *          if(result.statuses.getText.contains("cameron"))
+     *              cameronCount = cameronCount +1;
+     *          if(result.statuses.getText.contains("milband"))
+     *              milbandCount = milbandCount+1;
+     *
+     *     }
+     *
+     *     Graph.barGraph("recent election tweets",["cameron","milband"],[cameronCount,milbandCount]);
+     *
+     *
+     * }
+     */
+    public static void newExample2(){
+
+        String str = "uk election";
+        Result result = QueryManager.getResultFromArguments(str);
+        int cameronCount = 0;
+        int milbandCount = 0;
+        for(int i=0;i<result.statuses.size();i++){
+            if(result.statuses.get(i).getText().toLowerCase().contains("cameron"))
+                cameronCount++;
+            if(result.statuses.get(i).getText().toLowerCase().contains("milband"))
+                milbandCount++;
+        }
+        output(result);
+        GraphManager.createBarChart("tweets of elections about cameron vs bilband", null, "# of mentions", new String[]{"Cameron", "Milband"}, null, new double[]{cameronCount, milbandCount});
+
     }
 
     /**
@@ -176,6 +217,9 @@ public class Main {
         } else if (obj instanceof User) {
             User user = (User) obj;
             System.out.println("@" + user.getScreenName());
+        }
+        else{
+            System.out.println(obj.toString());
         }
 
     }
