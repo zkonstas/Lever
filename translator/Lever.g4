@@ -45,6 +45,9 @@ variableInit
 arrayInit
     :   '[' (variableInit (',' variableInit)* (',')? )? ']'
     ;
+dictionary
+    :   '[' expression ':' expression (',' expression ':' expression)* ']'
+    ;
 
 type
     :   'var'
@@ -162,6 +165,7 @@ expression
     |   expression OR expression
     |   expression '?' expression ':' expression
     |   expression '=' expression
+    |   dictionary
     ;
 
 methodCall
