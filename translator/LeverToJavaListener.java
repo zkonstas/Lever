@@ -136,6 +136,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget("import twitter4j.User;\n");
 		printTarget("\n");
 		printTarget("import java.util.*;\n\n");
+        printTarget("import LeverAPIPackage.*;\n\n");
 
 		printTarget("public class " + fileName + " ");
 		openBraces();
