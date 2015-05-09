@@ -78,7 +78,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("in");
 		leverTerminals.add("(");
 		leverTerminals.add(")");
-		leverTerminals.add(",");
+		//leverTerminals.add(",");
 		leverTerminals.add("yes");
 		leverTerminals.add("no");
 		leverTerminals.add("var");
@@ -266,7 +266,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
 		if (!leverTerminals.contains("dontPrintParams")) {
-			printTarget(", ");
+			//printTarget(", ");
 		}
 			
 	}
@@ -303,19 +303,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget(")");
 	}
 
-	@Override public void enterFormalParameterA(LeverParser.FormalParameterAContext ctx) {
-		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
-		printTarget(getJavaType(_type) + " ");	
-
-		//printTarget("LeverVar " );
-	}
-
-	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) {
-		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
-			printTarget(", " + getJavaType(_type) + " ");	
-
-		//printTarget(", LeverVar " );
-	}
 
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 		printTabs();
@@ -382,10 +369,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 			LeverParser.MethodDefinitionContext funcDefCtx = VariableCheckingListener.functionTable.get(funcId);
 
 			//assign parameter types
-			LeverParser.ExpressionContext expCtx = funcDefCtx.expression();
-			LeverParser.LType type = VariableCheckingListener.getExpressionType(expCtx);
+			//LeverParser.ExpressionContext expCtx = funcDefCtx.expression();
+			//LeverParser.LType type = VariableCheckingListener.getExpressionType(expCtx);
 
-			VariableCheckingListener.getMethodType
+			//VariableCheckingListener.getMethodType()
 			System.out.println(funcId);
 		}
 	}

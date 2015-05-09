@@ -23,7 +23,7 @@ public class VariableCheckingListener extends LeverBaseListener {
     	LList, LDictionary, LUser, LTopic, LResult 
 	}
 
-	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+	public static HashMap<String, LType> symbolTable = new HashMap<String, LType>();
 	public static HashMap<String, LeverParser.MethodDefinitionContext> functionTable = new HashMap<String, LeverParser.MethodDefinitionContext>();
 
 	private class FunctionDef {
@@ -49,7 +49,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		
 		while (exp != null) {
 
-			if (exp.primary() != null || exp.methodCall() != null) {
+			if (exp.primary() != null || exp.methodCall() != null || exp.dictionary() != null) {
 				//we found a primary or method call expression from which we can get the literal
 				break;
 			}
@@ -200,7 +200,6 @@ public class VariableCheckingListener extends LeverBaseListener {
 		TerminalNode id = parent.identifierVar().Identifier();
 		String varId = id.getText();
 
-		//System.out.println(ctx.getText());
 		LeverParser.ExpressionContext expCtx = ctx.expression();
 		LType type = getExpressionType(expCtx);
 
@@ -247,7 +246,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		String funcId = ctx.Identifier().getText();
 		addVarId(funcId);
 
-		if (ctx.formalParameters() !=null) {
+		if (ctx.formalParameterList() !=null) {
 			
 		}
 
