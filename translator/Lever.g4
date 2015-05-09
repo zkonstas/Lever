@@ -143,7 +143,7 @@ expression
     :   primary
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |	Identifier expressionList?
+    |   functionInvocation
     |   expression '[' expression ']'
     |   '(' type ')' expression
     |   expression ('++' | '--')
@@ -158,6 +158,11 @@ expression
     |   expression '?' expression ':' expression
     |   expression '=' expression
     ;
+
+functionInvocation
+    :   Identifier expressionList?
+    ;
+
 
 primary
     :   '(' expression ')'
@@ -180,6 +185,7 @@ CONTINUE	: 'continue';
 EACH		: 'each';
 ELSE		: 'else';
 FOR			: 'for';
+GET         : 'get';
 IF			: 'if';
 IN			: 'in';
 RETURN		: 'return';
@@ -190,7 +196,7 @@ WHILE		: 'while';
 // LEVER SYMBOLS
 
 AT			: '@';
-HASHTAG		: '#';
+HASHTAG     : '#';
 ATVAR		: 'uSeR';
 
 // LITERALS

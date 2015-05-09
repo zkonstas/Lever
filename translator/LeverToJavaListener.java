@@ -363,8 +363,21 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		}
 
+		}
+
+	@Override public void enterFunctionInvocation(LeverParser.FunctionInvocationContext ctx) { 
+		if (ctx.Identifier().getText().equals("get")) {
+			leverTerminals.add("dontPrintParams");
+		}
+		String text = ctx.getText();
+		printTarget("Result " + ctx.Identifier() + " = QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()-1) + "\");");
 	}
 
+	@Override public void exitFunctionInvocation(LeverParser.FunctionInvocationContext ctx) { 
+		if (ctx.Identifier().getText().equals("get")) {
+			leverTerminals.remove("dontPrintParams");
+		}
+	}
 	@Override public void enterInitialization(LeverParser.InitializationContext ctx) {
 
 		LeverParser.VariableDeclaratorContext parent = (LeverParser.VariableDeclaratorContext)ctx.getParent();
@@ -474,7 +487,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 				break;
 
 			default:
-				if (!leverTerminals.contains(id)) {
+				if (!(leverTerminals.contains(id) || (leverTerminals.contains("dontPrintParams")))) {
 					printTarget(id + " ");
 
 				}

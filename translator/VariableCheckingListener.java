@@ -125,6 +125,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		TerminalNode id = parent.identifierVar().Identifier();
 		String varId = id.getText();
 
+		System.out.println(ctx.getText());
 		LeverParser.ExpressionContext expCtx = ctx.expression();
 		LType type = getExpressionType(expCtx);
 
