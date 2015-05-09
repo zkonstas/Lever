@@ -14,8 +14,9 @@ public class Main {
     public static void main(String[] args) {
 
 
-        newExample1(); //simple
+//        newExample1(); //simple
 //        newExample2(); //UK election with graph
+        newExample3(); //UK election between cities
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -38,10 +39,7 @@ public class Main {
      * }
      */
     public static void newExample1() {
-
-//        String str = "#comedy,#nyc,[\"location\":\"new york\",\"language\":\"en\"], #manhattan";
-        String str = "#nyc,[\"location\":\"new york\", #manhattan";
-        Result result = LeverAPI.get(str);
+        Result result = LeverAPI.get("#nyc,[\"location\":\"new york\"], #manhattan");
         LeverAPI.output(result);
     }
 
@@ -67,20 +65,33 @@ public class Main {
      */
     public static void newExample2() {
 
-        String str = "uk election,[\"result type\":\"recent\"]";
+        String str = "uk election,[\"result type\":\"popular\"]";
         Result result = LeverAPI.get(str);
-        int cameronCount = 0;
-        int milbandCount = 0;
-        for (int i = 0; i < result.statuses.size(); i++) {
-            if (result.statuses.get(i).getText().toLowerCase().contains("cameron"))
-                cameronCount++;
-            if (result.statuses.get(i).getText().toLowerCase().contains("milband"))
-                milbandCount++;
-        }
+        double[] counts = new double[4];
+        counts[0] = result.tweetCount("cameron");
+        counts[1] = result.tweetCount("milband");
+        counts[2] = result.tweetCount("sturgeon");
+        counts[3] = result.tweetCount("clegg");
         LeverAPI.output(result);
-        LeverAPI.graph("bar", "tweets of elections about cameron vs Milband", new String[]{"Cameron", "Milband"}, new double[]{cameronCount, milbandCount});
+        LeverAPI.graph("bar", "UK Election Tweets - Popular Tweets", new String[]{"Cameron", "Milband", "Sturgeon", "Clegg"}, counts);
     }
 
+    public static void newExample3() {
+
+        String str = "uk election,[\"result type\":\"recent\",\"location\":\"london\",\"since\":\"2015-05-04\",\"until\":\"2015-05-07\"]";
+        QueryManager.numberOfPages = 5;
+        Result result = LeverAPI.get(str);
+        double[] counts = new double[2];
+        for (int i = 0; i < result.statuses.size(); i++) {
+            if (result.statuses.get(i).getText().toLowerCase().contains("cameron"))
+                counts[0] = counts[0]+1;
+            if (result.statuses.get(i).getText().toLowerCase().contains("milband"))
+                counts[1] = counts[1]+1;
+        }
+        LeverAPI.output(result);
+        LeverAPI.graph("bar", "UK Election Tweets - Popular Tweets 05/07-05/08", new String[]{"Cameron", "Milband"}, counts);
+
+    }
     /**
      * Here we run a sample query fetching all tweets from two users
      */

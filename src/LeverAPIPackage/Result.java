@@ -44,6 +44,15 @@ public class Result {
         this.uniqueUsers.addAll(users);
     }
 
+    public int tweetCount(String word){
+        int count=0;
+        for(Status status : this.statuses)
+        {
+            if (status.getText().toLowerCase().contains(word.toLowerCase()))
+                count++;
+        }
+        return count;
+    }
 
     public Date[] getTimesOfAllTweets() {
         Date[] times = new Date[this.statuses.size()];
