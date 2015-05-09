@@ -75,6 +75,7 @@ literal
     |   StringLiteral
     |   BooleanLiteral
     |   'null'
+    |   LeverLiteral
     ;
 
 // STATEMENTS / BLOCKS
@@ -147,7 +148,7 @@ expression
     :   primary
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |   functionInvocation
+    |   methodCall
     |   expression '[' expression ']'
     |   '(' type ')' expression
     |   expression ('++' | '--')
@@ -163,10 +164,9 @@ expression
     |   expression '=' expression
     ;
 
-functionInvocation
+methodCall
     :   Identifier expressionList?
     ;
-
 
 primary
     :   '(' expression ')'
@@ -189,7 +189,6 @@ CONTINUE	: 'continue';
 EACH		: 'each';
 ELSE		: 'else';
 FOR			: 'for';
-GET         : 'get';
 IF			: 'if';
 IN			: 'in';
 RETURN		: 'return';
@@ -204,6 +203,11 @@ HASHTAG     : '#';
 ATVAR		: 'uSeR';
 
 // LITERALS
+
+LeverLiteral
+    : '#' StringCharacters
+    | '@' StringCharacters
+    ;
 
 NumberLiteral
 	: '-'?[0-9]+('.'[0-9]+)?
@@ -232,7 +236,7 @@ StringCharacters
 
 fragment
 StringCharacter
-    :   ~["\\]
+    :   ~[;"\\]
     |   EscapeSequence
     ;
 

@@ -45,7 +45,11 @@ public class VariableCheckingListener extends LeverBaseListener {
 				//we found a primary expression from which we can get the literal
 				break;
 			}
-
+			if (exp.methodCall() != null) {
+				//we found a primary expression from which we can get the literal
+				break;
+			}
+			//System.out.println(exp.functionInvocation().getText());
 			//Get first expression
 			exp = exp.expression().get(0);
 		}
