@@ -26,6 +26,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	private HashSet<String> leverConstructs = new HashSet<String>();
 	private HashSet<String> leverTerminals = new HashSet<String>();
+	private HashSet<String> leverAPIfunctions = new HashSet<String>();
 
 	private static String userKey = "uSeR";
 
@@ -82,8 +83,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("no");
 		leverTerminals.add("var");
 		leverTerminals.add("program");
-		//leverTerminals.add("get");
 		
+		leverAPIfunctions.add("get");
+		leverAPIfunctions.add("output");
+		leverAPIfunctions.add("input");
+		leverAPIfunctions.add("graph");
 	}
 	private void openBraces() {
 		indents++;
@@ -262,7 +266,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
 		if (!leverTerminals.contains("dontPrintParams")) {
-			printTarget(", ");
+			//printTarget(", ");
 		}
 			
 	}
@@ -299,19 +303,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget(")");
 	}
 
-	@Override public void enterFormalParameterA(LeverParser.FormalParameterAContext ctx) {
-		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
-		printTarget(getJavaType(_type) + " ");	
-
-		//printTarget("LeverVar " );
-	}
-
-	@Override public void enterFormalParameterB(LeverParser.FormalParameterBContext ctx) {
-		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier());
-			printTarget(", " + getJavaType(_type) + " ");	
-
-		//printTarget(", LeverVar " );
-	}
 
 	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 		printTabs();
@@ -371,6 +362,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
 			printTarget("QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+		}
+		String funcId = ctx.Identifier().getText();
+
+		if (!leverAPIfunctions.contains(funcId)) {
+			LeverParser.MethodDefinitionContext funcDefCtx = VariableCheckingListener.functionTable.get(funcId);
+
+			//assign parameter types
+			//LeverParser.ExpressionContext expCtx = funcDefCtx.expression();
+			//LeverParser.LType type = VariableCheckingListener.getExpressionType(expCtx);
+
+			//VariableCheckingListener.getMethodType()
+			System.out.println(funcId);
 		}
 	}
 
