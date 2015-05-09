@@ -105,10 +105,10 @@ public class GraphManager {
         displayImageFromURL(url);
 
     }
-    public void createBarChart(double[] dataPoints) {
+    public static void createBarChart(double[] dataPoints) {
         createBarChart(null,null,null,null,null,dataPoints);
     }
-    public void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
+    public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
 
         // Defining data plots.
         if (dataPoints.length >= 8) {
