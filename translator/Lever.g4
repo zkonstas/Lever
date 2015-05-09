@@ -38,7 +38,7 @@ initialization
     ;
 
 arrayInit
-    :   '[' (expression (',' expression)* (',')? )? ']'
+    :   LBRACK (expression (',' expression)* (',')? )? RBRACK
     ;
 
 type
@@ -144,7 +144,7 @@ expression
     |   expression '.' Identifier
     |   expression '.' 'this'
     |	methodCall
-    |   expression '[' expression ']'
+    |   expression arrayAccess
     |   '(' type ')' expression
     |   expression ('++' | '--')
     |   ('+'|'-'|'++'|'--') expression
@@ -162,6 +162,10 @@ expression
 
 methodCall
     :   Identifier expressionList?
+    ;
+
+arrayAccess
+    :   LBRACK expression RBRACK
     ;
 
 primary

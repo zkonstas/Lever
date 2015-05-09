@@ -26,7 +26,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	private HashSet<String> leverConstructs = new HashSet<String>();
 	private HashSet<String> leverTerminals = new HashSet<String>();
-    private HashSet<String> noSpaceAfter = new HashSet<String>();
+    private HashSet<String> spaceAfter = new HashSet<String>();
 
 	private static String userKey = "uSeR";
 
@@ -90,12 +90,11 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverTerminals.add("var");
 		leverTerminals.add("program");
 
+        //initializing arrayList needs to remove brackets
         leverTerminals.add("[");
         leverTerminals.add("]");
 
-        //noSpaceAfter.add("[");
-        //noSpaceAfter.add("]");
-        noSpaceAfter.add("!");
+        spaceAfter.add("return");
 		
 	}
 	private void openBraces() {
@@ -400,7 +399,12 @@ public class LeverToJavaListener extends LeverBaseListener {
     @Override public void exitArrayInit(LeverParser.ArrayInitContext ctx) {
         printTarget("))");
     }
-
+    @Override public void enterArrayAccess(LeverParser.ArrayAccessContext ctx) {
+        printTarget("[");
+    }
+    @Override public void exitArrayAccess(LeverParser.ArrayAccessContext ctx) {
+        printTarget("]");
+    }
 	@Override
 	public void visitTerminal(TerminalNode node) {
 
@@ -433,7 +437,8 @@ public class LeverToJavaListener extends LeverBaseListener {
                         if (pNode instanceof LeverParser.MethodCallContext) {
                             printTarget(id);
                         } else {
-                            printTarget(id + " ");
+                            printTarget(id);
+                            //space?
                         }
 
 
@@ -495,8 +500,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 			default:
 				if (!leverTerminals.contains(id)) {
-                    if (noSpaceAfter.contains(id)) {
-                        printTarget(id);
+                    if (spaceAfter.contains(id)) {
+                        printTarget(id + " ");
                     } else {
 
 
@@ -505,7 +510,7 @@ public class LeverToJavaListener extends LeverBaseListener {
                         if (tmp.equals("for") && id.equals(",")) {
 
                         } else {
-                            printTarget(id + " ");
+                            printTarget(id);
                         }
 
                     }
