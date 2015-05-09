@@ -35,6 +35,9 @@ public class GraphManager {
     public static void createLineChart(double[] dataPoints) {
         createLineChart(null,null,null, null, null, dataPoints);
     }
+    public static void createLineChart(String title, String[] xLabels,double[] dataPoints) {
+        createLineChart(title,null,null, xLabels, null, dataPoints);
+    }
     public static void createLineChart(String title, String xTitle, String yTitle, double[] dataPoints) {
         createLineChart(title, xTitle, yTitle, null, null, dataPoints);
     }
@@ -108,6 +111,11 @@ public class GraphManager {
     public static void createBarChart(double[] dataPoints) {
         createBarChart(null,null,null,null,null,dataPoints);
     }
+
+    public static void createBarChart(String title, String[] xLabels,double[] dataPoints) {
+        createBarChart(title,null,null,xLabels,null,dataPoints);
+    }
+
     public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
 
         // Defining data plots.
