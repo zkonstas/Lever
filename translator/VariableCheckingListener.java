@@ -19,11 +19,19 @@ public class VariableCheckingListener extends LeverBaseListener {
 	LeverParser parser;
 
 	public enum LType {
-    	LString, LInteger, LDouble, LBoolean,
+    	LVoid, LString, LInteger, LDouble, LBoolean,
     	LList, LDictionary, LUser, LTopic, LResult 
 	}
 
 	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+	public HashMap<String, LeverParser.MethodDefinitionContext> functionTable = new HashMap<String, LeverParser.MethodDefinitionContext>();
+
+	private class FunctionDef {
+		int paramNum = -1;
+		ArrayList<String> parameterIds;
+		LType type = null;
+		int returnParamIndex = -1;
+	}
 
 	public VariableCheckingListener(LeverParser parser) {
 		this.parser = parser;
@@ -88,7 +96,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 					LType idType = symbolTable.get(varId);
 
 					if (idType == null) {
-						System.out.println("identifier has may have not been initialized");
+						System.out.println("identifier may have not been initialized");
 						System.out.println("identifier: " + varId);
 						System.exit(1);	
 					}
@@ -100,9 +108,10 @@ public class VariableCheckingListener extends LeverBaseListener {
 			}
 		}
 
-		if (exp.methodCall() != null) {
-			
-		}
+		// if (exp.methodCall() != null) {
+		// 	String varId = exp.methodCall().Identifier().getText();
+		// 	type = symbolTable.get(varId);
+		// }
 
 		return type;
 	}
@@ -201,31 +210,41 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
 
-		String varId = ctx.Identifier().getText();
-		addVarId(varId);
-		
-		LeverParser.BlockContext block = ctx.methodBody().block();
+		String funcId = ctx.Identifier().getText();
 
-		if (block != null) {
-
-			List statements = block.blockStatement();
-
-			for (Object stm : statements) {
-
-				LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
-
-				if (blSt.statement() != null) {
-
-					if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
-						
-						LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
-						LType type = getExpressionType(exp);
-						initializeVarIdType(varId, type);
-					}
-				}
-
-			}
+		if (!functionTable.containsKey(funcId)) {
+			functionTable.put(funcId, ctx);
 		}
+		else {
+			System.out.println("duplicate declaration of function: " + funcId);
+			System.exit(1);
+		}
+		
+
+		// addVarId(varId);
+		
+		// LeverParser.BlockContext block = ctx.methodBody().block();
+
+		// if (block != null) {
+
+		// 	List statements = block.blockStatement();
+
+		// 	for (Object stm : statements) {
+
+		// 		LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
+
+		// 		if (blSt.statement() != null) {
+
+		// 			if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
+						
+		// 				LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
+		// 				LType type = getExpressionType(exp);
+		// 				initializeVarIdType(varId, type);
+		// 			}
+		// 		}
+
+		// 	}
+		// }
 
 
 	}

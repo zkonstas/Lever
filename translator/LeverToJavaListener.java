@@ -208,8 +208,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		}
 	}
 
-
-
 	@Override
 	public void enterParExpression(LeverParser.ParExpressionContext ctx) {
 		

@@ -6,7 +6,6 @@ SOURCEFILES = \
 	LeverParser.java \
 	*Listener.java \
 	Leverc.java \
-	LeverAPI.java
 
 CLASSFILES = $(SOURCEFILES:.java=.class)
 
@@ -22,7 +21,6 @@ all: antlr $(CLASSFILES)
 
 test: classes
 	java Leverc ../leverSamples/HelloWorld.lever
-	javac -cp "../lib/*" ../leverSamples/HelloWorld.java LeverAPI.java
 	
 .PHONY: clean cleanall cleanant
 clean:
