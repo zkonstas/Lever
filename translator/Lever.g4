@@ -125,7 +125,12 @@ expressionList
     ;
 
 statementExpression
-    :   expression
+    :   zeroArgumentMethodCall
+    |   expression
+    ;
+
+zeroArgumentMethodCall
+    :   Identifier
     ;
 
 expressionB
