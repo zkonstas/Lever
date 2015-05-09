@@ -147,7 +147,7 @@ expression
     :   primary
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |	Identifier expressionList?
+    |	methodCall
     |   expression '[' expression ']'
     |   '(' type ')' expression
     |   expression ('++' | '--')
@@ -163,9 +163,12 @@ expression
     |   expression '=' expression
     ;
 
+methodCall
+    :   Identifier expressionList?
+    ;
+
 primary
     :   '(' expression ')'
-    |   'this'
     |   literal
     |   Identifier
 	|	AT

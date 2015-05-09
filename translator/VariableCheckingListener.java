@@ -41,8 +41,8 @@ public class VariableCheckingListener extends LeverBaseListener {
 		
 		while (exp != null) {
 
-			if (exp.primary() != null) {
-				//we found a primary expression from which we can get the literal
+			if (exp.primary() != null || exp.methodCall() != null) {
+				//we found a primary or method call expression from which we can get the literal
 				break;
 			}
 
@@ -52,9 +52,8 @@ public class VariableCheckingListener extends LeverBaseListener {
 			
 		if (exp.primary() != null) {
 
-			LeverParser.LiteralContext literal = exp.primary().literal();
-
-			if (literal != null) {
+			if (exp.primary().literal() != null) {
+				LeverParser.LiteralContext literal = exp.primary().literal();
 
 				if (literal.NumberLiteral() != null) {
 					
@@ -75,10 +74,36 @@ public class VariableCheckingListener extends LeverBaseListener {
 					// System.out.println("boolean");
 					type = LType.LBoolean;
 				}
+			}
+			else if (exp.primary().Identifier() != null) {
 
+				String varId = exp.primary().Identifier().getText();
+
+				if (!symbolTable.containsKey(varId)) {
+					System.out.println("identifier has not been declared!");
+					System.out.println("identifier: " + varId);
+					System.exit(1);
+				}
+				else {
+					LType idType = symbolTable.get(varId);
+
+					if (idType == null) {
+						System.out.println("identifier has may have not been initialized");
+						System.out.println("identifier: " + varId);
+						System.exit(1);	
+					}
+					else {
+						type = idType;
+					}
+				}
 
 			}
 		}
+
+		if (exp.methodCall() != null) {
+			
+		}
+
 		return type;
 	}
 
