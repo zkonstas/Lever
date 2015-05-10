@@ -139,7 +139,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 
 	@Override public void enterLever(LeverParser.LeverContext ctx) {
-		printTarget(hold,"import sun.jvm.hotspot.utilities.Interval;\n");
+		printTarget(hold, "import sun.jvm.hotspot.utilities.Interval;\n");
 		printTarget(hold,"import twitter4j.*;\n");
 		printTarget(hold,"import twitter4j.User;\n");
 		printTarget(hold,"\n");
@@ -391,10 +391,33 @@ public class LeverToJavaListener extends LeverBaseListener {
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
-			printTarget(hold,"QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+
+
+
+
+
+            String tmp = text.substring(text.indexOf("get")+3, text.length());
+            String[] tmp2 = tmp.split("\\[");
+            if (tmp2.length > 1) {
+                String[] tmp3 = tmp2[1].split("\"");
+                String params = String.join("\\\"", tmp3);
+
+                String str0 = tmp2[0].replace("\"", "");
+
+                printTarget(hold,"LeverAPI.get(\"" + str0 + "[" + params + "\")");
+            } else {
+                printTarget(hold,"LeverAPI.get(" + tmp + ")");
+            }
+
+
+
+
+
+
+
 		}
 
-		String funcId = ctx.Identifier().getText();
+        String funcId = ctx.Identifier().getText();
 
 		if (!leverAPIfunctions.contains(funcId)) {
 
@@ -543,7 +566,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 				//break;
 
 			case LeverLexer.StringLiteral:
-				printTarget(hold,id);
+                if (!leverTerminals.contains("dontPrintParams")) {
+                    printTarget(hold,id);
+                }
+
 				break;
 
 			case LeverLexer.AND:
