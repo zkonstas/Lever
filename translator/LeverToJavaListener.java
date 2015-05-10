@@ -383,7 +383,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
-			printTarget("QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+			printTarget("LeverAPI.get(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
 		}
 		String funcId = ctx.Identifier().getText();
 
