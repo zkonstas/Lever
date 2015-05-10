@@ -162,9 +162,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	@Override public void exitLever(LeverParser.LeverContext ctx) {
 		for(Map.Entry<String, String> entry : funcDefinitions.entrySet()){
+			printTabs();
 			String myFunction = entry.getValue();
-			int index = myFunction.indexOf("{");
-			myFunction = myFunction.substring(index);
+			int index = myFunction.indexOf(")");
+			String temp = myFunction.substring(0, index+1);
+			index = myFunction.indexOf("{");
+			myFunction = temp+myFunction.substring(index);
 		    printTarget(hold, myFunction);
 		}
 
