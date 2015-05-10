@@ -33,6 +33,9 @@ public class Result {
         this.size = 0;
     }
 
+    public Status get(int index){
+        return this.statuses.get(index);
+    }
     public void addQueryResult(QueryResult queryResult) {
         //add all users from query result
         ArrayList users = new ArrayList();
