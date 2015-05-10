@@ -17,7 +17,7 @@ mainProgram
 	;
     
 methodDefinition
-	: Identifier formalParameters? methodBody
+	: Identifier formalParameterList? methodBody
     ;
 
 declarationList
@@ -37,37 +37,19 @@ initialization
     | '=' arrayInit
     ;
 
-variableInit
-    :   arrayInit 
-    |   expression
-    ;
-
 arrayInit
-    :   '[' (variableInit (',' variableInit)* (',')? )? ']'
+    :   LBRACK (expression (',' expression)* (',')? )? RBRACK
+    ;
+dictionary
+    :   '[' expression ':' expression (',' expression ':' expression)* ']'
     ;
 
 type
     :   'var'
     ;
 
-formalParameters
-    :   '(' formalParameterList ')'
-    ;
-
 formalParameterList
-    :   formalParameterA (formalParameterB)*
-    ;
-
-formalParameterA
-    :   type Identifier
-    ;
-
-formalParameterB
-    :   ',' type Identifier
-    ;
-
-lastFormalParameter
-    :   type '...' Identifier
+    :   Identifier (',' Identifier)*
     ;
 
 methodBody
@@ -79,6 +61,7 @@ literal
     |   StringLiteral
     |   BooleanLiteral
     |   'null'
+    |   LeverLiteral
     ;
 
 // STATEMENTS / BLOCKS
@@ -117,8 +100,16 @@ statement
 	;
 
 forStatement
-	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')' statement		# forIn
-	|	FOR EACH '(' (AT | Identifier) IN Identifier ')' statement	# forEach
+	:	forIn statement
+	|	forEach statement
+	;
+
+forIn
+	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')'
+	;
+
+forEach
+	:	FOR EACH '(' (AT | Identifier) IN Identifier ')'
 	;
 
 // EXPRESSIONS
@@ -141,12 +132,14 @@ expressionB
 
 expression
     :   primary
+    |   parExpression
     |   expression '.' Identifier
     |   expression '.' 'this'
-    |	Identifier expressionList?
-    |   expression '[' expression ']'
+    |	methodCall
+    |   expression arrayAccess
     |   '(' type ')' expression
     |   expression ('++' | '--')
+    |   ('+'|'-'|'++'|'--') expression
     |   ('+'|'-'|'++'|'--') expression
     |   ('!') expression
     |   expression ('*'|'/'|'%') expression
@@ -157,11 +150,19 @@ expression
     |   expression OR expression
     |   expression '?' expression ':' expression
     |   expression '=' expression
+    |   dictionary
+    ;
+
+methodCall
+    :   Identifier expressionList?
+    ;
+
+arrayAccess
+    :   LBRACK expression RBRACK
     ;
 
 primary
-    :   '(' expression ')'
-    |   'this'
+    :   'this'
     |   literal
     |   Identifier
 	|	AT
@@ -190,10 +191,15 @@ WHILE		: 'while';
 // LEVER SYMBOLS
 
 AT			: '@';
-HASHTAG		: '#';
+HASHTAG     : '#';
 ATVAR		: 'uSeR';
 
 // LITERALS
+
+LeverLiteral
+    : '#' StringCharacters
+    | '@' StringCharacters
+    ;
 
 NumberLiteral
 	: '-'?[0-9]+('.'[0-9]+)?
@@ -222,7 +228,7 @@ StringCharacters
 
 fragment
 StringCharacter
-    :   ~["\\]
+    :   ~[;"\\]
     |   EscapeSequence
     ;
 

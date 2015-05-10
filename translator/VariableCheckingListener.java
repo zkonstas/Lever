@@ -20,36 +20,49 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	public enum LType {
     	LString, LInteger, LDouble, LBoolean,
-    	LList, LDictionary, LUser, LTopic, LResult 
+    	LDictionary, LUser, LTopic, LResult,
+        LListString, LListInteger, LListDouble, LListBoolean, LListUser, LListTopic
 	}
 
-	public HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+	public static HashMap<String, LType> symbolTable = new HashMap<String, LType>();
+	public static HashMap<String, LeverParser.MethodDefinitionContext> functionTable = new HashMap<String, LeverParser.MethodDefinitionContext>();
+
+	private class FunctionDef {
+		int paramNum = -1;
+		ArrayList<String> parameterIds;
+		LType type = null;
+		int returnParamIndex = -1;
+	}
 
 	public VariableCheckingListener(LeverParser parser) {
 		this.parser = parser;
 	}
 
-	public LType getExpressionType(LeverParser.ExpressionContext expCtx) {
+	@Override public void enterIdentifierVar(LeverParser.IdentifierVarContext ctx) {
+		//System.out.println(ctx.Identifier().getText());
+		addVarId(ctx.Identifier().getText());
+	}
+
+	public static LType getExpressionType(LeverParser.ExpressionContext expCtx) {
 
 		LType type = null;
 		LeverParser.ExpressionContext exp = expCtx;
 		
 		while (exp != null) {
 
-			if (exp.primary() != null) {
-				//we found a primary expression from which we can get the literal
+			if (exp.primary() != null || exp.methodCall() != null || exp.dictionary() != null) {
+				//we found a primary or method call expression from which we can get the literal
 				break;
 			}
-
+			//System.out.println(exp.functionInvocation().getText());
 			//Get first expression
 			exp = exp.expression().get(0);
 		}
 			
 		if (exp.primary() != null) {
 
-			LeverParser.LiteralContext literal = exp.primary().literal();
-
-			if (literal != null) {
+			if (exp.primary().literal() != null) {
+				LeverParser.LiteralContext literal = exp.primary().literal();
 
 				if (literal.NumberLiteral() != null) {
 					
@@ -58,7 +71,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 						// System.out.println("double");						
 					}
 					else {
-						// System.out.println("int");
+						//System.out.println("int");
 						type = LType.LInteger;
 					}
 				}
@@ -70,10 +83,37 @@ public class VariableCheckingListener extends LeverBaseListener {
 					// System.out.println("boolean");
 					type = LType.LBoolean;
 				}
+			}
+			else if (exp.primary().Identifier() != null) {
 
+				String varId = exp.primary().Identifier().getText();
+
+				if (!symbolTable.containsKey(varId)) {
+					System.out.println("identifier has not been declared!");
+					System.out.println("identifier: " + varId);
+					System.exit(1);
+				}
+				else {
+					LType idType = symbolTable.get(varId);
+
+					if (idType == null) {
+						System.out.println("identifier may have not been initialized");
+						System.out.println("identifier: " + varId);
+						System.exit(1);	
+					}
+					else {
+						type = idType;
+					}
+				}
 
 			}
 		}
+
+		// if (exp.methodCall() != null) {
+		// 	String varId = exp.methodCall().Identifier().getText();
+		// 	type = symbolTable.get(varId);
+		// }
+
 		return type;
 	}
 
@@ -95,29 +135,85 @@ public class VariableCheckingListener extends LeverBaseListener {
 			LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
 			LType type = getExpressionType(rExp);
 
-			saveToTable(varId, type);
+			assignVarIdType(varId, type);
 		}
 	}
 
-	public void saveToTable(String varId, LType type) {
+	public void addVarId(String varId) {
 
 		if (!symbolTable.containsKey(varId)) {
-				symbolTable.put(varId, type);
+				symbolTable.put(varId, null);
 				
 				// System.out.println(id.getText());
 				// System.out.println(type);
-			}
-			else {
-				if (symbolTable.get(varId) != type) {
-
-					//trying to assign incompatible variable types
-					System.out.println("incompatible types!");
-					System.exit(1);
-				}
-				
-			}
+		}
+		else {
+			//variable identifier has already been declared
+			System.out.println("duplicate declaration of identifier: " + varId);
+			System.exit(1);
+		}
 	}
 
+	public void initializeVarIdType(String varId, LType type) {
+
+		if (symbolTable.containsKey(varId)) {
+				symbolTable.put(varId, type);
+				// System.out.println(id.getText());
+				// System.out.println(type);
+		}
+		else {
+
+			System.out.println("semantic check error!");
+			System.exit(1);	
+		}
+	}
+
+	public void assignVarIdType(String varId, LType type) {
+
+		if (symbolTable.containsKey(varId)) {
+
+			LType assignedType = symbolTable.get(varId);
+
+			if (assignedType != null) {
+
+				if (assignedType != type) {
+					//trying to assign incompatible variable types
+					System.out.println("incompatible type assignment");
+					System.exit(1);
+				}
+			}
+			else {
+				symbolTable.put(varId, type);
+			}
+		}
+		else {
+			//trying to assign incompatible variable types
+			System.out.println("identifier has not been declared!");
+			System.out.println("identifier: " + varId);
+			System.exit(1);
+		}
+	}
+
+	public void saveToTable(String varId, LType type, ParserRuleContext ctx) {
+
+        if (!symbolTable.containsKey(varId)) {
+            symbolTable.put(varId, type);
+
+            // System.out.println(id.getText());
+            // System.out.println(type);
+        } else {
+			if (symbolTable.get(varId) != type) {
+                exitErrorLine("Incompatible types!", ctx);
+				//trying to assign incompatible variable types
+			}
+		}
+	}
+
+    private void exitErrorLine(String _error, ParserRuleContext _ctx) {
+        System.out.println("Sorry, Lever compile failed! :(");
+        System.out.println("line " + _ctx.getStart().getLine() + ": " + _error);
+        System.exit(1);
+    }
 	@Override
 	public void enterInitialization(LeverParser.InitializationContext ctx) {
 
@@ -125,11 +221,112 @@ public class VariableCheckingListener extends LeverBaseListener {
 		TerminalNode id = parent.identifierVar().Identifier();
 		String varId = id.getText();
 
+        LType type = null;
 		LeverParser.ExpressionContext expCtx = ctx.expression();
-		LType type = getExpressionType(expCtx);
+        if (expCtx != null) {
+            type = getExpressionType(expCtx);
+        } else {
+            LeverParser.ArrayInitContext arrCtx = ctx.arrayInit();
+            if (arrCtx != null) {
+                type = getExpressionType(arrCtx.expression(0));
 
+                switch(type) {
+                    case LInteger:
+                        type = LType.LListInteger;
+                        break;
+                    case LDouble:
+                        type = LType.LListDouble;
+                        break;
+                    case LString:
+                        type = LType.LListString;
+                        break;
+                    case LBoolean:
+                        type = LType.LListBoolean;
+                        break;
+                }
+                //System.out.println(type.name());
+            }
+
+        }
+
+        if (type == null) {
+            exitErrorLine("can't figure out what type this var is!", ctx);
+        } else {
+            // System.out.println("Initialized " + varId);
+            saveToTable(varId, type, ctx);
+        }
 		// System.out.println("Initialized " + varId);
-		saveToTable(varId, type);
+		initializeVarIdType(varId, type);
+	}
+
+	public static LType getMethodCallType(String funcId) {
+		LType type = null;
+
+		LeverParser.MethodDefinitionContext ctx = functionTable.get(funcId);
+
+
+		LeverParser.BlockContext block = ctx.methodBody().block();
+
+		if (block != null) {
+
+			List statements = block.blockStatement();
+
+			for (Object stm : statements) {
+
+				LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
+
+				if (blSt.statement() != null) {
+
+					if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
+						
+						LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
+						LType typeId = getExpressionType(exp);
+						type = typeId;
+						// initializeVarIdType(funcId, type);
+					}
+				}
+
+			}
+		}
+
+		return type;		
+	}
+
+
+	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
+
+		String funcId = ctx.Identifier().getText();
+		addVarId(funcId);
+
+		if (ctx.formalParameterList() !=null) {
+			
+		}
+
+		functionTable.put(funcId, ctx);
+
+		// LeverParser.BlockContext block = ctx.methodBody().block();
+
+		// if (block != null) {
+
+		// 	List statements = block.blockStatement();
+
+		// 	for (Object stm : statements) {
+
+		// 		LeverParser.BlockStatementContext blSt = (LeverParser.BlockStatementContext)stm;
+
+		// 		if (blSt.statement() != null) {
+
+		// 			if (blSt.statement().nonBlockStatement() != null && blSt.statement().nonBlockStatement().getToken(LeverLexer.RETURN, 0) != null) {
+						
+		// 				LeverParser.ExpressionContext exp = blSt.statement().nonBlockStatement().expression();
+		// 				LType type = getExpressionType(exp);
+		// 				initializeVarIdType(varId, type);
+		// 			}
+		// 		}
+
+		// 	}
+		// }
+
 	}
 
 }

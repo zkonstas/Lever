@@ -1,0 +1,86 @@
+program {
+	example1;
+	example2;
+	example3;
+	example4;
+	example5;
+}
+
+example1 {
+	var result = get @realmadrid, @barcelona;
+
+	output result;
+}
+
+example2 {
+	var result = get #hackdisrupt;
+
+	output result;
+}
+
+example3 {
+	var result = get ["location":"barcelona"];
+
+	output result;
+}
+
+example4{
+	result = get @realmadrid, @barcelona;
+
+	var messi = 0;
+	var ronaldo = 0;
+
+	for each(var status in result.statuses) {
+		if(status contains("messi")) {
+			messi++;
+		}
+		if(status contains("ronaldo")) {
+			ronaldo++;
+		}
+
+	}
+
+	var max;
+	if(messi > ronaldo) {
+		max = messi;
+	}
+	else {
+		max = ronaldo;
+	}
+
+	createChart "messi vs ronaldo mentions", "who", "# of mentions", {"Messi", "Ronaldo"};
+}
+
+example 5 {
+	/* not sure this would work */
+	var searchString = "england elections";
+	var result = get searchString; 
+
+	/* temporarily a string? */
+	var bufferDate = "October 11th, 2014. 12:00PM";
+
+	var before = 0;
+	var after = 0;
+	for each (var status in result.statuses) {
+		if(item.time.date < bufferDate) {
+			before++;
+		}
+		else {
+			after++;
+		}
+	}
+
+	createChart "UK Elections Tweet Metrics", "Time", "Volume" {"Before 12:00PM", "After 12:00PM"} {"0", "100"}, {before, after};
+}
+
+
+
+
+
+
+
+
+
+
+
+

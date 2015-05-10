@@ -1,0 +1,14 @@
+/*
+	Test for:
+	SIMPLE FOR LOOPS
+	Excpected output: "YES\nYES\nYES\nYES\nYES\nYES\n"
+*/
+
+program {
+	for counter in (0, 3) {
+		output "YES\n";
+	}
+
+	for counter in (0, 3)
+		output "YES\n"
+}

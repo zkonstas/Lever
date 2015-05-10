@@ -1,15 +1,11 @@
+package LeverAPIPackage;
+
 import com.google.gson.Gson;
-import scala.util.parsing.combinator.testing.Str;
 import twitter4j.Query;
 import twitter4j.Status;
-import twitter4j.User;
 import twitter4j.*;
-
-
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -20,15 +16,15 @@ import java.util.*;
  */
 public class QueryManager {
 
-    Query masterQuery;
-    String queryString;
-    ArrayList<String> userList;
-    ArrayList<String> topicList;
-    ArrayList<String> generalStringList;
-    QueryResult queryResult;
-    Result customResult;
-    int numberOfPages;
-    FilterQuery filterQuery;
+    public Query masterQuery;
+    public String queryString;
+    public ArrayList<String> userList;
+    public ArrayList<String> topicList;
+    public ArrayList<String> generalStringList;
+    public QueryResult queryResult;
+    public Result customResult;
+    public int numberOfPages;
+    public FilterQuery filterQuery;
 
 
     /**
@@ -52,8 +48,8 @@ public class QueryManager {
         int lastOpenBracket = arguments.lastIndexOf("[");
         //1. Remove all maps
         while (lastCloseBracket != -1 && lastOpenBracket != -1) {
-            String s = arguments.substring(lastOpenBracket+1, lastCloseBracket); //create string of just map/array
-            if(s.contains(":")) { //it is a map/dictionary
+            String s = arguments.substring(lastOpenBracket + 1, lastCloseBracket); //create string of just map/array
+            if (s.contains(":")) { //it is a map/dictionary
                 Map map = new HashMap();
                 String[] pairs = s.split(",");
                 for (int i = 0; i < pairs.length; i++) {
@@ -61,15 +57,14 @@ public class QueryManager {
                     map.put(pair[0], pair[1]);
                 }
                 al.add(map);
-            }
-            else{ //it is an array/list
+            } else { //it is an array/list
                 ArrayList ar = new ArrayList();
-                String [] elements = s.split(",");
-                for(int i=0;i<elements.length;i++)
+                String[] elements = s.split(",");
+                for (int i = 0; i < elements.length; i++)
                     ar.add(elements[i]);
             }
             //remove from string
-            int endIndex = (lastCloseBracket+2 > arguments.length()) ? lastCloseBracket+1 : lastCloseBracket+2;
+            int endIndex = (lastCloseBracket + 2 > arguments.length()) ? lastCloseBracket + 1 : lastCloseBracket + 2;
             arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(endIndex);
             lastCloseBracket = arguments.lastIndexOf("]");
             lastOpenBracket = arguments.lastIndexOf("[");
@@ -172,10 +167,6 @@ public class QueryManager {
             //Status object
             Status tweet = (Status) object;
             retValue = ("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-        } else if (object instanceof User) {
-            //User object
-            User user = (User) object;
-            retValue = ("@" + user.getScreenName());
         } else {
             //Non object
             retValue = object.toString();
@@ -338,14 +329,14 @@ public class QueryManager {
                         e.printStackTrace();
                     }
                 }
-                if(map.get("language") != null){
+                if (map.get("language") != null) {
                     query.setLang(String.valueOf(map.get("language")));
                 }
-                if(map.get("result type") != null){
+                if (map.get("result type") != null) {
                     String rt = String.valueOf(map.get("result type"));
-                    if(rt.equals("popular"))
+                    if (rt.equals("popular"))
                         query.setResultType(Query.ResultType.popular);
-                    else if(rt.equals("recent"))
+                    else if (rt.equals("recent"))
                         query.setResultType(Query.ResultType.recent);
                     else
                         query.setResultType(Query.ResultType.mixed);
@@ -370,7 +361,7 @@ public class QueryManager {
         }
         /* other search paramters */
         for (int i = 0; i < generalStringList.size(); i++) {
-            str = str + "\""+generalStringList.get(i)+"\"" + " ";
+            str = str + "\"" + generalStringList.get(i) + "\"" + " ";
         }
 
         query.setQuery(str);
