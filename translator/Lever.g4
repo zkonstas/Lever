@@ -119,15 +119,11 @@ parExpression
     ;
 
 expressionList
-    :   expression (expressionB)*
+    :   expression (',' expression)*
     ;
 
 statementExpression
     :   expression
-    ;
-
-expressionB
-    :   ',' expression   
     ;
 
 expression
