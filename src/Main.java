@@ -6,6 +6,7 @@ import LeverAPIPackage.*;
 import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
+import twitter4j.conf.ConfigurationBuilder;
 
 
 import java.util.*;
@@ -17,7 +18,6 @@ public class Main {
 
         //expected output
         newExample1();
-
 
 //        newExample1(); //simple
         newExample2(); //UK election with graph

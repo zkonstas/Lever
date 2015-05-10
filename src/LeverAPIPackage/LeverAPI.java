@@ -10,14 +10,6 @@ public class LeverAPI {
 
 
     public static Result get(String arguments) {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey("RGfB6zq6IYMlMgSGRmbyRSUb9")
-                .setOAuthConsumerSecret("UuhAMk979kuEj5t1dXXXb4UDA6T8SKYex0oxDGGm0CjNbIJVCJ")
-                .setOAuthAccessToken("247632815-9ur4aRhlfB5TdfFSgH30MDaaFq6PgVfa55AmJGAK")
-                .setOAuthAccessTokenSecret("pjVCNc1xbAGE326lLSrGN2tNXKTi3zbdc6NRIgen1PjqU");
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        Twitter twitter = tf.getInstance();
         return QueryManager.getResultFromArguments(arguments);
     }
 
