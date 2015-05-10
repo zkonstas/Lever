@@ -23,7 +23,7 @@ do
 		echo Compiling Lever into intermediate code... 
 		compilerOutput=$(java -cp "../translator:/usr/local/lib/antlr-4.5-complete.jar" Leverc ../leverSamples/$f 2>&1 >/dev/null)
 		
-		if [[ $compilerOutput == *"line"*  ]] || [[ $compilerOutput == *"error"*  ]]; then
+		if [[ $compilerOutput == *"line"*  ]] || [[ $compilerOutput == *"Exception"*  ]] || [[ $compilerOutput == *"error"*  ]]; then
 			echo "errors detected:"
 			echo "$compilerOutput"
 			echo "$f failed to compile"
@@ -36,7 +36,7 @@ do
 			echo Compiling program...
 			moreCompilerOutput=$(javac -cp ".:../lib/*" $progName 2>&1 >/dev/null) #&>/dev/null)
 			
-			if [[ $moreCompilerOutput == *"line"*  ]] || [[ $moreCompilerOutput == *"error"*  ]]; then
+			if [[ $moreCompilerOutput == *"line"*  ]] || [[ $compilerOutput == *"Exception"*  ]] || [[ $moreCompilerOutput == *"error"*  ]]; then
 				echo "errors detected:"
 				echo "$moreCompilerOutput"
 				echo "$f failed to compile"

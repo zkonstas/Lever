@@ -1,0 +1,13 @@
+/*
+	Test for:
+	Simple Function Call
+	Expected output: "YES\nYES\nYES\nYES\n"
+*/
+
+foo {
+	OUTPUT "YES\n";
+}
+
+program {
+	foo;
+}

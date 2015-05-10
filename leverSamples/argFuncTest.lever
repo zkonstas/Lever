@@ -1,0 +1,18 @@
+/*
+	Test for:
+	Function Calls With Args
+	Expected output: "YES\nYES\nYES\n"
+*/
+
+foo x {
+	output x;
+}
+
+bar y, z {
+	output x + y;
+}
+
+program {
+	foo "YES";
+	bar "YES", "YES";
+}
