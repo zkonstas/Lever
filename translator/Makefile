@@ -5,7 +5,11 @@ SOURCEFILES = \
 	LeverLexer.java \
 	LeverParser.java \
 	*Listener.java \
+<<<<<<< HEAD
+	Leverc.java 
+=======
 	Leverc.java \
+>>>>>>> origin/chaiwen
 
 CLASSFILES = $(SOURCEFILES:.java=.class)
 
