@@ -56,6 +56,9 @@ public class VariableCheckingListener extends LeverBaseListener {
 			}
 			//System.out.println(exp.functionInvocation().getText());
 			//Get first expression
+			if (exp.resultUserAccess() != null) {
+				return null;
+			}
 			exp = exp.expression().get(0);
 		}
 			
@@ -114,7 +117,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 
 		if (exp.methodCall() != null) {
-
+			System.out.println(exp.methodCall().getText());
 			if (exp.methodCall().objectMethodCall() == null) {
 
 				String varId = exp.methodCall().Identifier().getText();

@@ -1,0 +1,13 @@
+queryInNewYorkFunction query {
+	var result;
+	result = get query;
+	output result;
+}
+
+program {
+
+	while (yes) {
+		var x = input;
+		queryInNewYorkFunction x;
+	}
+}
