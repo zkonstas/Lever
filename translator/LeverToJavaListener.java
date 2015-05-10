@@ -28,6 +28,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 	private HashSet<String> leverTerminals = new HashSet<String>();
 	private HashSet<String> leverAPIfunctions = new HashSet<String>();
 
+	public static HashMap<String, String> funcDefinitions = new HashMap<String, String>();
+
 	private static String userKey = "uSeR";
 
 	private HashMap<String, VariableCheckingListener.LType> symbolTable;
@@ -264,13 +266,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		
 	}
 
-	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
-		if (!leverTerminals.contains("dontPrintParams")) {
-			//printTarget(", ");
-		}
-			
-	}
-
 	@Override public void enterVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
 	}
 
@@ -280,20 +275,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) {
 
 
-		String varId = ctx.Identifier().getText();
-		VariableCheckingListener.LType type = symbolTable.get(varId);
+		// String varId = ctx.Identifier().getText();
+		// VariableCheckingListener.LType type = symbolTable.get(varId);
 
-		printTabs();
-		printTarget("public static ");
+		// printTabs();
+		// printTarget("public static ");
 
-		if (type != null) {
-			printTarget(getJavaType(type) + " ");			
-		}
-		else {
-			printTarget("void ");
-		}
-
-		//Check to see if there are any 
+		// if (type != null) {
+		// 	printTarget(getJavaType(type) + " ");			
+		// }
+		// else {
+		// 	printTarget("void ");
+		// }
 	}
 	@Override public void enterFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
 		printTarget("(");
@@ -315,10 +308,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override public void exitIdentifierVar(LeverParser.IdentifierVarContext ctx) {
 
 		//printTarget(" = new LeverVar();\n");
-		
-		
-		
-		
 			
 	}
 
@@ -357,23 +346,73 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		}
 
-	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) { 
+	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) {
+
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
 			printTarget("QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
 		}
+
 		String funcId = ctx.Identifier().getText();
 
 		if (!leverAPIfunctions.contains(funcId)) {
+
 			LeverParser.MethodDefinitionContext funcDefCtx = VariableCheckingListener.functionTable.get(funcId);
+			
+			// //assign parameter types
+			if (funcDefCtx.formalParameterList() != null) {
+				List<TerminalNode> parameterIds = funcDefCtx.formalParameterList().Identifier();
 
-			//assign parameter types
-			//LeverParser.ExpressionContext expCtx = funcDefCtx.expression();
-			//LeverParser.LType type = VariableCheckingListener.getExpressionType(expCtx);
+				LeverParser.ExpressionListContext expLCtx = ctx.expressionList();
 
-			//VariableCheckingListener.getMethodType()
-			System.out.println(funcId);
+				List<LeverParser.ExpressionContext> arguments = null;
+
+				if (expLCtx != null) {
+					 arguments =  expLCtx.expression();
+				}
+				
+				
+				String params = "";
+
+				for (int i=0; i< parameterIds.size(); i++) {
+
+					TerminalNode termIds = parameterIds.get(i);
+					String argId = termIds.getText();
+
+					LeverParser.ExpressionContext arg = arguments.get(i);
+					VariableCheckingListener.LType type = VariableCheckingListener.getExpressionType(arg);
+
+					VariableCheckingListener.initializeVarIdType(argId, type);
+					if (params.equals("")) {
+						params+= getJavaType(type)+" "+argId;
+
+					}
+					else {
+						params+= ", " +getJavaType(type)+" "+argId;	
+					}
+					
+
+				}
+				StringBuffer buf = new StringBuffer();
+				buf.append("public static ");
+
+				VariableCheckingListener.LType returnType = VariableCheckingListener.getMethodCallType(funcId);
+				if (returnType == null) {
+					buf.append("void ");
+				}
+				else {
+					buf.append(getJavaType(returnType) + " ");
+				}
+
+				buf.append(funcId+"("+params+")");
+				// System.out.println(buf.toString());
+				//Place func signature to body
+				String body = funcDefinitions.get(funcId);
+				funcDefinitions.put(funcId, buf.toString()+body);
+
+				// System.out.println(funcDefinitions.get(funcId));
+			}
 		}
 	}
 

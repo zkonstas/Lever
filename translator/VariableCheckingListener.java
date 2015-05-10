@@ -118,23 +118,32 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	@Override public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
 
-		LeverParser.ExpressionContext expCtx = ctx.expression();
+		if (ctx.expression() != null) {
+			LeverParser.ExpressionContext expCtx = ctx.expression();
 
-		//Check if this is an assignment expression
-		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
+			//Check if this is an assignment expression
+			if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
 
-			//Get variable identifier
-			ParseTree left = expCtx.getChild(0);
-			LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
-			TerminalNode id = lExp.primary().Identifier();
-			String varId = id.getText();
+				//Get variable identifier
+				ParseTree left = expCtx.getChild(0);
+				LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
+				TerminalNode id = lExp.primary().Identifier();
+				String varId = id.getText();
 
-			//Get type of right expression
-			ParseTree right = expCtx.getChild(2);
-			LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
-			LType type = getExpressionType(rExp);
+				//Get type of right expression
+				ParseTree right = expCtx.getChild(2);
+				LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
+				LType type = getExpressionType(rExp);
 
-			assignVarIdType(varId, type);
+				assignVarIdType(varId, type);
+			}
+		}
+		else if (ctx.zeroArgumentMethodCall() != null) {
+			String funcId = ctx.zeroArgumentMethodCall().Identifier().getText();
+			if (!functionTable.containsKey(funcId)) {
+				System.out.println("calling undefined function: " + funcId);
+				System.exit(1);	
+			}
 		}
 	}
 
@@ -153,7 +162,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 	}
 
-	public void initializeVarIdType(String varId, LType type) {
+	public static void initializeVarIdType(String varId, LType type) {
 
 		if (symbolTable.containsKey(varId)) {
 				symbolTable.put(varId, type);
@@ -243,11 +252,19 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
 
+		//save function identifier
 		String funcId = ctx.Identifier().getText();
 		addVarId(funcId);
 
-		if (ctx.formalParameterList() !=null) {
-			
+		//assign parameter types
+		if (ctx.formalParameterList() != null) {
+			List<TerminalNode> ids = ctx.formalParameterList().Identifier();
+
+			for (TerminalNode node : ids) {
+				String varId = node.getText();
+				addVarId(varId);
+				// System.out.println(varId);
+			}
 		}
 
 		functionTable.put(funcId, ctx);
