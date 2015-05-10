@@ -387,13 +387,13 @@ public class LeverToJavaListener extends LeverBaseListener {
 				return "Result";
 
             case LListInteger:
-                return "List<Integer>";
+                return "ArrayList<Integer>";
             case LListDouble:
-                return "List<Double>";
+                return "ArrayList<Double>";
             case LListString:
-                return "List<String>";
+                return "ArrayList<String>";
             case LListBoolean:
-                return "List<Boolean>";
+                return "ArrayList<Boolean>";
 
 			default:
 				return "???";

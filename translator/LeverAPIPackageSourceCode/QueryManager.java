@@ -23,7 +23,7 @@ public class QueryManager {
     public ArrayList<String> generalStringList;
     public QueryResult queryResult;
     public Result customResult;
-    public static int numberOfPages = 1;
+    public static int numberOfPages = 10;
     public FilterQuery filterQuery;
 
 
