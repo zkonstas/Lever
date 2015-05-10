@@ -90,26 +90,30 @@ public class QueryManager {
         ArrayList<Object> args = QueryManager.arrayListFromStringArguments(arguments);
         QueryManager.getQueryStringForAllParamaters(args, query);
         QueryResult queryResult;
-            Result result = new Result();
+        Result result = new Result();
 
         //start Twitter querying
         long minTweet = 0;
+        query.setCount(100);
         for (int i = 0; i < QueryManager.numberOfPages; i++) { //default go for 1 queries, aka 100 tweets total
             try {
                 if (i != 0)
-                    query.setMaxId(minTweet); //for paging multiple queries together
+                    query.setMaxId(minTweet-1); //for paging multiple queries together
                 queryResult = twitter.search(query);
 
                 result.addQueryResult(queryResult);
                 List<Status> tweets = queryResult.getTweets();
                 for (Status tweet : tweets) {
-//                    output(tweet);
+                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + tweet.getCreatedAt());
+                    if(minTweet == tweet.getId()) break;
                     minTweet = tweet.getId();
                 }
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
+            System.out.println("ran query "+i+" times");
         }
+
         return result;
     }
 
@@ -172,40 +176,6 @@ public class QueryManager {
         }
         System.out.println(retValue);
         return retValue;
-    }
-
-    /**
-     * Runs the search query
-     */
-    public void get() {
-        Twitter twitter = TwitterFactory.getSingleton();
-        //construct string for query
-
-
-        String queryString = this.getQueryStringForAllParamaters();
-        this.output("query string = " + queryString);
-
-
-        this.masterQuery.setQuery(queryString);
-
-        long minTweet = 0;
-        for (int i = 0; i < this.numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
-            try {
-                if (i != 0)
-                    this.masterQuery.setMaxId(minTweet); //for paging multiple queries together
-                this.queryResult = twitter.search(this.masterQuery);
-                this.customResult = new Result();
-                this.customResult.addQueryResult(this.queryResult);
-                List<Status> tweets = this.queryResult.getTweets();
-                for (Status tweet : tweets) {
-//                    output(tweet);
-                    minTweet = tweet.getId();
-                }
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
 
