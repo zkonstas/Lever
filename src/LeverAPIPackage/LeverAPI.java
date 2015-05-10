@@ -1,4 +1,5 @@
 package LeverAPIPackage;
+
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -19,6 +20,13 @@ public class LeverAPI {
             GraphManager.createLineChart(title, xLabelsArray, dataArray);
         else
             GraphManager.createBarChart(title, xLabelsArray, dataArray);
+    }
+
+    public static String getInfo(Status status, String info) {
+        if (info.equals("user")) return status.getUser().getScreenName();
+        else if (info.equals("text")) return status.getText();
+        else if (info.equals("createdAt")) return String.valueOf(status.getCreatedAt());
+        else return "";
     }
 
     public static void output(Object obj) {

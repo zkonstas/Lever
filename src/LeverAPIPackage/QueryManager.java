@@ -111,7 +111,7 @@ public class QueryManager {
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
-//            System.out.println("ran query "+i+" times");
+            System.out.println("ran query "+ (i+1) +" times");
         }
 
         return result;
