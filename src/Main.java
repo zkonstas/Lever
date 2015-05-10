@@ -6,6 +6,7 @@ import LeverAPIPackage.*;
 import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
+import twitter4j.conf.ConfigurationBuilder;
 
 
 import java.util.*;
@@ -14,7 +15,6 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-
 
 
 //        newExample1(); //simple
