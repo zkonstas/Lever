@@ -23,8 +23,9 @@ public class QueryManager {
     public ArrayList<String> generalStringList;
     public QueryResult queryResult;
     public Result customResult;
-    public int numberOfPages;
+    public static int numberOfPages = 1;
     public FilterQuery filterQuery;
+
 
 
     /**
@@ -37,7 +38,6 @@ public class QueryManager {
         this.generalStringList = new ArrayList<String>();
         this.masterQuery = new Query();
         this.customResult = null;
-        this.numberOfPages = 1;
         this.filterQuery = new FilterQuery();
 
     }
@@ -90,12 +90,11 @@ public class QueryManager {
         ArrayList<Object> args = QueryManager.arrayListFromStringArguments(arguments);
         QueryManager.getQueryStringForAllParamaters(args, query);
         QueryResult queryResult;
-        Result result = new Result();
+            Result result = new Result();
 
         //start Twitter querying
         long minTweet = 0;
-        int numberOfPages = 1; //number of times to run the query for getting more results
-        for (int i = 0; i < numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
+        for (int i = 0; i < QueryManager.numberOfPages; i++) { //default go for 1 queries, aka 100 tweets total
             try {
                 if (i != 0)
                     query.setMaxId(minTweet); //for paging multiple queries together
@@ -320,8 +319,9 @@ public class QueryManager {
             }
             if (a instanceof Map) {
                 Map map = (HashMap) a;
-                if (map.get("location") != null) {
-                    String location = (String) map.get("location");
+                if (map.get("\"location\"") != null) {
+                    String location = (String) map.get("\"location\"");
+                    location = location.replace("\"","");
                     try {
                         query.setGeoCode(QueryManager.sendGetForLocation(location), 50, Query.Unit.km);
                     } catch (Exception e) {
@@ -329,14 +329,26 @@ public class QueryManager {
                         e.printStackTrace();
                     }
                 }
-                if (map.get("language") != null) {
-                    query.setLang(String.valueOf(map.get("language")));
+                if (map.get("\"language\"") != null) {
+                    String language = (String)map.get("\"language\"");
+                    language = language.replace("\"","");
+                    query.setLang(language);
                 }
-                if (map.get("result type") != null) {
-                    String rt = String.valueOf(map.get("result type"));
-                    if (rt.equals("popular"))
+                if (map.get("\"since\"") != null) {
+                    String since = (String)map.get("\"since\"");
+                    since = since.replace("\"","");
+                    query.setSince(since);
+                }
+                if (map.get("\"until\"") != null) {
+                    String until = (String)map.get("\"until\"");
+                    until = until.replace("\"","");
+                    query.setUntil(until);
+                }
+                if (map.get("\"result type\"") != null) {
+                    String rt = String.valueOf(map.get("\"result type\""));
+                    if (rt.equals("\"popular\""))
                         query.setResultType(Query.ResultType.popular);
-                    else if (rt.equals("recent"))
+                    else if (rt.equals("\"recent\""))
                         query.setResultType(Query.ResultType.recent);
                     else
                         query.setResultType(Query.ResultType.mixed);

@@ -44,6 +44,15 @@ public class Result {
         this.uniqueUsers.addAll(users);
     }
 
+    public int tweetCount(String word){
+        int count=0;
+        for(Status status : this.statuses)
+        {
+            if (status.getText().toLowerCase().contains(word.toLowerCase()))
+                count++;
+        }
+        return count;
+    }
 
     public Date[] getTimesOfAllTweets() {
         Date[] times = new Date[this.statuses.size()];
@@ -91,7 +100,7 @@ public class Result {
         String retValue = "";
         for (int i = 0; i < this.statuses.size(); i++) {
             Status tweet = this.statuses.get(i);
-            retValue = retValue + "@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + "\n";
+            retValue = retValue + "@" + tweet.getUser().getScreenName() + " - " + tweet.getText() +tweet.getCreatedAt() +"\n";
         }
         return retValue;
     }
