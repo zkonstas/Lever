@@ -28,7 +28,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 	private HashSet<String> leverTerminals = new HashSet<String>();
 	private HashSet<String> leverAPIfunctions = new HashSet<String>();
     private HashSet<String> spaceAfter = new HashSet<String>();
-
+    private Boolean hold = false;
+    private String currentMethod = "";
+    public static HashMap<String,String> funcDefinitions = new HashMap<String, String>();
 
 	private static String userKey = "uSeR";
 
@@ -74,7 +76,6 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverConstructs.add("output");
 		leverConstructs.add("get");
 
-
 		leverTerminals.add("for");
 		leverTerminals.add("each");
 		leverTerminals.add("in");
@@ -106,46 +107,53 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	private void openBraces() {
 		indents++;
-		printTarget("{\n");
+		printTarget(hold,"{\n");
 	}
 	private void closeBraces() {
 		indents--;
-		printTarget("\n");
+		printTarget(hold,"\n");
 		printTabs();
-		printTarget("}\n");
+		printTarget(hold,"}\n");
 	}
 	private void printTabs() {
 		int i = indents;
+		String temp = "";
 		while (i > 0) {
-			printTarget("\t");
+			printTarget(hold,"\t");
 			i--;
 		}
 	}
-	private void printTarget(String s) {
-		try {
-			bw.write(s);
-		} catch (IOException e) {
-			System.out.println("error writing to file..");
-			System.exit(1);
+
+	private void printTarget(Boolean hold, String s) {
+		if (!hold) {
+			try {
+				bw.write(s);
+			} catch (IOException e) {
+				System.out.println("error writing to file..");
+				System.exit(1);
+			}
+		} else {
+			currentMethod += s;
 		}
 	}
 
-	@Override public void enterLever(LeverParser.LeverContext ctx) {
-		printTarget("import sun.jvm.hotspot.utilities.Interval;\n");
-		printTarget("import twitter4j.*;\n");
-		printTarget("import twitter4j.User;\n");
-		printTarget("\n");
-		printTarget("import java.util.*;\n\n");
-        printTarget("import LeverAPIPackage.*;\n\n");
 
-		printTarget("public class " + fileName + " ");
+	@Override public void enterLever(LeverParser.LeverContext ctx) {
+		printTarget(hold,"import sun.jvm.hotspot.utilities.Interval;\n");
+		printTarget(hold,"import twitter4j.*;\n");
+		printTarget(hold,"import twitter4j.User;\n");
+		printTarget(hold,"\n");
+		printTarget(hold,"import java.util.*;\n\n");
+		printTarget(hold, "import LeverAPIPackage.*;\n\n");
+
+		printTarget(hold,"public class " + fileName + " ");
 		openBraces();
 		
 	}
 
 	@Override
 	public void enterMainProgram(LeverParser.MainProgramContext ctx) {
-		printTarget("\tpublic static void main(String[] args) ");
+		printTarget(hold,"\tpublic static void main(String[] args) ");
 	}
 
 	@Override
@@ -153,8 +161,18 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	}
 	@Override public void exitLever(LeverParser.LeverContext ctx) {
+		for(Map.Entry<String, String> entry : funcDefinitions.entrySet()){
+			printTabs();
+			String myFunction = entry.getValue();
+			int index = myFunction.indexOf(")");
+			String temp = myFunction.substring(0, index+1);
+			index = myFunction.indexOf("{");
+			myFunction = temp+myFunction.substring(index);
+		    printTarget(hold, myFunction);
+		}
+
 		closeBraces();
-		//printTarget("exit lever");
+		//printTarget(hold,"exit lever");
 
 		try {
 			bw.close();
@@ -177,7 +195,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 
 	@Override public void enterNonBlockStatement(LeverParser.NonBlockStatementContext ctx) {
-		//printTarget("\n");
+		//printTarget(hold,"\n");
 		printTabs();	
 	}
 
@@ -192,12 +210,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 			//i = tokens.getText(ctx.IF());
 			//i = ctx.IF().toString();
 			//System.out.println("asdf " + i);
-		//	printTarget("if ");
+		//	printTarget(hold,"if ");
 		//}
 	}
 
 	@Override public void exitStatement(LeverParser.StatementContext ctx) {
-		//printTarget("\n");	
+		//printTarget(hold,"\n");	
 	}
 	
 	@Override
@@ -207,8 +225,8 @@ public class LeverToJavaListener extends LeverBaseListener {
 		TerminalNode begin = ctx.getToken(LeverLexer.NumberLiteral, 0);
 		TerminalNode end = ctx.getToken(LeverLexer.NumberLiteral, 1);
 
-		printTarget("for (int " + ctx.Identifier() + " = " + begin + "; ");
-		printTarget(ctx.Identifier() + " < " + end + "; " + ctx.Identifier() + "++) ");
+		printTarget(hold,"for (int " + ctx.Identifier() + " = " + begin + "; ");
+		printTarget(hold,ctx.Identifier() + " < " + end + "; " + ctx.Identifier() + "++) ");
 	}
 	@Override
 	public void exitForIn(LeverParser.ForInContext ctx) {
@@ -217,40 +235,40 @@ public class LeverToJavaListener extends LeverBaseListener {
 	@Override
 	public void enterForEach(LeverParser.ForEachContext ctx) {
 		
-		printTarget("for (String ");
+		printTarget(hold,"for (String ");
 
 		TerminalNode userTerminal = ctx.getToken(LeverLexer.AT, 0);
 		if (userTerminal != null) {
-			printTarget(userKey + " : ");
-			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + ".user) ");
+			printTarget(hold,userKey + " : ");
+			printTarget(hold,ctx.getToken(LeverLexer.Identifier, 0) + ".user) ");
 
 		} else {
-			printTarget(ctx.getToken(LeverLexer.Identifier, 0) + " : ");
-			printTarget(ctx.getToken(LeverLexer.Identifier, 1) + ") ");
+			printTarget(hold,ctx.getToken(LeverLexer.Identifier, 0) + " : ");
+			printTarget(hold,ctx.getToken(LeverLexer.Identifier, 1) + ") ");
 		}
 	}
 
 	@Override
 	public void enterParExpression(LeverParser.ParExpressionContext ctx) {
 		
-		printTarget("(");
+		printTarget(hold,"(");
 	}
 	@Override
 	public void exitParExpression(LeverParser.ParExpressionContext ctx) {
-		printTarget(") ");
+		printTarget(hold,") ");
 		
 	}
 
 	@Override
 	public void enterExpressionList(LeverParser.ExpressionListContext ctx) {
 		if (!leverTerminals.contains("dontPrintParams"))
-			printTarget("(");
+			printTarget(hold,"(");
 
 	}
 	@Override
 	public void exitExpressionList(LeverParser.ExpressionListContext ctx) {
 		if (!leverTerminals.contains("dontPrintParams"))
-			printTarget(")");
+			printTarget(hold,")");
 
 	}
 
@@ -260,30 +278,24 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	@Override
 	public void exitStatementExpression(LeverParser.StatementExpressionContext ctx) {
-		//printTarget(";");
+		//printTarget(hold,";");
 	}
 	
 	@Override
 	public void enterLiteral(LeverParser.LiteralContext ctx) {
-		//printTarget(ctx.StringLiteral().getText());
+		//printTarget(hold,ctx.StringLiteral().getText());
 		if (ctx.BooleanLiteral() != null) {
 			String lit = ctx.BooleanLiteral().toString();
 			if (lit.equals("yes") || lit.equals("true")) {
-				printTarget("true");
+				printTarget(hold,"true");
 			} else if (lit.equals("no") || lit.equals("false")) {
-				printTarget("false");
+				printTarget(hold,"false");
 			}
 		}
 	}
 	@Override
 	public void enterPrimary(LeverParser.PrimaryContext ctx) {
 		
-	}
-
-	@Override public void enterExpressionB(LeverParser.ExpressionBContext ctx) { 
-		if (!leverTerminals.contains("dontPrintParams")) {
-			//printTarget(", ");
-		}
 	}
 
 	@Override public void enterVariableDeclarator(LeverParser.VariableDeclaratorContext ctx) {
@@ -294,28 +306,35 @@ public class LeverToJavaListener extends LeverBaseListener {
 	}
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) {
 
+		hold = true;
 
-		String varId = ctx.Identifier().getText();
-		VariableCheckingListener.LType type = symbolTable.get(varId);
+		// String varId = ctx.Identifier().getText();
+		// VariableCheckingListener.LType type = symbolTable.get(varId);
 
-		printTabs();
-		printTarget("public static ");
+		// printTabs();
+		// printTarget("public static ");
 
-		if (type != null) {
-			printTarget(getJavaType(type) + " ");			
-		}
-		else {
-			printTarget("void ");
-		}
-
-		//Check to see if there are any 
+		// if (type != null) {
+		// 	printTarget(getJavaType(type) + " ");			
+		// }
+		// else {
+		// 	printTarget("void ");
+		// }
 	}
+		
+	@Override public void exitMethodDefinition(LeverParser.MethodDefinitionContext ctx) {
+		
+		funcDefinitions.put(ctx.Identifier().getText(), currentMethod);
+		currentMethod = "";
+		hold = false;
+	}
+
 	@Override public void enterFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
-		printTarget("(");
+		printTarget(hold,"(");
 	}
 
 	@Override public void exitFormalParameterList(LeverParser.FormalParameterListContext ctx) { 
-		printTarget(")");
+		printTarget(hold,")");
 	}
 
 
@@ -324,16 +343,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		VariableCheckingListener.LType _type = symbolTable.get(ctx.Identifier().getText());
 		if (_type != null)
-			printTarget(getJavaType(_type) + " ");	
+			printTarget(hold,getJavaType(_type) + " ");	
 	}
 
 	@Override public void exitIdentifierVar(LeverParser.IdentifierVarContext ctx) {
-
-		//printTarget(" = new LeverVar();\n");
-		
-		
-		
-		
 			
 	}
 
@@ -379,23 +392,73 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		}
 
-	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) { 
+	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) {
+
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
-			printTarget("QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+			printTarget(hold,"LeverAPI.get(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
 		}
+
 		String funcId = ctx.Identifier().getText();
 
 		if (!leverAPIfunctions.contains(funcId)) {
+
 			LeverParser.MethodDefinitionContext funcDefCtx = VariableCheckingListener.functionTable.get(funcId);
+			
+			// //assign parameter types
+			if (funcDefCtx.formalParameterList() != null) {
+				List<TerminalNode> parameterIds = funcDefCtx.formalParameterList().Identifier();
 
-			//assign parameter types
-			//LeverParser.ExpressionContext expCtx = funcDefCtx.expression();
-			//LeverParser.LType type = VariableCheckingListener.getExpressionType(expCtx);
+				LeverParser.ExpressionListContext expLCtx = ctx.expressionList();
 
-			//VariableCheckingListener.getMethodType()
-			System.out.println(funcId);
+				List<LeverParser.ExpressionContext> arguments = null;
+
+				if (expLCtx != null) {
+					 arguments =  expLCtx.expression();
+				}
+				
+				
+				String params = "";
+
+				for (int i=0; i< parameterIds.size(); i++) {
+
+					TerminalNode termIds = parameterIds.get(i);
+					String argId = termIds.getText();
+
+					LeverParser.ExpressionContext arg = arguments.get(i);
+					VariableCheckingListener.LType type = VariableCheckingListener.getExpressionType(arg);
+
+					VariableCheckingListener.initializeVarIdType(argId, type);
+					if (params.equals("")) {
+						params+= getJavaType(type)+" "+argId;
+
+					}
+					else {
+						params+= ", " +getJavaType(type)+" "+argId;	
+					}
+					
+
+				}
+				StringBuffer buf = new StringBuffer();
+				buf.append("public static ");
+
+				VariableCheckingListener.LType returnType = VariableCheckingListener.getMethodCallType(funcId);
+				if (returnType == null) {
+					buf.append("void ");
+				}
+				else {
+					buf.append(getJavaType(returnType) + " ");
+				}
+
+				buf.append(funcId+"("+params+")");
+				// System.out.println(buf.toString());
+				//Place func signature to body
+				String body = funcDefinitions.get(funcId);
+				funcDefinitions.put(funcId, buf.toString()+body);
+
+				// System.out.println(funcDefinitions.get(funcId));
+			}
 		}
 	}
 
@@ -412,23 +475,23 @@ public class LeverToJavaListener extends LeverBaseListener {
 		//Get type and assign it to the appropriate member of LeverVar
 
 		//printTabs();
-		//printTarget(id.getText() + ".val ");
+		//printTarget(hold,id.getText() + ".val ");
 	}
 
 	@Override public void exitInitialization(LeverParser.InitializationContext ctx) {
-		//printTarget(";\n");
+		//printTarget(hold,";\n");
 	}
     @Override public void enterArrayInit(LeverParser.ArrayInitContext ctx) {
-        printTarget("new ArrayList<>(Arrays.asList(");
+        printTarget(hold,"new ArrayList<>(Arrays.asList(");
     }
     @Override public void exitArrayInit(LeverParser.ArrayInitContext ctx) {
-        printTarget("))");
+        printTarget(hold,"))");
     }
     @Override public void enterArrayAccess(LeverParser.ArrayAccessContext ctx) {
-        printTarget("[");
+        printTarget(hold,"[");
     }
     @Override public void exitArrayAccess(LeverParser.ArrayAccessContext ctx) {
-        printTarget("]");
+        printTarget(hold,"]");
     }
 	@Override
 	public void visitTerminal(TerminalNode node) {
@@ -441,14 +504,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 		switch(type) {
 			case LeverLexer.Identifier:
 				if (id.equals("output")) {
-					printTarget("LeverAPI.output");
+					printTarget(hold,"LeverAPI.output");
 					
 				} else if (id.equals("input")) {
-					printTarget("LeverAPI.input()");
+					printTarget(hold,"LeverAPI.input()");
 				
 				
 				} else if (id.equals("graph")) {
-					printTarget("LeverAPI.graph");
+					printTarget(hold,"LeverAPI.graph");
 
 				} else if (id.equals("get")) {
 
@@ -461,9 +524,9 @@ public class LeverToJavaListener extends LeverBaseListener {
 
                         ParserRuleContext pNode = (ParserRuleContext)node.getParent();
                         if (pNode instanceof LeverParser.MethodCallContext) {
-                            printTarget(id);
+                            printTarget(hold,id);
                         } else {
-                            printTarget(id);
+                            printTarget(hold,id);
                             //space?
                         }
 
@@ -474,7 +537,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 				break;
 
 			case LeverLexer.SEMI:
-				printTarget(";\n");
+				printTarget(hold,";\n");
 				break;
 
 			case LeverLexer.NumberLiteral:
@@ -482,27 +545,27 @@ public class LeverToJavaListener extends LeverBaseListener {
 				if (leverConstructs.contains(tmp)) { //numbers in 'for loop'
 					break;
 				}
-				//printTarget(id);
+				//printTarget(hold,id);
 				//break;
 
 			case LeverLexer.StringLiteral:
-				printTarget(id);
+				printTarget(hold,id);
 				break;
 
 			case LeverLexer.AND:
-				printTarget(" && ");
+				printTarget(hold," && ");
 				break;
 			case LeverLexer.OR:
-				printTarget(" || ");
+				printTarget(hold," || ");
 				break;
 			case LeverLexer.IF:
-				printTarget("if ");
+				printTarget(hold,"if ");
 				break;
 			case LeverLexer.ELSE:
-				printTarget(" else ");
+				printTarget(hold," else ");
 				break;
 			case LeverLexer.WHILE:
-				printTarget("while ");
+				printTarget(hold,"while ");
 				break;
 
 			case LeverLexer.LBRACE:
@@ -518,7 +581,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 				if (leverConstructs.contains(tmp)) {
 
 				} else {
-					printTarget(userKey);
+					printTarget(hold,userKey);
 				}
 				break;
 
@@ -526,7 +589,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 				if (!(leverTerminals.contains(id) || (leverTerminals.contains("dontPrintParams")))) {
                     if (spaceAfter.contains(id)) {
-                        printTarget(id + " ");
+                        printTarget(hold,id + " ");
                     } else {
 
 
@@ -535,7 +598,7 @@ public class LeverToJavaListener extends LeverBaseListener {
                         if (tmp.equals("for") && id.equals(",")) {
 
                         } else {
-                            printTarget(id);
+                            printTarget(hold,id);
                         }
 
                     }

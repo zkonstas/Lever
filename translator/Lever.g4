@@ -119,15 +119,17 @@ parExpression
     ;
 
 expressionList
-    :   expression (expressionB)*
+    :   expression (',' expression)*
     ;
 
 statementExpression
-    :   expression
+    :   zeroArgumentMethodCall
+    |   expression
     ;
 
-expressionB
-    :   ',' expression   
+
+zeroArgumentMethodCall
+    :   Identifier
     ;
 
 expression

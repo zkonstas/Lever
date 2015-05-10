@@ -109,33 +109,48 @@ public class VariableCheckingListener extends LeverBaseListener {
 			}
 		}
 
-		// if (exp.methodCall() != null) {
-		// 	String varId = exp.methodCall().Identifier().getText();
-		// 	type = symbolTable.get(varId);
-		// }
+		if (exp.methodCall() != null) {
+			String varId = exp.methodCall().Identifier().getText();
+
+			if (varId.equals("get")) {
+				type = LType.LResult;
+			}
+			else {
+				//type = symbolTable.get(varId);
+			}
+		}
 
 		return type;
 	}
 
 	@Override public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
 
-		LeverParser.ExpressionContext expCtx = ctx.expression();
+		if (ctx.expression() != null) {
+			LeverParser.ExpressionContext expCtx = ctx.expression();
 
-		//Check if this is an assignment expression
-		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
+			//Check if this is an assignment expression
+			if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
 
-			//Get variable identifier
-			ParseTree left = expCtx.getChild(0);
-			LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
-			TerminalNode id = lExp.primary().Identifier();
-			String varId = id.getText();
+				//Get variable identifier
+				ParseTree left = expCtx.getChild(0);
+				LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
+				TerminalNode id = lExp.primary().Identifier();
+				String varId = id.getText();
 
-			//Get type of right expression
-			ParseTree right = expCtx.getChild(2);
-			LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
-			LType type = getExpressionType(rExp);
+				//Get type of right expression
+				ParseTree right = expCtx.getChild(2);
+				LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
+				LType type = getExpressionType(rExp);
 
-			assignVarIdType(varId, type);
+				assignVarIdType(varId, type, ctx);
+			}
+		}
+		else if (ctx.zeroArgumentMethodCall() != null) {
+			String funcId = ctx.zeroArgumentMethodCall().Identifier().getText();
+			if (!functionTable.containsKey(funcId)) {
+				System.out.println("calling undefined function: " + funcId);
+				System.exit(1);	
+			}
 		}
 	}
 
@@ -154,7 +169,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 	}
 
-	public void initializeVarIdType(String varId, LType type) {
+	public static void initializeVarIdType(String varId, LType type) {
 
 		if (symbolTable.containsKey(varId)) {
 				symbolTable.put(varId, type);
@@ -168,7 +183,7 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 	}
 
-	public void assignVarIdType(String varId, LType type) {
+	public void assignVarIdType(String varId, LType type, ParserRuleContext ctx) {
 
 		if (symbolTable.containsKey(varId)) {
 
@@ -177,9 +192,11 @@ public class VariableCheckingListener extends LeverBaseListener {
 			if (assignedType != null) {
 
 				if (assignedType != type) {
+					System.out.println(assignedType);
+					System.out.println(type);
 					//trying to assign incompatible variable types
-					System.out.println("incompatible type assignment");
-					System.exit(1);
+					exitErrorLine("Incompatible types!", ctx);
+
 				}
 			}
 			else {
@@ -194,20 +211,20 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 	}
 
-	public void saveToTable(String varId, LType type, ParserRuleContext ctx) {
+	// public void saveToTable(String varId, LType type, ParserRuleContext ctx) {
 
-        if (!symbolTable.containsKey(varId)) {
-            symbolTable.put(varId, type);
+ //        if (!symbolTable.containsKey(varId)) {
+ //            symbolTable.put(varId, type);
 
-            // System.out.println(id.getText());
-            // System.out.println(type);
-        } else {
-			if (symbolTable.get(varId) != type) {
-                exitErrorLine("Incompatible types!", ctx);
-				//trying to assign incompatible variable types
-			}
-		}
-	}
+ //            // System.out.println(id.getText());
+ //            // System.out.println(type);
+ //        } else {
+	// 		if (symbolTable.get(varId) != type) {
+ //                exitErrorLine("Incompatible types!", ctx);
+	// 			//trying to assign incompatible variable types
+	// 		}
+	// 	}
+	// }
 
     private void exitErrorLine(String _error, ParserRuleContext _ctx) {
         System.out.println("Sorry, Lever compile failed! :(");
@@ -253,10 +270,11 @@ public class VariableCheckingListener extends LeverBaseListener {
             exitErrorLine("can't figure out what type this var is!", ctx);
         } else {
             // System.out.println("Initialized " + varId);
-            saveToTable(varId, type, ctx);
+            // saveToTable(varId, type, ctx);
+            initializeVarIdType(varId, type);
         }
 		// System.out.println("Initialized " + varId);
-		initializeVarIdType(varId, type);
+		
 	}
 
 	public static LType getMethodCallType(String funcId) {
@@ -295,11 +313,19 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 	@Override public void enterMethodDefinition(LeverParser.MethodDefinitionContext ctx) { 
 
+		//save function identifier
 		String funcId = ctx.Identifier().getText();
 		addVarId(funcId);
 
-		if (ctx.formalParameterList() !=null) {
-			
+		//assign parameter types
+		if (ctx.formalParameterList() != null) {
+			List<TerminalNode> ids = ctx.formalParameterList().Identifier();
+
+			for (TerminalNode node : ids) {
+				String varId = node.getText();
+				addVarId(varId);
+				// System.out.println(varId);
+			}
 		}
 
 		functionTable.put(funcId, ctx);

@@ -1,0 +1,15 @@
+program {
+
+    output "hello world!\n";
+
+    var res;
+    res = get #realmadrid;
+    output res;
+
+    var xAxis = ["Cameron", "Milband", "Sturgeon", "Clegg"];
+    var counts = [4];
+    //counts[0] = result.tweetCount "cameron";
+    //counts[1] = result.tweetCount "milband";
+
+    //graph "bar", "UK Election Tweets - Popular Tweets", xAxis, counts;
+}
