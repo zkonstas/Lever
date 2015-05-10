@@ -144,6 +144,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		printTarget(hold,"import twitter4j.User;\n");
 		printTarget(hold,"\n");
 		printTarget(hold,"import java.util.*;\n\n");
+		printTarget(hold, "import LeverAPIPackage.*;\n\n");
 
 		printTarget(hold,"public class " + fileName + " ");
 		openBraces();
@@ -391,7 +392,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
-			printTarget(hold,"QueryManager.getResultFromArguments(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
+			printTarget(hold,"LeverAPI.get(\"" + text.substring(text.indexOf("get")+3, text.length()) + "\")");
 		}
 
 		String funcId = ctx.Identifier().getText();
