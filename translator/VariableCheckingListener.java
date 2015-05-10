@@ -111,7 +111,13 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 		if (exp.methodCall() != null) {
 			String varId = exp.methodCall().Identifier().getText();
-			type = symbolTable.get(varId);
+
+			if (varId.equals("get")) {
+				type = LType.LResult;
+			}
+			else {
+				//type = symbolTable.get(varId);
+			}
 		}
 
 		return type;
