@@ -512,7 +512,7 @@ public class LeverToJavaListener extends LeverBaseListener {
     		type = VariableCheckingListener.getExpressionType( exps.get(0) );
 
     		if (type==VariableCheckingListener.LType.LInteger) {
-    			printTarget(hold,"new ArrayList<>(");
+    			printTarget(hold,"new ArrayList<>(Collections.nCopies(");
     			return;
     		}
     	}
@@ -527,7 +527,7 @@ public class LeverToJavaListener extends LeverBaseListener {
     		type = VariableCheckingListener.getExpressionType( exps.get(0) );
 
     		if (type==VariableCheckingListener.LType.LInteger) {
-    			printTarget(hold,")");
+    			printTarget(hold,",0))");
     			return;
     		}
     	}
