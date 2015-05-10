@@ -13,11 +13,11 @@ public class LeverAPI {
         return QueryManager.getResultFromArguments(arguments);
     }
 
-    public static void graph(String barType, String title, String[] xLabels, double[] dataPoints) {
+    public static void graph(String barType, String title, String[] xLabels, ArrayList dataArray) {
         if (barType.equals("line"))
-            GraphManager.createLineChart(title, xLabels, dataPoints);
+            GraphManager.createLineChart(title, xLabels, dataArray);
         else
-            GraphManager.createBarChart(title, xLabels, dataPoints);
+            GraphManager.createBarChart(title, xLabels, dataArray);
     }
 
     public static void output(Object obj) {

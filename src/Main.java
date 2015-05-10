@@ -72,27 +72,28 @@ public class Main {
         String str = "uk election,[\"since\":\"2015-05-01\",\"until\":\"2015-05-07\"];";
         QueryManager.numberOfPages = 1;
         Result result = LeverAPI.get(str);
-        double[] counts = new double[4];
-        counts[0] = result.tweetCount("cameron");
-        counts[1] = result.tweetCount("miliband");
-        counts[2] = result.tweetCount("sturgeon");
-        counts[3] = result.tweetCount("clegg");
+        ArrayList al = new ArrayList(Collections.nCopies(4, 0));
+        al.set(0, result.tweetCount("cameron"));
+        al.set(1, result.tweetCount("Milband"));
+        al.set(2, result.tweetCount("sturgeon"));
+        al.set(3, result.tweetCount("clegg"));
+
         LeverAPI.output(result);
-        LeverAPI.graph("bar", "UK Election Tweets, Candidate Mentions - May 1st - 7th", new String[]{"Cameron", "Milband", "Sturgeon", "Clegg"}, counts);
+        LeverAPI.graph("bar", "UK Election Tweets, Candidate Mentions - May 1st - 7th", new String[]{"Cameron", "Milband", "Sturgeon", "Clegg"}, al);
     }
 
     public static void newExample3() {
 
-//        String str = "uk election,[\"location\":\"london\",\"since\":\"2015-05-04\",\"until\":\"2015-05-07\"]";
-        String str = "uk election,#ukelection,[\"since\":\"2015-05-04\",\"until\":\"2015-05-07\"]";
-        QueryManager.numberOfPages = 10;
-        Result result = LeverAPI.get(str);
-        double[] counts = new double[2];
-        counts[0] = result.tweetCount("cameron");
-        counts[1] = result.tweetCount("milband");
-//        LeverAPI.output(result);
-        LeverAPI.graph("bar", "UK Election Tweets - Popular Tweets 05/07-05/08", new String[]{"Cameron", "Milband"}, counts);
-        LeverAPI.output(result.getSize());
+////        String str = "uk election,[\"location\":\"london\",\"since\":\"2015-05-04\",\"until\":\"2015-05-07\"]";
+//        String str = "uk election,#ukelection,[\"since\":\"2015-05-04\",\"until\":\"2015-05-07\"]";
+//        QueryManager.numberOfPages = 10;
+//        Result result = LeverAPI.get(str);
+//        double[] counts = new double[2];
+//        counts[0] = result.tweetCount("cameron");
+//        counts[1] = result.tweetCount("milband");
+////        LeverAPI.output(result);
+//        LeverAPI.graph("bar", "UK Election Tweets - Popular Tweets 05/07-05/08", new String[]{"Cameron", "Milband"}, counts);
+//        LeverAPI.output(result.getSize());
 
     }
 
@@ -106,140 +107,19 @@ public class Main {
 
     }
 
-    public static void findMostRetweetedTweet(String queryString){
+    public static void findMostRetweetedTweet(String queryString) {
         QueryManager.numberOfPages = 1;
         Result result = LeverAPI.get(queryString);
         int maxIndex = 0;
-        for(int i=0;i<result.getSize();i++){
-            if(result.statuses.get(maxIndex).getRetweetCount() < result.statuses.get(i).getRetweetCount())
+        for (int i = 0; i < result.getSize(); i++) {
+            if (result.statuses.get(maxIndex).getRetweetCount() < result.statuses.get(i).getRetweetCount())
                 maxIndex = i;
         }
         Status mostReTweetedStatus = result.statuses.get(maxIndex);
-        LeverAPI.output("most retweeted tweet status - @"+mostReTweetedStatus.getUser().getScreenName()+" - "+mostReTweetedStatus.getText());
-        LeverAPI.output("# of retweets - "+mostReTweetedStatus.getRetweetCount());
-    }
-    /**
-     * Here we run a sample query fetching all tweets from two users
-     */
-    public static void example1() {
-
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(100);
-        qm.addFromUser("realmadrid");
-        qm.addFromUser("fcbarcelona");
-
+        LeverAPI.output("most retweeted tweet status - @" + mostReTweetedStatus.getUser().getScreenName() + " - " + mostReTweetedStatus.getText());
+        LeverAPI.output("# of retweets - " + mostReTweetedStatus.getRetweetCount());
     }
 
-    /**
-     * Here we run a sample query fetching all tweets about a certain topic
-     */
-    public static void example2() {
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(10);
-        qm.addTopic("#hackdisrupt");
-
-        qm.printAllStatuses();
-    }
-
-    /**
-     * Here we run a sample query fetching all tweets in a certain location
-     */
-    public static void example3() {
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(10);
-        try {
-            qm.sendGetForLocation("Israel");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        qm.printAllStatuses();
-
-    }
-
-    /**
-     * Here we run a sample query fetching all tweets from two users.
-     * Then we compare the number of them that have messi vs ronaldo, and draw it on a graph
-     */
-    public static void example4() {
-
-//        GraphManager gm = new GraphManager();
-//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
-//        return;
-
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(100);
-        qm.addFromUser("realmadrid");
-        qm.addFromUser("fcbarcelona");
-
-
-        //received resuts
-        int messi = 0;
-        int ronaldo = 0;
-        for (Status status : qm.customResult.statuses) {
-            if (status.getText().toLowerCase().contains("messi"))
-                messi++;
-            if (status.getText().toLowerCase().contains("ronaldo"))
-                ronaldo++;
-        }
-
-        int max = (messi > ronaldo) ? messi : ronaldo;
-
-
-        GraphManager gm = new GraphManager();
-        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions", new String[]{"Messi", "Ronaldo"}, null, new double[]{messi, ronaldo});
-
-    }
-
-    /**
-     * This example searches for all tweets about england elections and compares their time distribution before and after a certain time
-     */
-    public static void example5() {
-
-//        GraphManager gm = new GraphManager();
-//        gm.createBarChart("messi vs ronaldo mentions", "who", "# of mentions",new String[]{"Messi","Ronaldo"},new String[]{"0",String.valueOf(20)},new double[]{15,5});
-//        return;
-
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(100);
-        qm.addGeneralSearchString("england elections");
-
-
-        //received resuts
-        Date bufferDate;
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(0);
-        cal.set(Calendar.YEAR, Calendar.MONTH, 7, 12, 0, 0);
-        bufferDate = cal.getTime(); // get back a Date object
-
-        int before = 0;
-        int after = 0;
-        for (Status status : qm.customResult.statuses) {
-            Date statusDate = status.getCreatedAt();
-            Interval interval = new Interval(statusDate, bufferDate); //for time difference
-            if (statusDate.compareTo(bufferDate) < 0) {
-                before++;
-            } else after++;
-        }
-
-
-        GraphManager gm = new GraphManager();
-        gm.createBarChart("UK Elections Tweet Metrics", "Time", "Volume", new String[]{"Before 12:00:00PM", "After Before 12:00:00PM"}, new String[]{"0", "100"}, new double[]{before, after});
-
-    }
-
-    /**
-     * Sentiment analysis - not working yet
-     */
-    public static void example6() {
-        QueryManager qm = new QueryManager();
-        qm.masterQuery.setCount(10);
-        qm.addGeneralSearchString("england :(");
-
-        System.out.println(qm.customResult.getSize());
-        for (int i = 0; i < qm.customResult.getSize(); i++)
-            System.out.println(qm.customResult.statuses.get(i).getText());
-    }
 
     public static void output(Object obj) {
         //Fix this eventually

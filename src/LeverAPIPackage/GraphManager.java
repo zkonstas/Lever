@@ -9,6 +9,7 @@ import static com.googlecode.charts4j.Color.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -25,17 +26,22 @@ public class GraphManager {
     }
 
 
-    public static void createLineChart(double[] dataPoints) {
-        createLineChart(null,null,null, null, null, dataPoints);
+    public static void createLineChart(ArrayList dataArray) {
+        createLineChart(null,null,null, null, null, dataArray);
     }
-    public static void createLineChart(String title, String[] xLabels,double[] dataPoints) {
-        createLineChart(title,null,null, xLabels, null, dataPoints);
+    public static void createLineChart(String title, String[] xLabels,ArrayList dataArray) {
+        createLineChart(title,null,null, xLabels, null, dataArray);
     }
-    public static void createLineChart(String title, String xTitle, String yTitle, double[] dataPoints) {
-        createLineChart(title, xTitle, yTitle, null, null, dataPoints);
+    public static void createLineChart(String title, String xTitle, String yTitle, ArrayList dataArray) {
+        createLineChart(title, xTitle, yTitle, null, null, dataArray);
     }
 
-    public static void createLineChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
+    public static void createLineChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, ArrayList dataArray) {
+
+        double[] dataPoints = new double[dataArray.size()];
+        for(int i=0;i<dataArray.size();i++)
+            dataPoints[i] = (double) ((Integer) dataArray.get(i)).intValue();
+
         // Defining lines
         final int NUM_POINTS = dataPoints.length;
 
@@ -101,15 +107,19 @@ public class GraphManager {
         displayImageFromURL(url);
 
     }
-    public static void createBarChart(double[] dataPoints) {
-        createBarChart(null,null,null,null,null,dataPoints);
+    public static void createBarChart(ArrayList dataArray) {
+        createBarChart(null,null,null,null,null,dataArray);
     }
 
-    public static void createBarChart(String title, String[] xLabels,double[] dataPoints) {
-        createBarChart(title,null,null,xLabels,null,dataPoints);
+    public static void createBarChart(String title, String[] xLabels,ArrayList dataArray) {
+        createBarChart(title,null,null,xLabels,null,dataArray);
     }
 
-    public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
+    public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, ArrayList dataArray) {
+
+        double[] dataPoints = new double[dataArray.size()];
+        for(int i=0;i<dataArray.size();i++)
+            dataPoints[i] = (double) ((Integer) dataArray.get(i)).intValue();
 
         // Defining data plots.
         if (dataPoints.length >= 8) {
