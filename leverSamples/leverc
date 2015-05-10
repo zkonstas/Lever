@@ -6,16 +6,45 @@ if [ -z "$1" ]
     exit 1
 fi
 
-echo Compiling Lever into intermediate code... 
-java -cp "../translator:/usr/local/lib/antlr-4.5-complete.jar" Leverc ../leverSamples/$1
+keep=no
+for f in "$@"
+do
+	if [[ $f == "-keep" ]]
+	then
+		keep=yes
+	fi
+done
 
-echo Compiling and JARing API...
-javac -cp ".:../lib/*" -d ../translator/LeverAPIPackageSourceCode/  ../translator/LeverAPIPackageSourceCode/*.java
-jar cvf ../lib/LeverAPI-package.jar -C ../translator/LeverAPIPackageSourceCode  LeverAPIPackage
+for f in "$@"
+do
+	if [[ $f == *".lever"*  ]] && [[ -e $f ]]
+	#if [[ $f == *".lever"* ]]
+	then
+		echo Compiling Lever into intermediate code... 
+		compilerOutput=$(java -cp "../translator:/usr/local/lib/antlr-4.5-complete.jar" Leverc ../leverSamples/$f 2>&1 >/dev/null)
 
-progName=${1//.lever/.java} #get java filename out of lever filename
-echo Compiling program...
-javac -cp ".:../lib/*" $progName
+		if [[ $compilerOutput == *"line"*  ]]; then
+			echo "errors detected:"
+			echo "$compilerOutput"
+			echo "$f failed to compile"
+		else
+			echo Compiling and JARing API...
+			javac -cp ".:../lib/*" -d ../translator/LeverAPIPackageSourceCode/  ../translator/LeverAPIPackageSourceCode/*.java &>/dev/null
+			jar cvf ../lib/LeverAPI-package.jar -C ../translator/LeverAPIPackageSourceCode  LeverAPIPackage &>/dev/null
 
-echo Removing intermediate files...
-#rm $progName
+			progName=${f//.lever/.java} #get java filename out of lever filename
+			echo Compiling program...
+			javac -cp ".:../lib/*" $progName &>/dev/null
+
+			if [[ $keep == "no" ]]
+			then
+				echo "Removing intermediate files..."
+				rm $progName
+			fi
+
+			echo "$f compiled successfully!"
+		fi
+	else
+		echo "file $f not found or not a .lever file"
+	fi
+done
