@@ -6,6 +6,8 @@ import LeverAPIPackage.*;
 import sun.jvm.hotspot.utilities.Interval;
 import twitter4j.*;
 import twitter4j.User;
+
+
 import java.util.*;
 
 
@@ -14,10 +16,11 @@ public class Main {
     public static void main(String[] args) {
 
 
+
 //        newExample1(); //simple
-//        newExample2(); //UK election with graph
+        newExample2(); //UK election with graph
 //        newExample3(); //UK election between cities
-        newExample4(); //UK election between cities
+//        newExample4(); //UK election between cities
 //        example1();// simple user query
 //        example2(); // simple hashtag query
 //        example3();//simple location query
@@ -67,7 +70,7 @@ public class Main {
     public static void newExample2() {
 
         String str = "uk election,[\"since\":\"2015-05-01\",\"until\":\"2015-05-07\"];";
-        QueryManager.numberOfPages = 10;
+        QueryManager.numberOfPages = 1;
         Result result = LeverAPI.get(str);
         double[] counts = new double[4];
         counts[0] = result.tweetCount("cameron");
