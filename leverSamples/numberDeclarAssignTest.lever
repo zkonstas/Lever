@@ -1,0 +1,44 @@
+/*
+	Test for:
+	number declaration
+	Excpected output: "YES\nYES\nYES\nYES\n"
+*/
+
+program {
+	var i;
+	i = 2;
+	var j = 0;
+	var x = 3, y = -4;
+	var z, u;
+	z = 3.15;
+	u = -12.1222
+
+	if(i == 2) {
+		output "YES";
+	}
+	else {
+		output "NO: int assignment separate from declaration wrong\n";
+	}
+
+	if(j == 0) {
+		output "YES";
+	}
+	else {
+		output "NO: int declaration inline with assignment wrong\n";
+	}
+
+	if((x == 3) AND (y == -4)) {
+		output "YES";
+	}
+	else {
+		output "NO: inline double int assignment + declaration wrong\n";
+	}
+
+	if((z == 3.15) AND (u == -12.1222)) {
+		output "YES";
+	}
+	else {
+		output "NO: double assignment after double declaration wrong\n"
+	}
+
+}

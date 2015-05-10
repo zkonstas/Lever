@@ -1,0 +1,67 @@
+/*
+	Test for:
+	Simple Arithmetic
+	Excpected output: "YES\nYES\nYES\nYES\nYES\n"
+*/
+
+program {
+	var i = 2, j = 0, x = 3, y = -4, a = 5, b = 7, c = 10;
+	var z = 3.15, u = -2.1, v = 1.111;
+
+	y++; /* y=-3 */
+	x--; /* x=2 */
+
+	if((y == -3) AND (x == 2)) {
+		output "YES";
+	}
+	else {
+		output "NO: postfixt unary increment/decrement wrong\n";
+	}
+
+	--x; /* x=1 */
+	++y; /* y=-2*/
+
+	if((y == -2) AND (x == 1)) {
+		output "YES";
+	}
+	else {
+		output "NO: prefix unary increment/decrement wrong\n";
+	}
+
+	x += i; /* x=3 */
+	y -= 1; /* y=-1 */
+	a *= a; /* a=25 */
+	c /= i; /* c=5 */
+	
+	if((x == 3) AND (y == -1) AND (a == 25) AND (c == 25)) {
+		output "YES";
+	}
+	else {
+		output "NO: shorthand arithmetic wrong\n";
+	}
+
+	var d = 1 + 2;
+	var e = 1 - 2;
+	var f = e * 1;
+	var g = f * 0;
+	var h = e / 1;
+
+	if((d == 3) AND (e == -1) AND (f == e) AND (g == 0) AND (h == e)) {
+		output "YES";
+	}
+	else {
+		output "NO: simple arithmetic sentences wrong\n";
+	}
+
+	z += 1.1; /* z=4.25 */
+	var k = v + u; /* k=-0.989*/
+	u *= 2; /* u=-4.2 */
+
+	if((z == 4.25) AND (k == -0.989) AND (u == -4.2)) {
+		output "YES";
+	}
+	else {
+		output "NO: double arithmetic wrong\n";
+	}
+
+}
