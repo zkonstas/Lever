@@ -123,16 +123,20 @@ expressionList
     ;
 
 statementExpression
-    :   expression
+    :   zeroArgumentMethodCall
+    |   expression
+    ;
+
+
+zeroArgumentMethodCall
+    :   Identifier
     ;
 
 expression
     :   primary
     |   parExpression
-    |   expression '.' Identifier
-    |   expression '.' 'this'
     |	methodCall
-    |   expression arrayAccess
+    |   Identifier arrayAccess
     |   '(' type ')' expression
     |   expression ('++' | '--')
     |   ('+'|'-'|'++'|'--') expression
@@ -151,6 +155,11 @@ expression
 
 methodCall
     :   Identifier expressionList?
+    |   objectMethodCall
+    ;
+
+objectMethodCall
+    :   Identifier ('.' Identifier)* expressionList?
     ;
 
 arrayAccess
@@ -158,8 +167,7 @@ arrayAccess
     ;
 
 primary
-    :   'this'
-    |   literal
+    :   literal
     |   Identifier
 	|	AT
     ;
@@ -180,8 +188,6 @@ FOR			: 'for';
 IF			: 'if';
 IN			: 'in';
 RETURN		: 'return';
-THIS		: 'this';
-VOID		: 'void';
 WHILE		: 'while';
 
 // LEVER SYMBOLS

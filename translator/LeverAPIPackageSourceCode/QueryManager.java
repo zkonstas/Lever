@@ -1,15 +1,11 @@
+package LeverAPIPackage;
+
 import com.google.gson.Gson;
-import scala.util.parsing.combinator.testing.Str;
 import twitter4j.Query;
 import twitter4j.Status;
-import twitter4j.User;
 import twitter4j.*;
-
-
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -20,15 +16,16 @@ import java.util.*;
  */
 public class QueryManager {
 
-    Query masterQuery;
-    String queryString;
-    ArrayList<String> userList;
-    ArrayList<String> topicList;
-    ArrayList<String> generalStringList;
-    QueryResult queryResult;
-    Result customResult;
-    int numberOfPages;
-    FilterQuery filterQuery;
+    public Query masterQuery;
+    public String queryString;
+    public ArrayList<String> userList;
+    public ArrayList<String> topicList;
+    public ArrayList<String> generalStringList;
+    public QueryResult queryResult;
+    public Result customResult;
+    public static int numberOfPages = 10;
+    public FilterQuery filterQuery;
+
 
 
     /**
@@ -41,7 +38,6 @@ public class QueryManager {
         this.generalStringList = new ArrayList<String>();
         this.masterQuery = new Query();
         this.customResult = null;
-        this.numberOfPages = 1;
         this.filterQuery = new FilterQuery();
 
     }
@@ -52,8 +48,8 @@ public class QueryManager {
         int lastOpenBracket = arguments.lastIndexOf("[");
         //1. Remove all maps
         while (lastCloseBracket != -1 && lastOpenBracket != -1) {
-            String s = arguments.substring(lastOpenBracket+1, lastCloseBracket); //create string of just map/array
-            if(s.contains(":")) { //it is a map/dictionary
+            String s = arguments.substring(lastOpenBracket + 1, lastCloseBracket); //create string of just map/array
+            if (s.contains(":")) { //it is a map/dictionary
                 Map map = new HashMap();
                 String[] pairs = s.split(",");
                 for (int i = 0; i < pairs.length; i++) {
@@ -61,15 +57,14 @@ public class QueryManager {
                     map.put(pair[0], pair[1]);
                 }
                 al.add(map);
-            }
-            else{ //it is an array/list
+            } else { //it is an array/list
                 ArrayList ar = new ArrayList();
-                String [] elements = s.split(",");
-                for(int i=0;i<elements.length;i++)
+                String[] elements = s.split(",");
+                for (int i = 0; i < elements.length; i++)
                     ar.add(elements[i]);
             }
             //remove from string
-            int endIndex = (lastCloseBracket+2 > arguments.length()) ? lastCloseBracket+1 : lastCloseBracket+2;
+            int endIndex = (lastCloseBracket + 2 > arguments.length()) ? lastCloseBracket + 1 : lastCloseBracket + 2;
             arguments = arguments.substring(0, lastOpenBracket) + arguments.substring(endIndex);
             lastCloseBracket = arguments.lastIndexOf("]");
             lastOpenBracket = arguments.lastIndexOf("[");
@@ -99,23 +94,26 @@ public class QueryManager {
 
         //start Twitter querying
         long minTweet = 0;
-        int numberOfPages = 1; //number of times to run the query for getting more results
-        for (int i = 0; i < numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
+        query.setCount(100);
+        for (int i = 0; i < QueryManager.numberOfPages; i++) { //default go for 1 queries, aka 100 tweets total
             try {
                 if (i != 0)
-                    query.setMaxId(minTweet); //for paging multiple queries together
+                    query.setMaxId(minTweet-1); //for paging multiple queries together
                 queryResult = twitter.search(query);
 
                 result.addQueryResult(queryResult);
                 List<Status> tweets = queryResult.getTweets();
                 for (Status tweet : tweets) {
-//                    output(tweet);
+                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + tweet.getCreatedAt());
+                    if(minTweet == tweet.getId()) break;
                     minTweet = tweet.getId();
                 }
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
+            System.out.println("ran query "+i+" times");
         }
+
         return result;
     }
 
@@ -172,50 +170,12 @@ public class QueryManager {
             //Status object
             Status tweet = (Status) object;
             retValue = ("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-        } else if (object instanceof User) {
-            //User object
-            User user = (User) object;
-            retValue = ("@" + user.getScreenName());
         } else {
             //Non object
             retValue = object.toString();
         }
         System.out.println(retValue);
         return retValue;
-    }
-
-    /**
-     * Runs the search query
-     */
-    public void get() {
-        Twitter twitter = TwitterFactory.getSingleton();
-        //construct string for query
-
-
-        String queryString = this.getQueryStringForAllParamaters();
-        this.output("query string = " + queryString);
-
-
-        this.masterQuery.setQuery(queryString);
-
-        long minTweet = 0;
-        for (int i = 0; i < this.numberOfPages; i++) { //default go for 5 queries, aka 500 tweets total
-            try {
-                if (i != 0)
-                    this.masterQuery.setMaxId(minTweet); //for paging multiple queries together
-                this.queryResult = twitter.search(this.masterQuery);
-                this.customResult = new Result();
-                this.customResult.addQueryResult(this.queryResult);
-                List<Status> tweets = this.queryResult.getTweets();
-                for (Status tweet : tweets) {
-//                    output(tweet);
-                    minTweet = tweet.getId();
-                }
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
 
@@ -329,8 +289,9 @@ public class QueryManager {
             }
             if (a instanceof Map) {
                 Map map = (HashMap) a;
-                if (map.get("location") != null) {
-                    String location = (String) map.get("location");
+                if (map.get("\"location\"") != null) {
+                    String location = (String) map.get("\"location\"");
+                    location = location.replace("\"","");
                     try {
                         query.setGeoCode(QueryManager.sendGetForLocation(location), 50, Query.Unit.km);
                     } catch (Exception e) {
@@ -338,14 +299,26 @@ public class QueryManager {
                         e.printStackTrace();
                     }
                 }
-                if(map.get("language") != null){
-                    query.setLang(String.valueOf(map.get("language")));
+                if (map.get("\"language\"") != null) {
+                    String language = (String)map.get("\"language\"");
+                    language = language.replace("\"","");
+                    query.setLang(language);
                 }
-                if(map.get("result type") != null){
-                    String rt = String.valueOf(map.get("result type"));
-                    if(rt.equals("popular"))
+                if (map.get("\"since\"") != null) {
+                    String since = (String)map.get("\"since\"");
+                    since = since.replace("\"","");
+                    query.setSince(since);
+                }
+                if (map.get("\"until\"") != null) {
+                    String until = (String)map.get("\"until\"");
+                    until = until.replace("\"","");
+                    query.setUntil(until);
+                }
+                if (map.get("\"result type\"") != null) {
+                    String rt = String.valueOf(map.get("\"result type\""));
+                    if (rt.equals("\"popular\""))
                         query.setResultType(Query.ResultType.popular);
-                    else if(rt.equals("recent"))
+                    else if (rt.equals("\"recent\""))
                         query.setResultType(Query.ResultType.recent);
                     else
                         query.setResultType(Query.ResultType.mixed);
@@ -370,7 +343,7 @@ public class QueryManager {
         }
         /* other search paramters */
         for (int i = 0; i < generalStringList.size(); i++) {
-            str = str + "\""+generalStringList.get(i)+"\"" + " ";
+            str = str + "\"" + generalStringList.get(i) + "\"" + " ";
         }
 
         query.setQuery(str);

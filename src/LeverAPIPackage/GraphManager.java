@@ -1,20 +1,16 @@
+package LeverAPIPackage;
+
 import com.googlecode.charts4j.*;
 import com.googlecode.charts4j.Color;
 import com.googlecode.charts4j.Shape;
-
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import static com.googlecode.charts4j.Color.*;
-import static com.googlecode.charts4j.UrlUtil.normalize;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 
 /**
@@ -30,17 +26,22 @@ public class GraphManager {
     }
 
 
-    public static void createLineChart(double[] dataPoints) {
-        createLineChart(null,null,null, null, null, dataPoints);
+    public static void createLineChart(ArrayList dataArray) {
+        createLineChart(null,null,null, null, null, dataArray);
     }
-    public static void createLineChart(String title, String[] xLabels,double[] dataPoints) {
-        createLineChart(title,null,null, xLabels, null, dataPoints);
+    public static void createLineChart(String title, String[] xLabels,ArrayList dataArray) {
+        createLineChart(title,null,null, xLabels, null, dataArray);
     }
-    public static void createLineChart(String title, String xTitle, String yTitle, double[] dataPoints) {
-        createLineChart(title, xTitle, yTitle, null, null, dataPoints);
+    public static void createLineChart(String title, String xTitle, String yTitle, ArrayList dataArray) {
+        createLineChart(title, xTitle, yTitle, null, null, dataArray);
     }
 
-    public static void createLineChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
+    public static void createLineChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, ArrayList dataArray) {
+
+        double[] dataPoints = new double[dataArray.size()];
+        for(int i=0;i<dataArray.size();i++)
+            dataPoints[i] = (double) ((Integer) dataArray.get(i)).intValue();
+
         // Defining lines
         final int NUM_POINTS = dataPoints.length;
 
@@ -106,15 +107,19 @@ public class GraphManager {
         displayImageFromURL(url);
 
     }
-    public static void createBarChart(double[] dataPoints) {
-        createBarChart(null,null,null,null,null,dataPoints);
+    public static void createBarChart(ArrayList dataArray) {
+        createBarChart(null,null,null,null,null,dataArray);
     }
 
-    public static void createBarChart(String title, String[] xLabels,double[] dataPoints) {
-        createBarChart(title,null,null,xLabels,null,dataPoints);
+    public static void createBarChart(String title, String[] xLabels,ArrayList dataArray) {
+        createBarChart(title,null,null,xLabels,null,dataArray);
     }
 
-    public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, double[] dataPoints) {
+    public static void createBarChart(String title, String xTitle, String yTitle, String[] xLabels, String[] yLabels, ArrayList dataArray) {
+
+        double[] dataPoints = new double[dataArray.size()];
+        for(int i=0;i<dataArray.size();i++)
+            dataPoints[i] = (double) ((Integer) dataArray.get(i)).intValue();
 
         // Defining data plots.
         if (dataPoints.length >= 8) {
@@ -139,17 +144,9 @@ public class GraphManager {
         for (int i = 0; i < dataPoints.length; i++)
             team.setColor(colors[i], i);
 
-
-//        BarChartPlot team1 = Plots.newBarChartPlot(Data.newData(25, 43, 12, 30), BLUEVIOLET, "Team A");
-//        BarChartPlot team2 = Plots.newBarChartPlot(Data.newData(8, 35, 11, 5), ORANGERED, "Team B");
-//        BarChartPlot team3 = Plots.newBarChartPlot(Data.newData(10, 20, 30, 30), LIMEGREEN, "Team C");
-
         // Instantiating chart.
         BarChart chart = GCharts.newBarChart(team);
         chart.setDataStacked(false);
-
-
-
 
         // Defining axis info and styles
         AxisLabels yAxisRange = AxisLabelsFactory.newNumericRangeAxisLabels(0, sum);
@@ -178,12 +175,10 @@ public class GraphManager {
         }
 
 
-
-
-        chart.setSize(dataPoints.length*100+200, 450);
-        chart.setBarWidth(100);
+//        chart.setSize(dataPoints.length*100+200, 450);
+        chart.setSize(400, 400);
+        chart.setBarWidth(BarChart.AUTO_RESIZE);
         chart.setSpaceWithinGroupsOfBars(20);
-        chart.setDataStacked(true);
         chart.setTitle(title, BLACK, 16);
         chart.setGrid(100, 10, 3, 2);
         chart.setBackgroundFill(Fills.newSolidFill(ALICEBLUE));
