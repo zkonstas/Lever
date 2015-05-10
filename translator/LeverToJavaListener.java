@@ -274,11 +274,24 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override
 	public void enterStatementExpression(LeverParser.StatementExpressionContext ctx) {
+
+		LeverParser.ExpressionContext expCtx = ctx.expression();
+
+		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
+
+			if (expCtx.expression().get(0) != null && expCtx.expression().get(0).arrayAccess() != null) {
+				leverTerminals.add("=");
+			}	
+		}
+		
 			
 	}
 	@Override
 	public void exitStatementExpression(LeverParser.StatementExpressionContext ctx) {
-		//printTarget(hold,";");
+		if (leverTerminals.contains("=")) {
+			printTarget(hold, ")");
+			leverTerminals.remove("=");
+		}
 	}
 	
 	@Override
@@ -394,6 +407,10 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 	@Override public void enterMethodCall(LeverParser.MethodCallContext ctx) {
 
+		if (ctx.objectMethodCall() != null) {
+			return;
+		}
+
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.add("dontPrintParams");
 			String text = ctx.getText();
@@ -462,7 +479,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 		}
 	}
 
-	@Override public void exitMethodCall(LeverParser.MethodCallContext ctx) { 
+	@Override public void exitMethodCall(LeverParser.MethodCallContext ctx) {
+
+		if (ctx.objectMethodCall() != null) {
+			return;
+		}
+
 		if (ctx.Identifier().getText().equals("get")) {
 			leverTerminals.remove("dontPrintParams");
 		}
@@ -482,16 +504,40 @@ public class LeverToJavaListener extends LeverBaseListener {
 		//printTarget(hold,";\n");
 	}
     @Override public void enterArrayInit(LeverParser.ArrayInitContext ctx) {
+    	List<LeverParser.ExpressionContext> exps = ctx.expression();
+
+    	VariableCheckingListener.LType type = null;
+
+    	if (exps.size() == 1) {
+    		type = VariableCheckingListener.getExpressionType( exps.get(0) );
+
+    		if (type==VariableCheckingListener.LType.LInteger) {
+    			printTarget(hold,"new ArrayList<>(");
+    			return;
+    		}
+    	}
         printTarget(hold,"new ArrayList<>(Arrays.asList(");
     }
     @Override public void exitArrayInit(LeverParser.ArrayInitContext ctx) {
+    	List<LeverParser.ExpressionContext> exps = ctx.expression();
+
+    	VariableCheckingListener.LType type = null;
+
+    	if (exps.size() == 1) {
+    		type = VariableCheckingListener.getExpressionType( exps.get(0) );
+
+    		if (type==VariableCheckingListener.LType.LInteger) {
+    			printTarget(hold,")");
+    			return;
+    		}
+    	}
         printTarget(hold,"))");
     }
     @Override public void enterArrayAccess(LeverParser.ArrayAccessContext ctx) {
-        printTarget(hold,"[");
+       	printTarget(hold,".set(");
     }
     @Override public void exitArrayAccess(LeverParser.ArrayAccessContext ctx) {
-        printTarget(hold,"]");
+        printTarget(hold,",");
     }
 	@Override
 	public void visitTerminal(TerminalNode node) {

@@ -110,13 +110,17 @@ public class VariableCheckingListener extends LeverBaseListener {
 		}
 
 		if (exp.methodCall() != null) {
-			String varId = exp.methodCall().Identifier().getText();
 
-			if (varId.equals("get")) {
-				type = LType.LResult;
-			}
-			else {
-				//type = symbolTable.get(varId);
+			if (exp.methodCall().objectMethodCall() == null) {
+
+				String varId = exp.methodCall().Identifier().getText();
+
+				if (varId.equals("get")) {
+					type = LType.LResult;
+				}
+				else {
+					//type = symbolTable.get(varId);
+				}
 			}
 		}
 
@@ -134,6 +138,13 @@ public class VariableCheckingListener extends LeverBaseListener {
 				//Get variable identifier
 				ParseTree left = expCtx.getChild(0);
 				LeverParser.ExpressionContext lExp = (LeverParser.ExpressionContext)left;
+
+				// String varId = "";
+
+				if (lExp.arrayAccess() != null) {
+					return;
+				}
+
 				TerminalNode id = lExp.primary().Identifier();
 				String varId = id.getText();
 
