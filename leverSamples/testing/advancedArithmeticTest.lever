@@ -9,7 +9,7 @@ program {
 	var r = 2 * 3 + 3; /* r = 9 */
 
 	if(r == 9) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: 2 * 3 + 3 should be 9\n"; 
@@ -18,7 +18,7 @@ program {
 	r = 1 + 2 * 3; /* r = 7 */
 
 	if(r == 7) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: 1 + 2 * 3 should be 7\n";
@@ -27,7 +27,7 @@ program {
 	r = 2 * 3 - (2 + 2); /* r = 2 */
 
 	if(r == 4) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: 2 * 3 - (2 + 2) should be 2\n";
@@ -35,7 +35,7 @@ program {
 
 	r = 2 / (1 + 1 + (2 * 1)); /* r=0.5 */
 	if(r == 0.5) {
-		output "YES";
+		output "YES\n";
 	} 
 	else {
 		output "NO: r = 2 / (1 + 1 + (2 * 1)) should be 0.5";

@@ -11,7 +11,7 @@ program {
 	var x = 3, y = -4;
 	var z, u;
 	z = 3.15;
-	u = -12.1222
+	u = -12.1222;
 
 	if(i == 2) {
 		output "YES";
@@ -38,7 +38,7 @@ program {
 		output "YES";
 	}
 	else {
-		output "NO: double assignment after double declaration wrong\n"
+		output "NO: double assignment after double declaration wrong\n";
 	}
 
 }

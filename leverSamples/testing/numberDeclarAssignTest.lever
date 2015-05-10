@@ -14,28 +14,28 @@ program {
 	u = -12.1222
 
 	if(i == 2) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: int assignment separate from declaration wrong\n";
 	}
 
 	if(j == 0) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: int declaration inline with assignment wrong\n";
 	}
 
 	if((x == 3) AND (y == -4)) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: inline double int assignment + declaration wrong\n";
 	}
 
 	if((z == 3.15) AND (u == -12.1222)) {
-		output "YES";
+		output "YES\n";
 	}
 	else {
 		output "NO: double assignment after double declaration wrong\n"

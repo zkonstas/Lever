@@ -11,7 +11,7 @@ program {
 	var noCheck = no;
 
 	if(trueCheck) {
-		output "YES1";
+		output "YES1\n";
 	}
 	else {
 		output "NO: else fires after if with variable\n";
@@ -21,11 +21,11 @@ program {
 		output "NO: if fires even though its condition is a boolean variable with a 'false' value\n";
 	}
 	else {
-		output "YES2";
+		output "YES2\n";
 	}
 
 	if(yesCheck) {
-		output "YES3";
+		output "YES3\n";
 	}
 	else {
 		output "NO: else fires after if with 'yes' variable\n";
@@ -35,7 +35,7 @@ if(noCheck) {
 		output "NO: if fires even though its condition is a boolean variable with a 'false' value\n";
 	}
 	else {
-		output "YES4";
+		output "YES4\n";
 	}
 
 }
