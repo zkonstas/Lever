@@ -167,8 +167,7 @@ arrayAccess
     ;
 
 primary
-    :   'this'
-    |   literal
+    :   literal
     |   Identifier
 	|	AT
     ;
@@ -189,8 +188,6 @@ FOR			: 'for';
 IF			: 'if';
 IN			: 'in';
 RETURN		: 'return';
-THIS		: 'this';
-VOID		: 'void';
 WHILE		: 'while';
 
 // LEVER SYMBOLS
