@@ -135,10 +135,8 @@ zeroArgumentMethodCall
 expression
     :   primary
     |   parExpression
-    |   expression '.' Identifier
-    |   expression '.' 'this'
     |	methodCall
-    |   expression arrayAccess
+    |   Identifier arrayAccess
     |   '(' type ')' expression
     |   expression ('++' | '--')
     |   ('+'|'-'|'++'|'--') expression
@@ -157,6 +155,11 @@ expression
 
 methodCall
     :   Identifier expressionList?
+    |   objectMethodCall
+    ;
+
+objectMethodCall
+    :   Identifier ('.' Identifier)* expressionList?
     ;
 
 arrayAccess
