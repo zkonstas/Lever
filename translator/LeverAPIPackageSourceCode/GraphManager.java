@@ -1,20 +1,15 @@
+package LeverAPIPackage;
+
 import com.googlecode.charts4j.*;
 import com.googlecode.charts4j.Color;
 import com.googlecode.charts4j.Shape;
-
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import static com.googlecode.charts4j.Color.*;
-import static com.googlecode.charts4j.UrlUtil.normalize;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 
 /**
@@ -139,17 +134,9 @@ public class GraphManager {
         for (int i = 0; i < dataPoints.length; i++)
             team.setColor(colors[i], i);
 
-
-//        BarChartPlot team1 = Plots.newBarChartPlot(Data.newData(25, 43, 12, 30), BLUEVIOLET, "Team A");
-//        BarChartPlot team2 = Plots.newBarChartPlot(Data.newData(8, 35, 11, 5), ORANGERED, "Team B");
-//        BarChartPlot team3 = Plots.newBarChartPlot(Data.newData(10, 20, 30, 30), LIMEGREEN, "Team C");
-
         // Instantiating chart.
         BarChart chart = GCharts.newBarChart(team);
         chart.setDataStacked(false);
-
-
-
 
         // Defining axis info and styles
         AxisLabels yAxisRange = AxisLabelsFactory.newNumericRangeAxisLabels(0, sum);
@@ -178,12 +165,10 @@ public class GraphManager {
         }
 
 
-
-
-        chart.setSize(dataPoints.length*100+200, 450);
-        chart.setBarWidth(100);
+//        chart.setSize(dataPoints.length*100+200, 450);
+        chart.setSize(400, 400);
+        chart.setBarWidth(BarChart.AUTO_RESIZE);
         chart.setSpaceWithinGroupsOfBars(20);
-        chart.setDataStacked(true);
         chart.setTitle(title, BLACK, 16);
         chart.setGrid(100, 10, 3, 2);
         chart.setBackgroundFill(Fills.newSolidFill(ALICEBLUE));
