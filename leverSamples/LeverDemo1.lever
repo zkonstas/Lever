@@ -1,16 +1,14 @@
 program {
 
-    output "hello world!\n";
+    var result;
 
-    var res;
+    result = get "uk election",["since":"2015-05-01","until":"2015-05-07"];
+    //output result;
 
-    res = get "uk election",["since":"2015-05-01","until":"2015-05-07"];
-    output res;
-
-    var xAxis = ["Cameron", "Milband", "Sturgeon", "Clegg"];
+    var xAxis = ["Cameron", "Miliband", "Sturgeon", "Clegg"];
     var counts = [4];
     counts[0] = result.tweetCount "cameron";
-    counts[1] = result.tweetCount "milband";
+    counts[1] = result.tweetCount "miliband";
     counts[2] = result.tweetCount "sturgeon";
     counts[3] = result.tweetCount "clegg";
 

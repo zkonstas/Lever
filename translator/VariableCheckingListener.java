@@ -88,6 +88,10 @@ public class VariableCheckingListener extends LeverBaseListener {
 
 				String varId = exp.primary().Identifier().getText();
 
+				if (varId.equals("input")) {
+					return LType.LString;
+				}
+
 				if (!symbolTable.containsKey(varId)) {
 					System.out.println("identifier has not been declared!");
 					System.out.println("identifier: " + varId);
@@ -121,6 +125,9 @@ public class VariableCheckingListener extends LeverBaseListener {
 				else {
 					//type = symbolTable.get(varId);
 				}
+			}
+			else {
+				//type = getMethodCallType(exp.methodCall());
 			}
 		}
 
