@@ -1,18 +1,25 @@
 /*
 	Test for:
 	Simple Arithmetic
-	Excpected output: "YES\nYES\nYES\nYES\n"
+	Expected output: "YES\nYES\nYES\n"
 */
 
 program {
-	var i = 2, j = 0, x = 3, y = -4, a = 5, b = 7, c = 10;
-	var z = 3.15, u = -12.1222;
+	var i = 2;
+	var j = 0;
+	var x = 3;
+	var y = -4;
+	var a = 5;
+	var b = 7;
+	var c = 10;
+	var z = 3.15;
+	var u = -12.1222;
 
 	y++; /* y=-3 */
 	x--; /* x=2 */
 
 	if((y == -3) AND (x == 2)) {
-		output "YES\n";
+		output "YES";
 	}
 	else {
 		output "NO: postfixt unary increment/decrement wrong\n";
@@ -22,22 +29,10 @@ program {
 	++y; /* y=-2*/
 
 	if((y == -2) AND (x == 1)) {
-		output "YES\n";
+		output "YES";
 	}
 	else {
 		output "NO: prefix unary increment/decrement wrong\n";
-	}
-
-	x += i; /* x=3 */
-	y -= 1; /* y=-1 */
-	a *= a; /* a=25 */
-	c /= i; /* c=5 */
-	
-	if((x == 3) AND (y == -1) AND (a == 25) AND (c == 25)) {
-		output "YES\n";
-	}
-	else {
-		output "NO: shorthand arithmetic wrong\n";
 	}
 
 	var d = 1 + 2;
@@ -47,7 +42,7 @@ program {
 	var h = e / 1;
 
 	if((d == 3) AND (e == -1) AND (f == e) AND (g == 0) AND (h == e)) {
-		output "YES\n";
+		output "YES";
 	}
 	else {
 		output "NO: simple arithmetic sentences wrong\n";

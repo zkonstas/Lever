@@ -1,0 +1,15 @@
+/*
+	Test for:
+	user query Arithmetic
+	Expected output: "Columbia\nHarvard\n"
+*/
+
+program {
+
+	var results = get @Columbia, @Harvard;
+
+	for i in (0, results.size) {
+		output results[i].user + "\n";
+	}
+		
+}

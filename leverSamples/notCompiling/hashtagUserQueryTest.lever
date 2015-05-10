@@ -1,0 +1,13 @@
+/*
+	Test for:
+	Hashtag User query
+	Expected output: "0"
+*/
+
+program {
+
+	var results;
+	results = get @Harvard, @Columbia, #finals;
+	output results.size;
+
+}

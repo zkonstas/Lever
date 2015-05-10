@@ -1,0 +1,13 @@
+/*
+	Test for:
+	Hashtag query
+	Expected output: "100\n"
+*/
+
+program {
+
+	var results;
+	results = get #finals;
+	output results.size;
+
+}

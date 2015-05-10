@@ -1,0 +1,14 @@
+/*
+	Test for:
+	since query sarch
+	Expected output: "100\n"
+*/
+
+program {
+
+	var results;
+	results = get ["since":"2015-05-01","until":"2015-05-07"];
+	output results.size;
+
+}
+

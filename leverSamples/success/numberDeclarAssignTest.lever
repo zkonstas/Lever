@@ -1,15 +1,17 @@
 /*
 	Test for:
 	number declaration
-	Excpected output: "YES\nYES\nYES\nYES\n"
+	Expected output: "YES\nYES\nYES\nYES\n"
 */
 
 program {
 	var i;
 	i = 2;
 	var j = 0;
-	var x = 3, y = -4;
-	var z, u;
+	var x = 3;
+	var y = -4;
+	var z;
+	var u;
 	z = 3.15;
 	u = -12.1222;
 

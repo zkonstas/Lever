@@ -1,0 +1,14 @@
+/*
+	Test for:
+	string search query
+	Expected output: "100"
+*/
+
+program {
+
+	var results;
+	results = get "arsenal won";
+	output results.size;
+
+}
+

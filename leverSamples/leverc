@@ -22,8 +22,8 @@ do
 	then
 		echo Compiling Lever into intermediate code... 
 		compilerOutput=$(java -cp "../translator:/usr/local/lib/antlr-4.5-complete.jar" Leverc ../leverSamples/$f 2>&1 >/dev/null)
-
-		if [[ $compilerOutput == *"line"*  ]]; then
+		
+		if [[ $compilerOutput == *"line"*  ]] || [[ $compilerOutput == *"error"*  ]]; then
 			echo "errors detected:"
 			echo "$compilerOutput"
 			echo "$f failed to compile"
@@ -34,17 +34,23 @@ do
 
 			progName=${f//.lever/.java} #get java filename out of lever filename
 			echo Compiling program...
-			javac -cp ".:../lib/*" $progName &>/dev/null
+			moreCompilerOutput=$(javac -cp ".:../lib/*" $progName 2>&1 >/dev/null) #&>/dev/null)
+			
+			if [[ $moreCompilerOutput == *"line"*  ]] || [[ $moreCompilerOutput == *"error"*  ]]; then
+				echo "errors detected:"
+				echo "$moreCompilerOutput"
+				echo "$f failed to compile"
+			else
+				if [[ $keep == "no" ]]
+				then
+					echo "Removing intermediate files..."
+					rm $progName
+				fi
 
-			if [[ $keep == "no" ]]
-			then
-				echo "Removing intermediate files..."
-				rm $progName
+				echo "$f compiled successfully!"
 			fi
-
-			echo "$f compiled successfully!"
 		fi
-	else
+	elif [[ $f != "-keep" ]]; then
 		echo "file $f not found or not a .lever file"
 	fi
 done
