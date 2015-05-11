@@ -1,4 +1,4 @@
-queryInNewYorkFunction query {
+queryFunc query {
 	var result;
 	result = get query;
 	output result;
@@ -6,9 +6,12 @@ queryInNewYorkFunction query {
 
 program {
 
+	var uk = get #ukelections;
+	output uk;
+
 	while (yes) {
-		var x = #input;
+		var x = input;
 		
-		queryInNewYorkFunction x;
+		queryFunc x;
 	}
 }
