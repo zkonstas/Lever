@@ -457,7 +457,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 
                 printTarget(hold,"LeverAPI.get(\"" + str0 + "[" + params + "\")");
             } else {
-                printTarget(hold,"LeverAPI.get(" + tmp + ")");
+                if (tmp.contains("#") && !tmp.contains("\"")) {
+                    printTarget(hold,"LeverAPI.get(\"" + tmp + "\")");
+                } else {
+                    printTarget(hold,"LeverAPI.get(" + tmp + ")");
+                }
+
             }
 		}
 
@@ -608,7 +613,13 @@ public class LeverToJavaListener extends LeverBaseListener {
     @Override public void exitArrayAccess(LeverParser.ArrayAccessContext ctx) {
         printTarget(hold,",");
     }
-	@Override
+    @Override public void enterLeverLiteral(LeverParser.LeverLiteralContext ctx) {
+        //printTarget(hold, "\"");
+    }
+    @Override public void exitLeverLiteral(LeverParser.LeverLiteralContext ctx) {
+        //printTarget(hold, "\"");
+    }
+    @Override
 	public void visitTerminal(TerminalNode node) {
 
 		Token token = node.getSymbol();

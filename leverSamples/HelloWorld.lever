@@ -1,0 +1,4 @@
+program {
+    var helloWorld = get #helloworld;
+    output helloWorld;
+}
