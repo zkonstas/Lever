@@ -676,9 +676,6 @@ public class LeverToJavaListener extends LeverBaseListener {
                 }
 
 				break;
-            case LeverLexer.ASSIGN:
-                printTarget(hold, " = ");
-                break;
 			case LeverLexer.AND:
 				printTarget(hold," && ");
 				break;

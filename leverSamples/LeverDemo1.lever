@@ -7,7 +7,7 @@ queryInNewYorkFunction query {
 program {
 
 	while (yes) {
-		var x = input;
+		var x = #input;
 		
 		queryInNewYorkFunction x;
 	}
