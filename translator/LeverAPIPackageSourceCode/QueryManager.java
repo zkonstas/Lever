@@ -23,7 +23,7 @@ public class QueryManager {
     public ArrayList<String> generalStringList;
     public QueryResult queryResult;
     public Result customResult;
-    public static int numberOfPages = 1;
+    public static int numberOfPages = 10;
     public FilterQuery filterQuery;
 
 
@@ -111,7 +111,7 @@ public class QueryManager {
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
-            System.out.println("ran query "+ (i+1) +" times");
+            //System.out.println("ran query "+ (i+1) +" times");
         }
 
         return result;

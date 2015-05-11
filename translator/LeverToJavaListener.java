@@ -95,6 +95,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		leverTerminals.add("var");
 		leverTerminals.add("program");
+        leverTerminals.add("#");
 
         //initializing arrayList needs to remove brackets
         leverTerminals.add("[");
@@ -106,6 +107,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverAPIfunctions.add("output");
 		leverAPIfunctions.add("input");
 		leverAPIfunctions.add("graph");
+
 	}
 	private void openBraces() {
 		indents++;
@@ -455,7 +457,12 @@ public class LeverToJavaListener extends LeverBaseListener {
 
                 printTarget(hold,"LeverAPI.get(\"" + str0 + "[" + params + "\")");
             } else {
-                printTarget(hold,"LeverAPI.get(" + tmp + ")");
+                if (tmp.contains("#") && !tmp.contains("\"")) {
+                    printTarget(hold,"LeverAPI.get(\"" + tmp + "\")");
+                } else {
+                    printTarget(hold,"LeverAPI.get(" + tmp + ")");
+                }
+
             }
 		}
 
@@ -606,7 +613,13 @@ public class LeverToJavaListener extends LeverBaseListener {
     @Override public void exitArrayAccess(LeverParser.ArrayAccessContext ctx) {
         printTarget(hold,",");
     }
-	@Override
+    @Override public void enterLeverLiteral(LeverParser.LeverLiteralContext ctx) {
+        //printTarget(hold, "\"");
+    }
+    @Override public void exitLeverLiteral(LeverParser.LeverLiteralContext ctx) {
+        //printTarget(hold, "\"");
+    }
+    @Override
 	public void visitTerminal(TerminalNode node) {
 
 		Token token = node.getSymbol();
@@ -620,7 +633,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 					printTarget(hold,"LeverAPI.output");
 					
 				} else if (id.equals("input")) {
-					printTarget(hold,"LeverAPI.input()");
+
+                    tmp = node.getParent().getChild(0).toString();
+                    if (tmp.equals("#")) {
+                        printTarget(hold, "\"#\" + LeverAPI.input().replace(\"#\",\"\")");
+                    } else {
+                        printTarget(hold, "LeverAPI.input()");
+                    }
+
 				
 				
 				} else if (id.equals("graph")) {
@@ -667,7 +687,6 @@ public class LeverToJavaListener extends LeverBaseListener {
                 }
 
 				break;
-
 			case LeverLexer.AND:
 				printTarget(hold," && ");
 				break;

@@ -113,7 +113,15 @@ public class VariableCheckingListener extends LeverBaseListener {
 					}
 				}
 
-			}
+			} else if (exp.primary().leverLiteral() != null) {
+                //LEVER LITERALS @ and #
+                LeverParser.LeverLiteralContext litx = exp.primary().leverLiteral();
+
+                System.out.println("saw hashtag  " + exp.primary().leverLiteral().Identifier());
+                if (litx.HASHTAG() != null) {
+                    type = LType.LString;
+                }
+            }
 		}
 
 		if (exp.methodCall() != null) {
@@ -163,6 +171,9 @@ public class VariableCheckingListener extends LeverBaseListener {
 				LeverParser.ExpressionContext rExp = (LeverParser.ExpressionContext)right;
 				LType type = getExpressionType(rExp);
 
+
+
+                System.out.println("-->" + varId + " " + type.name());
 				assignVarIdType(varId, type, ctx);
 			}
 		}
@@ -227,6 +238,8 @@ public class VariableCheckingListener extends LeverBaseListener {
 		else {
 			//trying to assign incompatible variable types
 			System.out.println("identifier has not been declared!");
+
+
 			System.out.println("identifier: " + varId);
 			System.exit(1);
 		}

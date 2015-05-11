@@ -61,7 +61,11 @@ literal
     |   StringLiteral
     |   BooleanLiteral
     |   'null'
-    |   LeverLiteral
+    ;
+
+leverLiteral
+    : HASHTAG Identifier
+    | AT Identifier
     ;
 
 // STATEMENTS / BLOCKS
@@ -172,7 +176,8 @@ arrayAccess
     ;
 
 primary
-    :   literal
+    :   leverLiteral
+    |   literal
     |   Identifier
 	|	AT 
     ;
@@ -202,11 +207,6 @@ HASHTAG     : '#';
 ATVAR		: 'uSeR';
 
 // LITERALS
-
-LeverLiteral
-    : '#' StringCharacters
-    | '@' StringCharacters
-    ;
 
 NumberLiteral
 	: '-'?[0-9]+('.'[0-9]+)?
