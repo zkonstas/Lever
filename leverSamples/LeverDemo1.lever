@@ -6,9 +6,12 @@ queryInNewYorkFunction query {
 
 program {
 
+	var helloWorld = get #helloworld;
+	output helloWorld;
+
 	while (yes) {
 		var x = input;
-		
+
 		queryInNewYorkFunction x;
 	}
 }
