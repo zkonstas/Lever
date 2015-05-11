@@ -104,14 +104,14 @@ public class QueryManager {
                 result.addQueryResult(queryResult);
                 List<Status> tweets = queryResult.getTweets();
                 for (Status tweet : tweets) {
-                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + tweet.getCreatedAt());
+//                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText() + tweet.getCreatedAt());
                     if(minTweet == tweet.getId()) break;
                     minTweet = tweet.getId();
                 }
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
-            System.out.println("ran query "+i+" times");
+            System.out.println("ran query "+ (i+1) +" times");
         }
 
         return result;

@@ -1,0 +1,16 @@
+program {
+
+    var result;
+
+    result = get "uk election",["since":"2015-05-01","until":"2015-05-07"];
+    output result;
+
+    var xAxis = ["Cameron", "Miliband", "Sturgeon", "Clegg"];
+    var counts = [4];
+    counts[0] = result.tweetCount "cameron";
+    counts[1] = result.tweetCount "miliband";
+    counts[2] = result.tweetCount "sturgeon";
+    counts[3] = result.tweetCount "clegg";
+
+    graph "bar", "UK Election Tweets - Popular Tweets", xAxis, counts;
+}

@@ -105,7 +105,7 @@ forStatement
 	;
 
 forIn
-	:	FOR Identifier IN '(' NumberLiteral ',' NumberLiteral ')'
+	:	FOR Identifier IN '(' (NumberLiteral | Identifier) ',' (NumberLiteral | Identifier) ')'
 	;
 
 forEach
@@ -135,6 +135,7 @@ zeroArgumentMethodCall
 expression
     :   primary
     |   parExpression
+    |   resultUserAccess
     |	methodCall
     |   Identifier arrayAccess
     |   '(' type ')' expression
@@ -158,6 +159,10 @@ methodCall
     |   objectMethodCall
     ;
 
+resultUserAccess
+    : Identifier arrayAccess '.' Identifier
+    ;
+
 objectMethodCall
     :   Identifier ('.' Identifier)* expressionList?
     ;
@@ -169,7 +174,7 @@ arrayAccess
 primary
     :   literal
     |   Identifier
-	|	AT
+	|	AT 
     ;
 
 /////////////////

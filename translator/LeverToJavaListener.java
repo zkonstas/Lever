@@ -17,6 +17,8 @@ import java.util.*;
 //don't need to override every enter/exit method
 public class LeverToJavaListener extends LeverBaseListener {
 	LeverParser parser;
+
+	public boolean getFlag;
 	
 	private String fileName;
 	private File targetFile;
@@ -260,6 +262,28 @@ public class LeverToJavaListener extends LeverBaseListener {
 		
 	}
 
+	@Override public void enterExpression(LeverParser.ExpressionContext ctx) {
+
+		if (ctx.resultUserAccess() != null) {
+			// int i = ;
+
+			//printTarget(false, "LeverAPI.getInfo(result.get(i), \"user\")");
+			return;
+		}
+
+	}
+
+	@Override public void enterResultUserAccess(LeverParser.ResultUserAccessContext ctx) {
+		hold = true;
+		printTarget(false, "LeverAPI.getInfo(result.get(i), \"user\")");
+
+	}
+
+	@Override public void exitResultUserAccess(LeverParser.ResultUserAccessContext ctx) {
+		hold = false;
+	}
+	
+
 	@Override
 	public void enterExpressionList(LeverParser.ExpressionListContext ctx) {
 		if (!leverTerminals.contains("dontPrintParams"))
@@ -278,7 +302,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		LeverParser.ExpressionContext expCtx = ctx.expression();
 
-		if (expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
+		if (expCtx != null && expCtx.getToken(LeverLexer.ASSIGN, 0) != null) {
 
 			if (expCtx.expression().get(0) != null && expCtx.expression().get(0).arrayAccess() != null) {
 				leverTerminals.add("=");
@@ -443,7 +467,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 			LeverParser.MethodDefinitionContext funcDefCtx = VariableCheckingListener.functionTable.get(funcId);
 			
 			// //assign parameter types
-			if (funcDefCtx.formalParameterList() != null) {
+			if (funcDefCtx != null && funcDefCtx.formalParameterList() != null) {
 				List<TerminalNode> parameterIds = funcDefCtx.formalParameterList().Identifier();
 
 				LeverParser.ExpressionListContext expLCtx = ctx.expressionList();
@@ -498,13 +522,38 @@ public class LeverToJavaListener extends LeverBaseListener {
 		}
 	}
 
+	@Override public void enterZeroArgumentMethodCall(LeverParser.ZeroArgumentMethodCallContext ctx) {
+		String funcId = ctx.Identifier().getText();
+
+		StringBuffer buf = new StringBuffer();
+				buf.append("public static ");
+
+		VariableCheckingListener.LType returnType = VariableCheckingListener.getMethodCallType(funcId);
+				if (returnType == null) {
+					buf.append("void ");
+				}
+				else {
+					buf.append(getJavaType(returnType) + " ");
+				}
+
+		String body = funcDefinitions.get(funcId);
+			
+		funcDefinitions.put(funcId, buf.toString()+funcId+"()"+body);
+
+	}
+
+	@Override public void exitZeroArgumentMethodCall(LeverParser.ZeroArgumentMethodCallContext ctx) {
+		printTarget(hold, "()");
+
+	}
+
 	@Override public void exitMethodCall(LeverParser.MethodCallContext ctx) {
 
 		if (ctx.objectMethodCall() != null) {
 			return;
 		}
 
-		if (ctx.Identifier().getText().equals("get")) {
+		if (ctx.Identifier() != null && ctx.Identifier().getText().equals("get")) {
 			leverTerminals.remove("dontPrintParams");
 		}
 	}
