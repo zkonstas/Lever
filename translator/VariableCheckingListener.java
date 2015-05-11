@@ -113,7 +113,14 @@ public class VariableCheckingListener extends LeverBaseListener {
 					}
 				}
 
-			}
+			} else if (exp.primary().leverLiteral() != null) {
+                //LEVER LITERALS @ and #
+                LeverParser.LeverLiteralContext litx = exp.primary().leverLiteral();
+
+                if (litx.HASHTAG() != null) {
+                    type = LType.LString;
+                }
+            }
 		}
 
 		if (exp.methodCall() != null) {

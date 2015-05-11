@@ -95,6 +95,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 
 		leverTerminals.add("var");
 		leverTerminals.add("program");
+        leverTerminals.add("#");
 
         //initializing arrayList needs to remove brackets
         leverTerminals.add("[");
@@ -106,6 +107,7 @@ public class LeverToJavaListener extends LeverBaseListener {
 		leverAPIfunctions.add("output");
 		leverAPIfunctions.add("input");
 		leverAPIfunctions.add("graph");
+
 	}
 	private void openBraces() {
 		indents++;
@@ -620,7 +622,14 @@ public class LeverToJavaListener extends LeverBaseListener {
 					printTarget(hold,"LeverAPI.output");
 					
 				} else if (id.equals("input")) {
-					printTarget(hold,"LeverAPI.input()");
+
+                    tmp = node.getParent().getChild(0).toString();
+                    if (tmp.equals("#")) {
+                        printTarget(hold, "\"#\" + LeverAPI.input().replace(\"#\",\"\")");
+                    } else {
+                        printTarget(hold, "LeverAPI.input()");
+                    }
+
 				
 				
 				} else if (id.equals("graph")) {
@@ -667,7 +676,9 @@ public class LeverToJavaListener extends LeverBaseListener {
                 }
 
 				break;
-
+            case LeverLexer.ASSIGN:
+                printTarget(hold, " = ");
+                break;
 			case LeverLexer.AND:
 				printTarget(hold," && ");
 				break;
