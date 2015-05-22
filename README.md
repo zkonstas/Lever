@@ -56,6 +56,47 @@ This calls the built in Lever command output with the argument “hello world\n�
 
 Lastly, statements must end with a semicolon “;”, which functions like a period in a sentence.
 
+### A Simple Query
+
+The sample program in this section illustrates one of the main use cases of our language. Getting data from a social network and outputting the results. The program is displayed below:
+ 
+	program {
+		var result;
+		result = get #realmadrid, ["location":"barcelona"];
+		output result;
+	}
+ 
+This program is similar to the previous one since it consists of the 'main' function program. However there are three statements in the block of the program. A declaration, an assignment and an output statement. We take a look at each statement individually:
+ 
+At line 2 we have the statement: 
+
+	var result;
+ 
+This is a declaration of a variable. In Lever all variables must be declared before they can be used. All variables are declared by using the keyword var and then specifying the variable name (e.g. 'result'). Variables can also be initialized on the same line as a declaration. For example, we could have also written:
+
+	var result = get #realmadrid, [“location”:”barcelona”];
+
+The type of a variable is inferred at compile time when the variable is defined.
+
+At line 3 we have the statement:
+	result = get  #realmadrid, ["location":"barcelona"];
+ 
+This is an assignment statement where the variable result which is the left side of the expression (left side of the ‘=’ sign) is initialized to the value of the right side of the expression. We now focus on the right side of the expression:
+
+	get #realmadrid, ["location":"barcelona"];
+ 
+This is a function call that returns a value. A function is called by naming it, followed by a comma separated list of arguments. In this case the function get is called with the arguments #readmadrid, ["location":"barcelona"]. get is a Lever library function that executes a query on a social network (in this version of Lever, Twitter only), given a set of query parameters.
+ 
+There are two arguments passed to the get function. The first argument is #realmadrid. This argument is of type 'hashtag' or 'topic' and specifies that we want to filter tweets that are tagged with this hashtag. The '#' character followed by an identifier evaluates as a 'hashtag' type.
+ 
+The second argument is ["location":"barcelona"]. This argument is of type dictionary, which is always enclosed in square brackets, and in this case functions as a filter on the results. The format of this type is a list of key:value pairs where key is the name of some filter type enclosed in double quotes followed by a colon, followed by the value for this filter, also enclosed in double quotes. In this example, only posts that originated in “barcelona” are included.
+ 
+After the function is called the Twitter API is called behind the scenes and the query result is received. The type of the return value is "Result". This is an object type meaning that it has its own properties and methods.
+ 
+Finally, at line 4, we use the function output to print the results. By default, results are encoded in the following format:
+
+	@Real_Madrid_FC - Allegri: Juventus need near perfection to beat Madrid http://t.co/GrB5Z103Cc #RealMadridSun May 10 15:40:03 EDT 2015
+
 ## Project Details
 
 This programming language was designed and developed as a project for the class "Programming Languages and Translators - 4115" taught by Prof. Alfred Aho in Spring 2015 at Columbia University.
