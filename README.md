@@ -13,9 +13,9 @@ LEVER is a programming language that enables the easy retrieval, processing and 
 
 This programming language was designed and developed as a project for the class "Programming Languages and Translators - 4115" taught by Prof. Alfred Aho in Spring 2015 at Columbia University. The project contributors are:
 
-Roy Hermann - Project Manager
-Chaiwen Chou - Language Guru
-Mahd Tauseef - Systems Architect
-Zissis Konstas - Systems Engineer
-Eden Dolev - Verification and Validation
+- Roy Hermann: Project Manager
+- Chaiwen Chou: Language Guru
+- Mahd Tauseef: Systems Architect
+- Zissis Konstas: Systems Engineer
+- Eden Dolev: Verification and Validation
 
