@@ -19,7 +19,7 @@ LEVER is a programming language that enables the easy retrieval, processing and 
 - Analyzing social media trends and patterns. 
 - Cross-Data analysis and other various information insights.
 
-Therefore Lever, being a simple, easy to learn programming language that can be used by business analysts and marketers, can have enormous value for organizations and individuals.
+Therefore Lever, being a simple, easy to learn programming language that can be used by business analysts and marketers, can have enormous value for organizations and individuals. Lever queries Twitter data by default.
 
 ## Installation
 
@@ -64,11 +64,11 @@ In our hello world program, the only statement that we have is:
 
 This calls the built in Lever command output with the argument “hello world\n”, which is a string of characters surrounded by double quotes. output will print its arguments to standard output, which in our case is “hello world\n”. The \n represents a newline character, which causes the output to advance to the next line (like hitting the return key in any text editor). Numbers may also be printed, but text should always be surrounded by double quotes. We talk more about input and output later in the tutorial.
 
-Lastly, statements must end with a semicolon “;”, which functions like a period in a sentence.
+Lastly, statements must end with a semicolon ";", which functions like a period in a sentence.
 
 ### A Simple Query
 
-The sample program in this section illustrates one of the main use cases of our language. Getting data from a social network and outputting the results. The program is displayed below:
+The sample program in this section illustrates one of the main use cases of our language. Getting data from a social network (Twitter) and outputting the results. The program is displayed below:
  
 	program {
 		var result;
