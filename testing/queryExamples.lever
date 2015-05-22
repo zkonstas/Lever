@@ -6,6 +6,9 @@ program {
 	example5;
 }
 
+
+//examples
+
 example1 {
 	var result = get @realmadrid, @barcelona;
 
