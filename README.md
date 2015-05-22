@@ -16,7 +16,7 @@ This programming language was designed and developed as a project for the class 
 The project contributors along with their respective roles are listed below:
 
 - Roy Hermann: Project Manager
-- Chaiwen Chou: Language Guru
+- [Chaiwen Chou](https://github.com/chaiwen): Language Guru
 - Mahd Tauseef: Systems Architect
 - Zissis Konstas: Systems Engineer
 - Eden Dolev: Verification and Validation
