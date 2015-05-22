@@ -1,6 +1,16 @@
 # Lever
 Social Querying Language
 
+This programming language was designed and developed as a project for the class "Programming Languages and Translators - 4115" taught by Prof. Alfred Aho in Spring 2015 at Columbia University.
+
+The project contributors along with their respective roles are listed below:
+
+- [Roy Hermann](https://www.linkedin.com/in/royhermann): Project Manager
+- [Chaiwen Chou](https://github.com/chaiwen): Language Guru
+- [Mahd Tauseef](https://github.com/mahdt): Systems Architect
+- [Zissis Konstas](https://github.com/zkonstas): Systems Engineer
+- [Eden Dolev](https://github.com/edolev89): Verification and Validation
+
 ## Overview
 
 LEVER is a programming language that enables the easy retrieval, processing and displaying of information retrieved from social networks. The social network aggregation of information from multiple sources allows for:
@@ -98,15 +108,5 @@ Finally, at line 4, we use the function output to print the results. By default,
 
 	@Real_Madrid_FC - Allegri: Juventus need near perfection to beat Madrid http://t.co/GrB5Z103Cc #RealMadridSun May 10 15:40:03 EDT 2015
 
-## Project Details
 
-This programming language was designed and developed as a project for the class "Programming Languages and Translators - 4115" taught by Prof. Alfred Aho in Spring 2015 at Columbia University.
-
-The project contributors along with their respective roles are listed below:
-
-- [Roy Hermann](https://www.linkedin.com/in/royhermann): Project Manager
-- [Chaiwen Chou](https://github.com/chaiwen): Language Guru
-- [Mahd Tauseef](https://github.com/mahdt): Systems Architect
-- [Zissis Konstas](https://github.com/zkonstas): Systems Engineer
-- [Eden Dolev](https://github.com/edolev89): Verification and Validation
 
