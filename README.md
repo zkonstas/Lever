@@ -79,6 +79,7 @@ This is a declaration of a variable. In Lever all variables must be declared bef
 The type of a variable is inferred at compile time when the variable is defined.
 
 At line 3 we have the statement:
+
 	result = get  #realmadrid, ["location":"barcelona"];
  
 This is an assignment statement where the variable result which is the left side of the expression (left side of the ‘=’ sign) is initialized to the value of the right side of the expression. We now focus on the right side of the expression:
