@@ -15,9 +15,9 @@ This programming language was designed and developed as a project for the class 
 
 The project contributors along with their respective roles are listed below:
 
-- Roy Hermann: Project Manager
+- [Roy Hermann](https://www.linkedin.com/in/royhermann): Project Manager
 - [Chaiwen Chou](https://github.com/chaiwen): Language Guru
-- Mahd Tauseef: Systems Architect
-- Zissis Konstas: Systems Engineer
-- Eden Dolev: Verification and Validation
+- [Mahd Tauseef](https://github.com/mahdt): Systems Architect
+- [Zissis Konstas](https://github.com/zkonstas): Systems Engineer
+- [Eden Dolev](https://github.com/edolev89): Verification and Validation
 
