@@ -109,4 +109,26 @@ Finally, at line 4, we use the function output to print the results. By default,
 	@Real_Madrid_FC - Allegri: Juventus need near perfection to beat Madrid http://t.co/GrB5Z103Cc #RealMadridSun May 10 15:40:03 EDT 2015
 
 
+### Built-in Graph Functionality
+
+Lever has also a built-in graphing capability. The programmer can easily construct a visualization of the output data by using the graph library function. The graph function takes data points and generates a visual graph, either as a bar chart or line graph. It takes 4 arguments: the type of graph (“bar” or “line”), the title of the graph as a string, a list of labels for the x-axis, and a list of data points to graph. The following example creates a bar graph that shows the number of tweets related to Apple and Microsoft in May 2015:
+
+ program {
+	var result;
+
+	result = get "apple and microsoft",["since":"2015-05-01","until":"2015-05-31"];
+	output result;
+
+	var xAxis = ["Apple", "Microsoft"];
+	var counts = [2];
+	counts[0] = result.tweetCount "apple";
+	counts[1] = result.tweetCount "microsoft";
+	 
+	graph "bar", "Apple vs Microsoft - Popular Tweets", xAxis, counts;
+ }
+
+The output of the program generates the following graph.
+
+![graph](images/graph.png)
+
 
