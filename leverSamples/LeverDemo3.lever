@@ -1,0 +1,14 @@
+program {
+
+    var result;
+
+    result = get "apple and microsoft",["since":"2015-05-01","until":"2015-05-31"];
+    output result;
+
+    var xAxis = ["Apple", "Microsoft"];
+    var counts = [2];
+    counts[0] = result.tweetCount "apple";
+    counts[1] = result.tweetCount "microsoft";
+
+    graph "bar", "Apple vs Microsoft - Popular Tweets", xAxis, counts;
+}
